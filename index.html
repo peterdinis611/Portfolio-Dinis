@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Pixel Portfolio — Peter Dinis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+<body>
+  <nav class="settings-bar" aria-label="Nastavenia">
+    <div class="settings-group" role="group" aria-labelledby="settings-lang-label">
+      <span class="settings-group-label" id="settings-lang-label" data-i18n="lang">Jazyk</span>
+      <button type="button" class="settings-btn active" id="lang-sk" data-lang-btn="sk" aria-pressed="true">SK</button>
+      <button type="button" class="settings-btn" id="lang-en" data-lang-btn="en" aria-pressed="false">EN</button>
+    </div>
+    <div class="settings-group" role="group" aria-labelledby="settings-theme-label">
+      <span class="settings-group-label" id="settings-theme-label" data-i18n="theme">Téma</span>
+      <button type="button" class="settings-btn active" id="theme-light" data-theme-btn="light" aria-pressed="true" data-i18n="themeLight">Deň</button>
+      <button type="button" class="settings-btn" id="theme-dark" data-theme-btn="dark" aria-pressed="false" data-i18n="themeDark">Noc</button>
+    </div>
+  </nav>
+
+  <div id="intro-screen" role="dialog" aria-modal="true" aria-labelledby="intro-name">
+    <canvas id="intro-canvas" aria-hidden="true"></canvas>
+    <div class="intro-ui">
+      <h1 class="intro-name" id="intro-name" aria-live="polite"></h1>
+      <p class="intro-sub" id="intro-sub"></p>
+      <div class="intro-load">
+        <div class="load-bar-wrap" aria-hidden="true">
+          <div class="load-bar" id="load-bar"></div>
+        </div>
+        <span class="load-text" id="load-text"></span>
+      </div>
+      <div class="char-select" id="char-select" role="group" aria-labelledby="char-select-label">
+        <p class="char-select-label" id="char-select-label">Vyber postavu</p>
+        <div class="char-options">
+          <button type="button" class="char-option selected" data-mode="walker" aria-pressed="true">
+            <span class="char-option-icon" aria-hidden="true">🚶</span>
+            <span class="char-label">Pešiak</span>
+          </button>
+          <button type="button" class="char-option" data-mode="car" aria-pressed="false">
+            <span class="char-option-icon" aria-hidden="true">🚗</span>
+            <span class="char-label">Auto</span>
+          </button>
+        </div>
+      </div>
+      <button type="button" id="intro-start">▶ Začať dobrodružstvo</button>
+    </div>
+  </div>
+
+  <div id="game-wrap">
+    <canvas id="world" aria-label="Portfolio game world"></canvas>
+    <div id="zone-overlay" aria-hidden="true"></div>
+    <div id="fade-overlay" aria-hidden="true"></div>
+    <div id="hud" aria-live="polite">
+      <div id="zone-name">LEVEL 1</div>
+      <div id="hint-text"></div>
+    </div>
+    <div id="joystick-zone" aria-hidden="true">
+      <div id="joystick-base"></div>
+      <div id="joystick-knob"></div>
+    </div>
+    <button type="button" id="interact-btn" class="interact-btn-label">E</button>
+    <button type="button" id="jump-btn" aria-label="Skok">↑</button>
+  </div>
+
+  <div class="modal-backdrop" id="modal-about" role="dialog" aria-modal="true" aria-labelledby="about-title">
+    <div class="modal" tabindex="-1">
+      <button type="button" class="modal-close" aria-label="Zavrieť">×</button>
+      <h2 id="about-title">About Me</h2>
+      <img class="modal-photo" id="about-photo" src="" alt="" width="200" height="200" />
+      <p id="about-bio"></p>
+      <div class="interest-icons" id="about-interests" aria-label="Interests"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-project" role="dialog" aria-modal="true" aria-labelledby="project-title">
+    <div class="modal" tabindex="-1">
+      <button type="button" class="modal-close" aria-label="Zavrieť">×</button>
+      <h2 id="project-title"></h2>
+      <div class="tags" id="project-tags"></div>
+      <p id="project-desc"></p>
+      <img class="project-thumb" id="project-thumb" src="" alt="" />
+      <div class="modal-actions">
+        <a class="btn-primary" id="project-live" href="#" target="_blank" rel="noopener">View Live</a>
+        <a class="btn-secondary" id="project-github" href="#" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-experience" role="dialog" aria-modal="true" aria-labelledby="exp-title">
+    <div class="modal" tabindex="-1">
+      <button type="button" class="modal-close" aria-label="Zavrieť">×</button>
+      <h2 id="exp-title"></h2>
+      <p id="exp-dates" style="color:#C9A84C;margin-bottom:8px;"></p>
+      <ul id="exp-bullets"></ul>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-contact" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+    <div class="modal" tabindex="-1">
+      <button type="button" class="modal-close" aria-label="Zavrieť">×</button>
+      <h2 id="contact-title">Contact</h2>
+      <form class="contact-form" id="contact-form" action="#" method="post">
+        <label for="cf-name">Meno</label>
+        <input type="text" id="cf-name" name="name" required autocomplete="name" />
+        <label for="cf-email">Email</label>
+        <input type="email" id="cf-email" name="email" required autocomplete="email" />
+        <label for="cf-message">Správa</label>
+        <textarea id="cf-message" name="message" rows="4" required></textarea>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">Odoslať</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="cutscene" aria-hidden="true">
+    <canvas id="cutscene-canvas"></canvas>
+  </div>
+
+  <div id="end-screen" role="dialog" aria-modal="true" aria-labelledby="end-msg">
+    <h2 id="end-msg"></h2>
+    <p class="end-sub" id="end-sub"></p>
+    <div class="end-actions">
+      <button class="cta" id="end-cta" type="button">Kontakt</button>
+      <button class="cta" id="end-replay" type="button">Prejsť znova</button>
+    </div>
+  </div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/ui.js"></script>
+  <script src="./js/game.js"></script>
+</body>
+</html>
