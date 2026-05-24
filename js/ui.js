@@ -30,7 +30,6 @@
     endSub: document.getElementById('end-sub'),
     endCta: document.getElementById('end-cta'),
     endReplay: document.getElementById('end-replay'),
-    jumpBtn: document.getElementById('jump-btn'),
     interactBtn: document.getElementById('interact-btn')
   };
 
@@ -59,8 +58,6 @@
     if (els.endSub) els.endSub.textContent = t('endSub');
     if (els.endCta) els.endCta.textContent = t('endContact');
     if (els.endReplay) els.endReplay.textContent = t('endReplay');
-    if (els.jumpBtn) els.jumpBtn.setAttribute('aria-label', t('jump'));
-
     document.querySelectorAll('[data-theme-btn]').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.themeBtn === getTheme());
       btn.setAttribute('aria-pressed', btn.dataset.themeBtn === getTheme() ? 'true' : 'false');

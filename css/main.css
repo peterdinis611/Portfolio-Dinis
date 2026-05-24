@@ -60,7 +60,7 @@ html, body {
     #zone-overlay {
       position: fixed; inset: 0; pointer-events: none;
       mix-blend-mode: multiply; opacity: 0;
-      transition: opacity 0.8s ease, background 1.2s ease;
+      transition: opacity 1s ease, background 1.8s ease;
       z-index: 2;
     }
 
@@ -155,20 +155,6 @@ html, body {
     }
     .char-option:focus-visible { outline: 2px solid #00F5FF; outline-offset: 2px; }
     .char-option-icon { font-size: 1.4rem; display: block; margin-bottom: 6px; }
-
-    #jump-btn {
-      position: fixed; bottom: 28px; right: 100px; z-index: 9;
-      display: none; font-family: var(--pixel-font); font-size: 8px;
-      width: 56px; height: 56px; border-radius: 50%;
-      background: rgba(77,166,255,0.9); color: #0a1020;
-      border: 2px solid #FFF1B0; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-    }
-    @media (max-width: 767px), (pointer: coarse) {
-      #jump-btn { display: block; }
-    }
-    #jump-btn:active { transform: scale(0.92); }
-    #jump-btn:focus-visible { outline: 3px solid #FF8C42; outline-offset: 2px; }
 
   /* HUD */
     .settings-bar {
