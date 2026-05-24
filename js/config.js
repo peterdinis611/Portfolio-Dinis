@@ -20,9 +20,9 @@
     return {
       ...p,
       photo: window.GameData.photo,
-      projects: p.projects.map((proj, i) => ({
+      projects: p.projects.map((proj) => ({
         ...proj,
-        thumb: window.GameData.projectThumbs[i]
+        thumb: window.GameData.makeProjectThumb(proj.name, proj.accent)
       }))
     };
   }

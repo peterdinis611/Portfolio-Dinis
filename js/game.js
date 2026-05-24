@@ -35,7 +35,7 @@
   let player = {
     x: 180, y: 0, vx: 0, vy: 0,
     w: 32, h: 64, facing: 1,
-    state: 'idle', frame: 0, frameTimer: 0,
+    state: 'idle', animTime: 0,
     onGround: true, groundY: 0
   };
   let currentZone = 0;
@@ -293,6 +293,26 @@
       Math.sin(worldX * 0.0006) * 32 +
       Math.sin(worldX * 0.00015) * 18 +
       Math.sin(worldX * 0.00004) * 8;
+  }
+
+  /** Povrch trávy / brehu pri danom X (pod cestou) */
+  function groundYAt(worldX) {
+    const road = roadY(worldX);
+    const hillBump =
+      Math.sin(worldX * 0.009 + hash(Math.floor(worldX / 90)) * 5) * 6 +
+      Math.sin(worldX * 0.0035) * 4;
+    return road + 26 + hillBump;
+  }
+
+  function getTreePlacement(tr) {
+    const ground = groundYAt(tr.x);
+    const isBack = tr.side < 0;
+    const depthLift = isBack ? -(14 + tr.dist * 0.1) : 2;
+    const scale = tr.scale * (isBack ? 0.7 + hash(tr.x * 0.3) * 0.12 : 1.02);
+    return {
+      baseY: ground + depthLift,
+      scale: Math.min(1.35, Math.max(0.55, scale))
+    };
   }
 
   function getRoadTexture(worldX, t) {
@@ -897,15 +917,15 @@
 
     if (!isNight()) {
       const sunCfg = [
-        { r: 30, glow: 'rgba(255,200,180,0.5)', core: '#FFB8C8', hi: '#FFE8F0' },
-        { r: 36, glow: 'rgba(255,220,100,0.55)', core: '#FFC842', hi: '#FFE878' },
-        { r: 32, glow: 'rgba(255,160,80,0.5)', core: '#FF9040', hi: '#FFC060' },
-        { r: 26, glow: 'rgba(220,235,255,0.45)', core: '#E8F0FF', hi: '#FFFFFF' }
+        { r: 30, glow: 'rgba(255,240,180,0.5)', core: '#FFD54F', hi: '#FFF59D' },
+        { r: 36, glow: 'rgba(255,245,160,0.55)', core: '#FFEB3B', hi: '#FFF9C4' },
+        { r: 32, glow: 'rgba(255,230,150,0.5)', core: '#FFC107', hi: '#FFE082' },
+        { r: 28, glow: 'rgba(255,248,220,0.45)', core: '#FFF9C4', hi: '#FFFFFF' }
       ];
       const sc = sunCfg[zone] || sunCfg[0];
       const glow = ctx.createRadialGradient(sunX, sunY, 8, sunX, sunY, 85);
       glow.addColorStop(0, sc.glow);
-      glow.addColorStop(1, 'rgba(255,100,50,0)');
+      glow.addColorStop(1, 'rgba(255,220,120,0)');
       ctx.fillStyle = glow;
       ctx.fillRect(sunX - 85, sunY - 85, 170, 170);
       ctx.fillStyle = sc.core;
@@ -1050,25 +1070,24 @@
 
     player.groundY = roadY(player.x);
     player.y = player.groundY;
-    if (player.state === 'walk' || player.state === 'run') {
-      const bob = playerMode === 'car' ? 1.5 : 1.2;
-      player.y -= Math.abs(Math.sin(player.frame * 0.5)) * (player.state === 'run' ? bob * 2 : bob);
-    }
-
     const cfg = playerMode === 'car'
       ? (CAR_ANIM[mapCarState(player.state)] || CAR_ANIM.idle)
       : (ANIM[player.state] || ANIM.idle);
-    player.frameTimer += dt;
-    if (player.frameTimer > 1 / cfg.speed) {
-      player.frameTimer = 0;
-      player.frame++;
+    const moveSpeed = Math.abs(player.vx);
+    if (player.state === 'walk' || player.state === 'run') {
+      const stepRate = player.state === 'run' ? 0.038 : 0.028;
+      player.animTime += dt * (cfg.speed * 0.65 + moveSpeed * stepRate);
+    } else {
+      player.animTime += dt * cfg.speed;
     }
 
     updateDust(dt);
 
     const targetCamX = player.x - W * 0.35;
-    camera.x = lerp(camera.x, Math.max(0, targetCamX), 0.1);
-    camera.y = lerp(camera.y, player.y - H * 0.5, 0.05);
+    const camSmooth = 1 - Math.exp(-12 * dt);
+    const camSmoothY = 1 - Math.exp(-8 * dt);
+    camera.x = lerp(camera.x, Math.max(0, targetCamX), camSmooth);
+    camera.y = lerp(camera.y, player.y - H * 0.5, camSmoothY);
 
     const newZone = getZone(player.x);
     if (newZone !== currentZone) {
@@ -1197,25 +1216,26 @@
       if (sx < -50 || sx > W + 50) return;
       const sy = b.y + Math.sin(t * 1.2 + b.wingPhase) * 10;
       const wingPhase = t * 14 + b.wingPhase;
-      drawBird(sx, sy, wingPhase, b.size, birdColors[b.zone] || '#333');
+      drawBird(ctx, sx, sy, wingPhase, b.size, birdColors[b.zone] || '#333');
     });
   }
 
-  function drawBird(sx, sy, wingPhase, size, color) {
+  function drawBird(targetCtx, sx, sy, wingPhase, size, color) {
+    const c = targetCtx || ctx;
     const flap = Math.sin(wingPhase) * 0.7;
     const span = 11 * size;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2 * size;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(sx - span, sy + flap * 7);
-    ctx.quadraticCurveTo(sx - span * 0.3, sy - 5 - flap * 4.5, sx, sy);
-    ctx.quadraticCurveTo(sx + span * 0.3, sy - 5 - flap * 4.5, sx + span, sy + flap * 7);
-    ctx.stroke();
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(sx, sy, 2.5 * size, 0, Math.PI * 2);
-    ctx.fill();
+    c.strokeStyle = color;
+    c.lineWidth = 2 * size;
+    c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(sx - span, sy + flap * 7);
+    c.quadraticCurveTo(sx - span * 0.3, sy - 5 - flap * 4.5, sx, sy);
+    c.quadraticCurveTo(sx + span * 0.3, sy - 5 - flap * 4.5, sx + span, sy + flap * 7);
+    c.stroke();
+    c.fillStyle = color;
+    c.beginPath();
+    c.arc(sx, sy, 2.5 * size, 0, Math.PI * 2);
+    c.fill();
   }
 
   function drawGround(camX, zone, t) {
@@ -1227,7 +1247,7 @@
     ];
     const g = groundSets[zone];
     const midX = camX + W * 0.5;
-    const groundTop = roadY(midX) + 18;
+    const groundTop = groundYAt(midX) - 8;
 
     const grad = ctx.createLinearGradient(0, groundTop - 40, 0, H);
     grad.addColorStop(0, g.hi);
@@ -1254,7 +1274,7 @@
       if (d.zone !== zone) return;
       const sx = d.x - camX;
       if (sx < -50 || sx > W + 50) return;
-      const ry = roadY(d.x);
+      const ry = groundYAt(d.x);
       const sway = Math.sin(t * 1.4 + d.seed) * 4;
       
       if (d.kind === 'grass') {
@@ -1366,6 +1386,19 @@
   function drawTree(sx, baseY, type, scale, sway, t, zone) {
     const s = scale;
     const sw = Math.sin(t * 1.4 + sway) * 0.05;
+
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(sx, baseY + 3, 14 * s, 5 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const moundColor = zone === 3 ? 'rgba(210,225,240,0.85)' : zone === 2
+      ? 'rgba(120,80,40,0.45)' : 'rgba(55,85,42,0.5)';
+    ctx.fillStyle = moundColor;
+    ctx.beginPath();
+    ctx.ellipse(sx, baseY + 1, 11 * s, 6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+
     ctx.save();
     ctx.translate(sx, baseY);
     ctx.rotate(sw);
@@ -1376,9 +1409,9 @@
 
     if (type === 'pine') {
       ctx.fillStyle = trunk;
-      ctx.fillRect(sx - 5 * s, baseY - 30 * s, 10 * s, 30 * s);
+      ctx.fillRect(sx - 6 * s, baseY - 32 * s, 12 * s, 32 * s);
       ctx.fillStyle = trunkHi;
-      ctx.fillRect(sx - 2.5 * s, baseY - 28 * s, 4 * s, 26 * s);
+      ctx.fillRect(sx - 3 * s, baseY - 30 * s, 5 * s, 28 * s);
       const greens = zone === 0
         ? ['#3a7a48', '#4a9058', '#5aa868']
         : zone === 2
@@ -1427,7 +1460,9 @@
       ctx.fill();
     } else {
       ctx.fillStyle = trunk;
-      ctx.fillRect(sx - 6 * s, baseY - 24 * s, 12 * s, 24 * s);
+      ctx.fillRect(sx - 7 * s, baseY - 26 * s, 14 * s, 26 * s);
+      ctx.fillStyle = trunkHi;
+      ctx.fillRect(sx - 3 * s, baseY - 24 * s, 5 * s, 22 * s);
       const foliage = zone === 0
         ? ['#5cb86c', '#6ec87c', '#80d88c']
         : zone === 2
@@ -1465,32 +1500,51 @@
       if (tr.zone !== zone && Math.abs(tr.zone - zone) > 1) return;
       const sx = tr.x - camX;
       if (sx < -100 || sx > W + 100) return;
-      const baseY = roadY(tr.x) + tr.side * tr.dist * 0.38;
       if (tr.zone === 1) return;
-      drawTree(sx, baseY, tr.type, tr.scale, tr.sway, t, tr.zone);
+      const pl = getTreePlacement(tr);
+      drawTree(sx, pl.baseY, tr.type, pl.scale, tr.sway, t, tr.zone);
     });
   }
 
   // ========== ZÓNY (zachované) ==========
   function drawZone1(camX, t) {
-    // ... (zachované z pôvodného kódu)
     for (let i = 0; i < 5; i++) {
       const wx = 400 + i * 520;
       const sx = wx - camX;
       if (sx < -150 || sx > W + 150) continue;
-      const ry = roadY(wx) - 8;
-      // Domčeky, okná, komíny atď.
+      const gy = groundYAt(wx);
+      const houseH = 72;
+      const houseW = 92;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      ctx.beginPath();
+      ctx.ellipse(sx + houseW / 2, gy + 4, houseW * 0.45, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#5a4530';
+      ctx.fillRect(sx - 2, gy - 5, houseW + 4, 7);
+
+      ctx.fillStyle = '#6B5344';
+      ctx.fillRect(sx, gy - houseH, houseW, houseH);
       ctx.fillStyle = '#5C4033';
-      ctx.fillRect(sx, ry - 70, 90, 70);
+      ctx.fillRect(sx + 4, gy - houseH + 6, houseW - 8, houseH - 10);
+
       ctx.fillStyle = '#8B4513';
       ctx.beginPath();
-      ctx.moveTo(sx - 10, ry - 70);
-      ctx.lineTo(sx + 45, ry - 110);
-      ctx.lineTo(sx + 100, ry - 70);
+      ctx.moveTo(sx - 8, gy - houseH);
+      ctx.lineTo(sx + houseW / 2, gy - houseH - 42);
+      ctx.lineTo(sx + houseW + 8, gy - houseH);
+      ctx.closePath();
       ctx.fill();
+
+      ctx.fillStyle = '#4a3020';
+      ctx.fillRect(sx + houseW / 2 - 5, gy - houseH - 48, 10, 14);
+
       ctx.fillStyle = `rgba(255,213,128,${0.55 + Math.sin(t * 2 + i) * 0.2})`;
-      ctx.fillRect(sx + 15, ry - 50, 18, 18);
-      ctx.fillRect(sx + 55, ry - 50, 18, 18);
+      ctx.fillRect(sx + 16, gy - houseH + 28, 18, 18);
+      ctx.fillRect(sx + 56, gy - houseH + 28, 18, 18);
+      ctx.fillStyle = '#3D2B1F';
+      ctx.fillRect(sx + houseW / 2 - 14, gy - 18, 28, 18);
     }
     // Svetlušky
     fireflies.forEach((ff) => {
@@ -1538,14 +1592,19 @@
       const wx = ZONE_WIDTH + 600 + i * 850;
       const sx = wx - camX;
       if (sx < -200 || sx > W + 200) return;
-      const ry = roadY(wx);
+      const gy = groundYAt(wx);
       const near = Math.abs(player.x - wx) < 110;
       const bh = 130;
       const accent = accents[i % accents.length];
       const pulse = 0.5 + Math.sin(t * 3 + i * 1.7) * 0.3;
 
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(sx - 58, gy + 2, 116, 8);
+      ctx.fillStyle = '#2a2a40';
+      ctx.fillRect(sx - 58, gy - 4, 116, 6);
+
       ctx.fillStyle = '#12122a';
-      ctx.fillRect(sx - 55, ry - bh, 110, bh);
+      ctx.fillRect(sx - 55, gy - bh, 110, bh);
       
       // Okená
       for (let row = 0; row < 4; row++) {
@@ -1554,13 +1613,13 @@
           const lit = hash(i + row + col + t * 0.35) > 0.3;
           ctx.fillStyle = lit ? accent : '#1e1e34';
           ctx.globalAlpha = lit ? 0.45 + Math.sin(t * 4 + row + col) * 0.2 : 0.45;
-          ctx.fillRect(sx - 40 + col * 26, ry - bh + 55 + row * 16, 16, 12);
+          ctx.fillRect(sx - 40 + col * 26, gy - bh + 55 + row * 16, 16, 12);
         }
       }
       ctx.globalAlpha = 1;
       
       // Billboard
-      const boardY = ry - bh + 15;
+      const boardY = gy - bh + 15;
       ctx.fillStyle = '#1a1a32';
       ctx.fillRect(sx - 45, boardY, 90, 48);
       ctx.strokeStyle = near ? accent : `rgba(255,0,160,${pulse})`;
@@ -1575,15 +1634,15 @@
       ctx.fillStyle = near ? '#FFF1B0' : `rgba(0,245,255,${0.85 + pulse * 0.15})`;
       ctx.font = '6px "Press Start 2P"';
       const title = p.name.length > 14 ? p.name.slice(0, 13) + '…' : p.name;
-      ctx.fillText(title, sx, ry - bh - 8);
+      ctx.fillText(title, sx, gy - bh - 8);
       
       ctx.fillStyle = near ? 'rgba(255,255,255,0.9)' : 'rgba(255,0,160,0.65)';
       ctx.font = '500 10px Inter, sans-serif';
-      ctx.fillText(p.tags.slice(0, 3).join(' · '), sx, ry - 12);
+      ctx.fillText(p.tags.slice(0, 3).join(' · '), sx, gy - 12);
       
       if (near) {
         ctx.fillStyle = 'rgba(255,140,66,0.1)';
-        ctx.fillRect(sx - 60, ry - bh - 3, 120, bh + 6);
+        ctx.fillRect(sx - 60, gy - bh - 3, 120, bh + 6);
       }
     });
   }
@@ -1595,9 +1654,12 @@
       const sx = wx - camX * 0.55;
       if (sx < -130 || sx > W + 130) continue;
       const bh = 70 + hash(i * 3) * 130;
-      const ry = H * 0.56;
+      const gy = groundYAt(wx);
+      const bw = 45 + hash(i) * 35;
       ctx.fillStyle = '#0c0c1a';
-      ctx.fillRect(sx, ry - bh, 45 + hash(i) * 35, bh);
+      ctx.fillRect(sx, gy - bh, bw, bh + 6);
+      ctx.fillStyle = '#1a1a2a';
+      ctx.fillRect(sx, gy, bw, 5);
       
       for (let row = 0; row < 6; row++) {
         for (let col = 0; col < 2; col++) {
@@ -1605,7 +1667,7 @@
           const lit = hash(i + row + col + t * 0.45) > 0.3;
           ctx.fillStyle = lit ? (hash(col) > 0.5 ? '#FF00A0' : '#00F5FF') : '#1a1a2a';
           ctx.globalAlpha = lit ? 0.5 + Math.sin(t * 3 + i + row) * 0.3 : 0.35;
-          ctx.fillRect(sx + 7 + col * 15, ry - bh + 18 + row * 16, 7, 9);
+          ctx.fillRect(sx + 7 + col * 15, gy - bh + 18 + row * 16, 7, 9);
           ctx.globalAlpha = 1;
         }
       }
@@ -1635,26 +1697,29 @@
       const wx = ZONE_WIDTH * 2 + 400 + i * 720;
       const sx = wx - camX;
       if (sx < -100 || sx > W + 100) return;
-      const ry = roadY(wx);
+      const gy = groundYAt(wx);
       const weather = e.weather;
       const near = Math.abs(player.x - wx) < 100;
       const glow = 0.4 + Math.sin(t * 2.5 + i) * 0.3;
       
       if (near) {
-        const rg = ctx.createRadialGradient(sx, ry - 30, 0, sx, ry - 30, 60);
+        const rg = ctx.createRadialGradient(sx, gy - 30, 0, sx, gy - 30, 60);
         rg.addColorStop(0, `rgba(201,168,76,${glow * 0.55})`);
         rg.addColorStop(1, 'rgba(201,168,76,0)');
         ctx.fillStyle = rg;
-        ctx.fillRect(sx - 60, ry - 85, 120, 95);
+        ctx.fillRect(sx - 60, gy - 85, 120, 95);
       }
+
+      ctx.fillStyle = 'rgba(80,55,35,0.5)';
+      ctx.fillRect(sx - 38, gy - 4, 76, 6);
       
       const stoneColor = lerpColor('#6a6a5a', '#3a4a3a', weather);
       ctx.fillStyle = stoneColor;
       ctx.beginPath();
-      ctx.moveTo(sx - 35, ry);
-      ctx.lineTo(sx - 42, ry - 52);
-      ctx.lineTo(sx + 42, ry - 52);
-      ctx.lineTo(sx + 35, ry);
+      ctx.moveTo(sx - 35, gy);
+      ctx.lineTo(sx - 42, gy - 52);
+      ctx.lineTo(sx + 42, gy - 52);
+      ctx.lineTo(sx + 35, gy);
       ctx.closePath();
       ctx.fill();
       
@@ -1662,28 +1727,32 @@
       ctx.strokeStyle = `rgba(201,168,76,${runeA})`;
       ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.arc(sx, ry - 30, 13 + Math.sin(t * 2 + i) * 2.5, 0, Math.PI * 2);
+      ctx.arc(sx, gy - 30, 13 + Math.sin(t * 2 + i) * 2.5, 0, Math.PI * 2);
       ctx.stroke();
       ctx.fillStyle = `rgba(201,168,76,${runeA * 0.65})`;
       ctx.font = '12px serif';
       ctx.textAlign = 'center';
-      ctx.fillText('◆', sx, ry - 26);
+      ctx.fillText('◆', sx, gy - 26);
       
       ctx.fillStyle = lerpColor('#C9A84C', '#5a5a40', weather);
       ctx.font = '6px "Press Start 2P"';
-      ctx.fillText(e.dates.slice(0, 10), sx, ry - 60);
+      const roleLabel = e.role.length > 18 ? e.role.slice(0, 16) + '…' : e.role;
+      ctx.fillText(roleLabel, sx, gy - 60);
+      ctx.font = '5px Inter';
+      ctx.fillStyle = 'rgba(200,180,120,0.85)';
+      ctx.fillText(e.dates, sx, gy - 48);
       
       if (near) {
         ctx.fillStyle = `rgba(255,241,200,0.95)`;
         ctx.font = '6px Inter';
         e.bullets.slice(0, 2).forEach((b, bi) => {
-          ctx.fillText('• ' + b.slice(0, 30), sx, ry - 80 - bi * 13);
+          ctx.fillText('• ' + b.slice(0, 30), sx, gy - 80 - bi * 13);
         });
       }
       
       if (weather > 0.4) {
         ctx.fillStyle = 'rgba(60,100,40,0.65)';
-        ctx.fillRect(sx - 33, ry - 16, 66, 16);
+        ctx.fillRect(sx - 33, gy - 16, 66, 16);
       }
     });
     
@@ -1714,7 +1783,7 @@
     let first = true;
     for (let wx = wxStart; wx <= wxEnd; wx += step) {
       const sx = wx - camX;
-      const top = roadY(wx) + 20;
+      const top = groundYAt(wx) - 2;
       if (first) { ctx.moveTo(sx, top); first = false; }
       else ctx.lineTo(sx, top);
     }
@@ -1812,7 +1881,7 @@
     // Maják
     const lighthouseX = ZONE_WIDTH * 3 + 200 - camX;
     if (lighthouseX > -100 && lighthouseX < W + 100) {
-      const ly = roadY(ZONE_WIDTH * 3 + 200) - 22;
+      const ly = groundYAt(ZONE_WIDTH * 3 + 200);
       ctx.fillStyle = '#e8eef5';
       ctx.fillRect(lighthouseX - 10, ly - 98, 20, 98);
       ctx.fillStyle = 'rgba(245,250,255,0.9)';
@@ -1843,7 +1912,7 @@
       const wx = dockStart + d;
       const sx = wx - camX;
       if (sx < -60 || sx > W + 60) continue;
-      const dy = roadY(wx);
+      const dy = groundYAt(wx);
       ctx.fillStyle = '#8a7a68';
       ctx.fillRect(sx - 25, dy - 7, 50, 16);
       ctx.fillStyle = 'rgba(240,248,255,0.7)';
@@ -1884,7 +1953,7 @@
     
     // Koncová tabuľa
     const signX = DOCK_END - 220 - camX;
-    const signY = roadY(DOCK_END - 220);
+    const signY = groundYAt(DOCK_END - 220);
     ctx.fillStyle = '#5C4033';
     ctx.fillRect(signX - 10, signY - 98, 20, 98);
     ctx.fillStyle = '#8B6914';
@@ -2000,15 +2069,11 @@
   function drawPlayer() {
     const sx = player.x - camera.x;
     const sy = player.y;
-    const cfg = playerMode === 'car'
-      ? (CAR_ANIM[mapCarState(player.state)] || CAR_ANIM.idle)
-      : (ANIM[player.state] || ANIM.idle);
-    const animFrame = player.frame + player.frameTimer * cfg.speed;
     if (playerMode === 'car') {
-      drawCarSprite(ctx, sx, sy, mapCarState(player.state), animFrame, player.facing, 1);
+      drawCarLive(ctx, sx, sy, mapCarState(player.state), player.animTime, player.facing, 1);
       return;
     }
-    drawCharSprite(ctx, sx, sy, player.state, animFrame, player.facing, 1);
+    drawCharacterLive(ctx, sx, sy, player.state, player.animTime, player.facing, 1);
   }
 
   // ========== FUNKCIE SPRÁVY HRÁČA A VSTUPOV ==========
@@ -2072,20 +2137,20 @@
   // ========== SPRITE SHEET FUNKCIE ==========
   const SPRITE_W = 32, SPRITE_H = 64;
   const ANIM = {
-    idle: { frames: 6, speed: 9 },
-    walk: { frames: 8, speed: 11 },
-    run: { frames: 8, speed: 14 },
-    jump: { frames: 4, speed: 10 },
-    wave: { frames: 6, speed: 9 }
+    idle: { frames: 6, speed: 5 },
+    walk: { frames: 8, speed: 7 },
+    run: { frames: 8, speed: 10 },
+    jump: { frames: 4, speed: 7 },
+    wave: { frames: 8, speed: 5 }
   };
 
   const CAR_W = 64, CAR_H = 44;
   const CAR_ANIM = {
-    idle: { frames: 4, speed: 8 },
-    drive: { frames: 6, speed: 13 },
-    fast: { frames: 6, speed: 17 },
-    jump: { frames: 2, speed: 8 },
-    wave: { frames: 4, speed: 9 }
+    idle: { frames: 4, speed: 5 },
+    drive: { frames: 6, speed: 10 },
+    fast: { frames: 6, speed: 13 },
+    jump: { frames: 2, speed: 7 },
+    wave: { frames: 4, speed: 6 }
   };
 
   const charSheet = document.createElement('canvas');
@@ -2098,12 +2163,14 @@
   carSheet.height = CAR_H * 5;
   const carCtx = carSheet.getContext('2d');
 
+  let activePixelCtx = cctx;
+
   function drawPixelRect(x, y, w, h, color) {
-    cctx.fillStyle = color;
-    cctx.fillRect(x, y, w, h);
+    activePixelCtx.fillStyle = color;
+    activePixelCtx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
   }
 
-  function drawCharacterFrame(ox, oy, frame, anim) {
+  function drawCharacterFrame(ox, oy, animFrame, anim) {
     // ... (zachované z pôvodného kódu)
     const skin = '#F0C89A';
     const skinSh = '#D4A574';
@@ -2116,12 +2183,13 @@
     const pantsHi = '#4A5A70';
     const shoe = '#E8E8F0';
     const shoeSol = '#B0B0C0';
-    const phase = frame / (ANIM[anim]?.frames || 6);
+    const cfg = ANIM[anim] || ANIM.idle;
+    const phase = (animFrame % cfg.frames) / cfg.frames;
     const bob = anim === 'idle' ? Math.sin(phase * Math.PI * 2) * 1.2 : 0;
     const walkCycle = Math.sin(phase * Math.PI * 2);
     const runMul = anim === 'run' ? 1.7 : 1;
-    const legOff = (anim === 'walk' || anim === 'run') ? walkCycle * 5 * runMul : 0;
-    const armSwing = (anim === 'walk' || anim === 'run') ? -walkCycle * 6 * runMul : 0;
+    const legOff = (anim === 'walk' || anim === 'run') ? Math.round(walkCycle * 5 * runMul) : 0;
+    const armSwing = (anim === 'walk' || anim === 'run') ? Math.round(-walkCycle * 6 * runMul) : 0;
     const jumpPose = anim === 'jump' ? -2 - Math.abs(Math.sin(phase * Math.PI)) * 2 : 0;
     const oyB = oy + bob + jumpPose;
     const jumpTuck = anim === 'jump' ? Math.sin(phase * Math.PI) * 1.5 : 0;
@@ -2155,7 +2223,7 @@
       drawPixelRect(ox + 2, oyB + 18, 5, 12, hoodie);
       drawPixelRect(ox + 25, oyB + 18, 5, 12, hoodie);
     } else if (anim === 'wave') {
-      const waveLift = -12 - Math.sin(phase * Math.PI) * 8;
+      const waveLift = Math.round(-12 - Math.sin(phase * Math.PI * 2) * 8);
       drawPixelRect(ox + 3, oyB + 22, 5, 12, hoodie);
       drawPixelRect(ox + 3, oyB + 32, 4, 4, skin);
       drawPixelRect(ox + 21, oyB + waveLift, 7, 7, skin);
@@ -2188,42 +2256,40 @@
     }
   }
 
-  function drawCharSprite(targetCtx, x, y, anim, frame, facing, scale) {
-    const row = { idle: 0, walk: 1, run: 2, jump: 3, wave: 4 }[anim] || 0;
+  function drawCharacterLive(targetCtx, x, y, anim, animFrame, facing, scale) {
     const cfg = ANIM[anim] || ANIM.idle;
-    const f = Math.floor(frame) % cfg.frames;
-    const frac = frame - Math.floor(frame);
+    const phase = (animFrame % cfg.frames) / cfg.frames;
     const sc = scale || 1;
-    const dw = SPRITE_W * sc;
-    const dh = SPRITE_H * sc;
-    const bobY = (anim === 'walk' || anim === 'run') ? Math.sin(frac * Math.PI * 2) * 1.5 : 0;
-    const squashY = (anim === 'walk' || anim === 'run') ? 1 - Math.abs(Math.sin(frac * Math.PI * 2)) * 0.05 : 1;
+    const bobY = (anim === 'walk' || anim === 'run')
+      ? Math.round(Math.sin(phase * Math.PI * 2) * 1.2)
+      : anim === 'idle'
+        ? Math.round(Math.sin(phase * Math.PI * 2) * 0.8)
+        : 0;
+    const prevCtx = activePixelCtx;
+    activePixelCtx = targetCtx;
     targetCtx.save();
     targetCtx.imageSmoothingEnabled = false;
     targetCtx.translate(x, y + bobY);
-    targetCtx.scale(1, squashY);
-    if (facing < 0) {
-      targetCtx.scale(-1, 1);
-      targetCtx.drawImage(
-        charSheet, f * SPRITE_W, row * SPRITE_H, SPRITE_W, SPRITE_H,
-        -dw / 2, -dh, dw, dh
-      );
-    } else {
-      targetCtx.drawImage(
-        charSheet, f * SPRITE_W, row * SPRITE_H, SPRITE_W, SPRITE_H,
-        -dw / 2, -dh, dw, dh
-      );
-    }
+    targetCtx.scale(facing < 0 ? -sc : sc, sc);
+    drawCharacterFrame(-SPRITE_W / 2, -SPRITE_H, animFrame, anim);
     targetCtx.restore();
+    activePixelCtx = prevCtx;
   }
+
+  function drawCharSprite(targetCtx, x, y, anim, frame, facing, scale) {
+    drawCharacterLive(targetCtx, x, y, anim, frame, facing, scale);
+  }
+
+  let activeCarCtx = carCtx;
 
   function carRect(x, y, w, h, color) {
-    carCtx.fillStyle = color;
-    carCtx.fillRect(x, y, w, h);
+    activeCarCtx.fillStyle = color;
+    activeCarCtx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
   }
 
-  function drawCarFrame(ox, oy, frame, anim) {
-    const phase = frame / (CAR_ANIM[anim]?.frames || 4);
+  function drawCarFrame(ox, oy, animFrame, anim) {
+    const cfg = CAR_ANIM[anim] || CAR_ANIM.idle;
+    const phase = (animFrame % cfg.frames) / cfg.frames;
     const bounce = anim === 'idle' ? Math.sin(phase * Math.PI * 2) * 1 : 0;
     const drive = (anim === 'drive' || anim === 'fast') ? Math.sin(phase * Math.PI * 2) * 2 : 0;
     const jumpTilt = anim === 'jump' ? -3 : 0;
@@ -2259,25 +2325,21 @@
     carRect(ox + 50, oyB + 18, 4, 6, '#FF8C42');
   }
 
-  function drawCarSprite(targetCtx, x, y, anim, frame, facing, scale) {
-    const row = { idle: 0, drive: 1, fast: 2, jump: 3, wave: 4 }[anim] || 0;
-    const cfg = CAR_ANIM[anim] || CAR_ANIM.idle;
-    const f = Math.floor(frame) % cfg.frames;
+  function drawCarLive(targetCtx, x, y, anim, animFrame, facing, scale) {
     const sc = scale || 1;
-    const dw = CAR_W * sc;
-    const dh = CAR_H * sc;
+    const prevCtx = activeCarCtx;
+    activeCarCtx = targetCtx;
     targetCtx.save();
     targetCtx.imageSmoothingEnabled = false;
-    if (facing < 0) {
-      targetCtx.translate(x + dw / 2, y);
-      targetCtx.scale(-1, 1);
-      targetCtx.translate(-(x + dw / 2), -y);
-    }
-    targetCtx.drawImage(
-      carSheet, f * CAR_W, row * CAR_H, CAR_W, CAR_H,
-      x - dw / 2, y - dh, dw, dh
-    );
+    targetCtx.translate(x, y);
+    targetCtx.scale(facing < 0 ? -sc : sc, sc);
+    drawCarFrame(-CAR_W / 2, -CAR_H, animFrame, anim);
     targetCtx.restore();
+    activeCarCtx = prevCtx;
+  }
+
+  function drawCarSprite(targetCtx, x, y, anim, frame, facing, scale) {
+    drawCarLive(targetCtx, x, y, anim, frame, facing, scale);
   }
 
   function buildSpriteSheet() {
@@ -2323,17 +2385,25 @@
       label: tr('labelPortrait'), modal: 'modal-about', data: { section: 'full' }
     });
 
-    getPortfolio().projects.forEach((p, i) => {
+    const projects = getPortfolio().projects;
+    const projStart = ZONE_WIDTH + 280;
+    const projEnd = ZONE_WIDTH * 2 - 280;
+    const projStep = projects.length > 1 ? (projEnd - projStart) / (projects.length - 1) : 0;
+    projects.forEach((p, i) => {
       interactables.push({
-        zone: 1, x: ZONE_WIDTH + 600 + i * 850, y: 0, r: 100, type: 'project',
+        zone: 1, x: projStart + i * projStep, y: 0, r: 95, type: 'project',
         label: p.name, modal: 'modal-project', data: { projectIndex: i }
       });
     });
 
-    getPortfolio().experience.forEach((e, i) => {
+    const experience = getPortfolio().experience;
+    const expStart = ZONE_WIDTH * 2 + 320;
+    const expEnd = ZONE_WIDTH * 3 - 320;
+    const expStep = experience.length > 1 ? (expEnd - expStart) / (experience.length - 1) : 0;
+    experience.forEach((e, i) => {
       interactables.push({
-        zone: 2, x: ZONE_WIDTH * 2 + 450 + i * 720, y: 0, r: 75, type: 'experience',
-        label: e.company, modal: 'modal-experience', data: { expIndex: i }
+        zone: 2, x: expStart + i * expStep, y: 0, r: 75, type: 'experience',
+        label: e.role, modal: 'modal-experience', data: { expIndex: i }
       });
     });
 
@@ -2341,12 +2411,18 @@
       zone: 3, x: ZONE_WIDTH * 3 + 900, y: 0, r: 90, type: 'contact-form',
       label: tr('labelBottle'), modal: 'modal-contact'
     });
-    const buoyNames = ['GitHub', 'LinkedIn', 'Twitter', 'Email'];
-    const buoyKeys = ['github', 'linkedin', 'twitter', 'email'];
-    buoyNames.forEach((name, i) => {
+    const buoys = [
+      { label: 'GitHub', key: 'github' },
+      { label: 'LinkedIn', key: 'linkedin' },
+      { label: 'Email', key: 'email' },
+      { label: 'Solutions', key: 'company' }
+    ];
+    buoys.forEach((b, i) => {
+      const url = getPortfolio().social[b.key];
+      if (!url) return;
       interactables.push({
-        zone: 3, x: ZONE_WIDTH * 3 + 1400 + i * 180, y: 0, r: 50, type: 'buoy',
-        label: name, url: getPortfolio().social[buoyKeys[i]]
+        zone: 3, x: ZONE_WIDTH * 3 + 1350 + i * 200, y: 0, r: 50, type: 'buoy',
+        label: b.label, url
       });
     });
   }
@@ -2414,7 +2490,9 @@
       openModal(modals.project);
     } else if (item.modal === 'modal-experience') {
       const e = getPortfolio().experience[item.data.expIndex];
-      document.getElementById('exp-title').textContent = e.role + ' @ ' + e.company;
+      document.getElementById('exp-title').textContent = e.role;
+      const expCo = document.getElementById('exp-company');
+      if (expCo) expCo.textContent = e.company;
       document.getElementById('exp-dates').textContent = e.dates;
       document.getElementById('exp-bullets').innerHTML = e.bullets.map((b) => `<li>${b}</li>`).join('');
       openModal(modals.experience);
@@ -2487,6 +2565,7 @@
   const cutsceneCanvas = document.getElementById('cutscene-canvas');
   const cctx2 = cutsceneCanvas.getContext('2d');
   let cutsceneStart = 0;
+  let cutsceneLastT = 0;
 
   function startCutscene() {
     if (cutsceneActive) return;
@@ -2494,6 +2573,8 @@
     endScreenShown = false;
     player.state = 'wave';
     player.vx = 0;
+    player.animTime = 0;
+    cutsceneLastT = 0;
     cutsceneEl.classList.add('active');
     cutsceneEl.style.opacity = '1';
     cutsceneEl.setAttribute('aria-hidden', 'false');
@@ -2564,7 +2645,7 @@
     for (let b = 0; b < 15; b++) {
       const bx = ((t * 0.12 + b * 0.07) % 1.3) * w - w * 0.15;
       const by = h * 0.15 + b * 14 + Math.sin(t * 2 + b) * 10;
-      drawBird(bx, by, t * 14 + b, 1.2, 'rgba(40,40,50,0.8)');
+      drawBird(cctx2, bx, by, t * 14 + b, 1.2, 'rgba(40,40,50,0.8)');
     }
 
     endParticles.forEach((p) => {
@@ -2575,15 +2656,20 @@
     });
 
     const dockY = h * 0.68;
+    cctx2.fillStyle = '#6B4F10';
+    for (let p = 0; p < 5; p++) {
+      const px = w * 0.36 + p * (w * 0.06);
+      cctx2.fillRect(px, dockY + 10, 6, 28 + Math.sin(t * 1.2 + p) * 2);
+    }
     cctx2.fillStyle = '#8B6914';
-    cctx2.fillRect(w * 0.38, dockY - 8, w * 0.24, 14);
+    cctx2.fillRect(w * 0.34, dockY - 8, w * 0.32, 16);
 
-    const charAnim = elapsed > 4200 ? 'wave' : 'idle';
-    const charFrame = elapsed / 80;
+    const charX = w * 0.48;
+    const charY = dockY + 2;
     if (playerMode === 'car') {
-      drawCarSprite(cctx2, w * 0.48, dockY + 4, mapCarState(charAnim), charFrame, 1, 2.6);
+      drawCarLive(cctx2, charX, charY, 'wave', player.animTime, 1, 2.6);
     } else {
-      drawCharSprite(cctx2, w * 0.48, dockY + 4, charAnim, charFrame, 1, 2.8);
+      drawCharacterLive(cctx2, charX, charY, 'wave', player.animTime, 1, 2.8);
     }
 
     if (easeSun > 0.6) {
@@ -2594,8 +2680,12 @@
     }
   }
 
-  function updateCutscene(t) {
-    const elapsed = t - cutsceneStart;
+  function updateCutscene(now) {
+    const elapsed = now - cutsceneStart;
+    const dt = cutsceneLastT ? Math.min(0.05, (now - cutsceneLastT) / 1000) : 0.016;
+    cutsceneLastT = now;
+    const waveCfg = playerMode === 'car' ? CAR_ANIM.wave : ANIM.wave;
+    player.animTime += dt * waveCfg.speed;
     drawCutscene(elapsed);
 
     if (elapsed >= 6500 && !endScreenShown) {
@@ -2611,6 +2701,7 @@
     cutsceneActive = false;
     endScreenShown = false;
     cutscenePhase = 0;
+    cutsceneLastT = 0;
     pianoPlaying = false;
     cutsceneEl.classList.remove('active');
     cutsceneEl.style.opacity = '';
@@ -2623,7 +2714,7 @@
     player.groundY = player.y;
     player.onGround = true;
     player.state = 'idle';
-    player.frame = 0;
+    player.animTime = 0;
     camera.x = 0;
     currentZone = 0;
     hudZone.textContent = getLevels()[0].name;
@@ -2711,10 +2802,15 @@
       introCharX = w * 0.42 + Math.sin(t * 1.5) * 5;
     }
 
+    const introAnim = elapsed < 2800 ? 'walk' : 'idle';
+    const introCfg = playerMode === 'car'
+      ? CAR_ANIM[elapsed < 2800 ? 'drive' : 'idle']
+      : ANIM[introAnim];
+    const introAnimTime = (elapsed / 1000) * introCfg.speed * 1.15;
     if (playerMode === 'car') {
-      drawCarSprite(introCtx, introCharX, horizon + 2, elapsed < 2800 ? 'drive' : 'idle', t * 10, 1, 2.4);
+      drawCarLive(introCtx, introCharX, horizon + 2, elapsed < 2800 ? 'drive' : 'idle', introAnimTime, 1, 2.4);
     } else {
-      drawCharSprite(introCtx, introCharX, horizon + 2, elapsed < 2800 ? 'walk' : 'idle', t * 10, 1, 2.6);
+      drawCharacterLive(introCtx, introCharX, horizon + 2, introAnim, introAnimTime, 1, 2.6);
     }
   }
 
@@ -2798,6 +2894,7 @@
 
     if (cutsceneActive) {
       updateCutscene(t);
+      render(t / 1000);
     } else if (!introActive) {
       update(dt, t / 1000);
       render(t / 1000);

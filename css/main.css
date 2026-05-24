@@ -44,279 +44,150 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  width: 100%; height: 100%; overflow: hidden;
-  background: var(--bg-app); font-family: var(--ui-font);
-  touch-action: none; -webkit-tap-highlight-color: transparent;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
   transition: background 0.5s ease;
 }
 
-    #game-wrap { position: relative; width: 100%; height: 100%; }
+canvas#world,
+#intro-canvas,
+#cutscene-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
 
-    canvas#world {
-      display: block; width: 100%; height: 100%;
-      image-rendering: pixelated; image-rendering: crisp-edges;
-    }
+#zone-overlay {
+  transition: opacity 1s ease, background 1.8s ease;
+}
 
-    #zone-overlay {
-      position: fixed; inset: 0; pointer-events: none;
-      mix-blend-mode: multiply; opacity: 0;
-      transition: opacity 1s ease, background 1.8s ease;
-      z-index: 2;
-    }
+#fade-overlay {
+  transition: opacity 0.6s ease;
+}
 
-    #fade-overlay {
-      position: fixed; inset: 0; background: #000;
-      opacity: 0; pointer-events: none; transition: opacity 0.6s ease;
-      z-index: 15;
-    }
+/* Intro — stavy a animácie (layout cez Tailwind) */
+#intro-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 
-  /* Intro */
-    #intro-screen {
-      position: fixed; inset: 0; z-index: 100;
-      background: var(--intro-bg); transition: opacity 0.8s ease, visibility 0.8s, background 0.5s;
-    }
-    #intro-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    #intro-canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
-    .intro-ui {
-      position: absolute; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; pointer-events: none;
-      padding: 24px; text-align: center;
-    }
-    .intro-name {
-      font-family: var(--pixel-font);
-      font-size: clamp(14px, 4.5vw, 28px);
-      color: #FFD580; line-height: 1.6;
-      text-shadow: 4px 4px 0 #3D2B1F, 0 0 30px rgba(255,140,66,0.5);
-      letter-spacing: 0.08em; min-height: 2.4em;
-    }
-    .intro-name .cursor {
-      display: inline-block; width: 0.6em; animation: blink 0.7s step-end infinite;
-      color: #FF8C42;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-    .intro-sub {
-      font-family: var(--pixel-font); font-size: clamp(6px, 1.8vw, 10px);
-      color: #FF8C42; margin-top: 16px; opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-    .intro-sub.visible { opacity: 1; }
-    .intro-load {
-      position: absolute; bottom: 18%; left: 50%; transform: translateX(-50%);
-      width: min(280px, 70vw);
-    }
-    .load-bar-wrap {
-      width: 100%; height: 16px;
-      border: 3px solid #FF8C42; padding: 2px; background: #3D2B1F;
-    }
-    .load-bar {
-      height: 100%; width: 0%; background: linear-gradient(90deg, #FF8C42, #FFD580);
-      transition: width 0.12s ease;
-    }
-    .load-text {
-      font-family: var(--pixel-font); font-size: 7px; color: #888;
-      display: block; margin-top: 8px; text-align: center;
-    }
-    #intro-start {
-      pointer-events: auto; margin-top: 28px;
-      font-family: var(--pixel-font); font-size: clamp(7px, 2vw, 10px);
-      padding: 14px 24px; background: var(--btn-accent); color: var(--btn-accent-text);
-      border: 3px solid var(--btn-border); cursor: pointer;
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.5s, transform 0.5s;
-      animation: pulse-btn 2s ease-in-out infinite;
-    }
-    #intro-start.visible { opacity: 1; transform: translateY(0); }
-    #intro-start:focus-visible { outline: 3px solid #00F5FF; outline-offset: 3px; }
-    @keyframes pulse-btn {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255,140,66,0.5); }
-      50% { box-shadow: 0 0 20px 6px rgba(255,213,128,0.35); }
-    }
-    .char-select {
-      pointer-events: auto; margin-top: 20px; opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    .char-select.visible { opacity: 1; }
-    .char-select-label {
-      font-family: var(--pixel-font); font-size: clamp(6px, 1.6vw, 9px);
-      color: #FFD580; margin-bottom: 12px;
-    }
-    .char-options { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-    .char-option {
-      font-family: var(--pixel-font); font-size: clamp(5px, 1.4vw, 8px);
-      padding: 12px 14px; min-width: 120px;
-      background: var(--panel-bg); color: #aaa;
-      border: 3px solid var(--panel-border); cursor: pointer;
-      transition: border-color 0.2s, color 0.2s, transform 0.15s;
-    }
-    .char-option:hover { color: #FFD580; transform: translateY(-2px); }
-    .char-option.selected {
-      border-color: #FF8C42; color: #FFD580;
-      box-shadow: 0 0 16px rgba(255,140,66,0.35);
-    }
-    .char-option:focus-visible { outline: 2px solid #00F5FF; outline-offset: 2px; }
-    .char-option-icon { font-size: 1.4rem; display: block; margin-bottom: 6px; }
+.intro-name .cursor {
+  display: inline-block;
+  width: 0.6em;
+  animation: blink 0.7s step-end infinite;
+  color: #FF8C42;
+}
 
-  /* HUD */
-    .settings-bar {
-      position: fixed; top: 12px; right: 12px; z-index: 110;
-      display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
-      max-width: 280px; pointer-events: auto;
-    }
-    .settings-group {
-      display: flex; gap: 4px; background: var(--panel-bg);
-      border: 2px solid var(--panel-border); padding: 4px; border-radius: 6px;
-    }
-    .settings-group-label {
-      font-family: var(--pixel-font); font-size: 5px; color: #888;
-      width: 100%; text-align: center; margin-bottom: 2px; display: block;
-    }
-    .settings-btn {
-      font-family: var(--pixel-font); font-size: 5px;
-      padding: 8px 10px; background: transparent; color: #aaa;
-      border: 2px solid transparent; cursor: pointer; border-radius: 4px;
-    }
-    .settings-btn:hover { color: var(--btn-border); }
-    .settings-btn.active {
-      border-color: var(--btn-accent); color: var(--btn-border);
-      background: rgba(255, 140, 66, 0.15);
-    }
-    .settings-btn:focus-visible { outline: 2px solid var(--modal-accent); }
+@keyframes blink { 50% { opacity: 0; } }
 
-    #hud {
-      position: fixed; top: 12px; left: 12px; z-index: 5;
-      font-family: var(--pixel-font); font-size: 8px; color: var(--text-hud);
-      text-shadow: 2px 2px 0 #000; line-height: 1.6; pointer-events: none;
-    }
-    @media (max-width: 767px) { #hud { font-size: 6px; } }
+.intro-sub.visible { opacity: 1 !important; }
 
-    #interact-btn {
-      position: fixed; bottom: 28px; right: 24px; z-index: 9;
-      display: none; font-family: var(--pixel-font); font-size: 8px;
-      padding: 14px 18px; background: rgba(255,213,128,0.95);
-      color: #3D2B1F; border: 2px solid #FF8C42; border-radius: 8px;
-      cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.35);
-    }
-    #interact-btn.visible { display: block; }
-    #interact-btn:focus-visible { outline: 3px solid #00F5FF; outline-offset: 2px; }
+#intro-start {
+  animation: pulse-btn 2s ease-in-out infinite;
+}
 
-  /* Joystick */
-    #joystick-zone {
-      position: fixed; bottom: 24px; left: 24px;
-      width: 120px; height: 120px; z-index: 8;
-      display: none;
-    }
-    @media (max-width: 767px), (pointer: coarse) {
-      #joystick-zone { display: block; }
-    }
-    #joystick-base {
-      width: 100%; height: 100%; border-radius: 50%;
-      background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.35);
-    }
-    #joystick-knob {
-      position: absolute; width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255,213,128,0.85); border: 2px solid #FF8C42;
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
-      pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
+#intro-start.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
 
-  /* Modals */
-    .modal-backdrop {
-      position: fixed; inset: 0; z-index: 50;
-      background: rgba(0,0,0,0.75); display: flex;
-      align-items: center; justify-content: center; padding: 16px;
-      opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
-    }
-    .modal-backdrop.open { opacity: 1; visibility: visible; }
-    .modal {
-      background: var(--modal-bg); color: var(--modal-text);
-      border: 2px solid var(--modal-accent); border-radius: 12px;
-      max-width: 520px; width: 100%; max-height: 85vh; overflow-y: auto;
-      padding: 28px 24px; position: relative;
-      box-shadow: 0 0 40px rgba(0,245,255,0.15);
-      transform: translateY(12px); transition: transform 0.3s;
-    }
-    .modal-backdrop.open .modal { transform: translateY(0); }
-    .modal h2 {
-      font-size: 1.35rem; margin-bottom: 12px; color: #fff;
-    }
-    .modal p, .modal li { font-size: 0.95rem; line-height: 1.65; color: #c8d0e8; }
-    .modal ul { margin: 12px 0 12px 20px; }
-    .modal .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-    .modal .tag {
-      background: rgba(0,245,255,0.15); color: var(--modal-accent);
-      padding: 4px 10px; border-radius: 4px; font-size: 0.8rem;
-    }
-    .modal-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-    .modal-actions a, .modal-actions button {
-      font-family: var(--ui-font); font-size: 0.9rem; font-weight: 600;
-      padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer;
-      text-decoration: none; transition: transform 0.15s, opacity 0.15s;
-    }
-    .modal-actions a:hover, .modal-actions button:hover { transform: translateY(-1px); }
-    .btn-primary { background: var(--modal-accent); color: #0a0a12; }
-    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-    .modal-close {
-      position: absolute; top: 12px; right: 12px;
-      width: 36px; height: 36px; border: none; border-radius: 8px;
-      background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem;
-      cursor: pointer;
-    }
-    .modal-close:focus-visible { outline: 2px solid var(--modal-accent); outline-offset: 2px; }
-    .modal-photo {
-      width: 100%; max-width: 200px; border-radius: 8px;
-      border: 4px solid #FF8C42; margin: 12px 0; display: block;
-    }
-    .interest-icons { display: flex; gap: 12px; margin-top: 12px; font-size: 1.5rem; }
-    .project-thumb {
-      width: 100%; border-radius: 8px; margin: 12px 0;
-      border: 1px solid rgba(0,245,255,0.3);
-    }
+#intro-start:focus-visible {
+  outline: 3px solid #00F5FF;
+  outline-offset: 3px;
+}
 
-  /* Contact form in modal */
-    .contact-form label { display: block; margin-top: 12px; font-size: 0.85rem; color: #9aa8c8; }
-    .contact-form input, .contact-form textarea {
-      width: 100%; margin-top: 4px; padding: 10px 12px;
-      border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(0,0,0,0.35); color: #fff; font-family: inherit;
-    }
-    .contact-form input:focus-visible, .contact-form textarea:focus-visible {
-      outline: 2px solid var(--zone4-ocean); outline-offset: 1px;
-    }
+@keyframes pulse-btn {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 140, 66, 0.5); }
+  50% { box-shadow: 0 0 20px 6px rgba(255, 213, 128, 0.35); }
+}
 
-  /* Cutscene & end screen */
-    #cutscene {
-      position: fixed; inset: 0; z-index: 80; pointer-events: none;
-      opacity: 0; visibility: hidden; transition: opacity 0.5s;
-    }
-    #cutscene.active { opacity: 1; visibility: visible; pointer-events: all; }
-    #cutscene-canvas { width: 100%; height: 100%; display: block; }
-    #end-screen {
-      position: fixed; inset: 0; z-index: 90;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(8,12,28,0.88); padding: 24px; text-align: center;
-      opacity: 0; visibility: hidden; transition: opacity 1.2s ease;
-    }
-    #end-screen.visible { opacity: 1; visibility: visible; }
-    #end-screen h2 {
-      font-family: var(--pixel-font); font-size: clamp(10px, 2.8vw, 16px);
-      color: #FFF1B0; line-height: 2; max-width: 640px; margin-bottom: 24px;
-    }
-    #end-screen .end-sub {
-      font-family: var(--ui-font); font-size: 1rem; color: #a8c4e8;
-      margin-bottom: 28px; max-width: 480px; line-height: 1.6;
-    }
-    .end-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-    #end-screen .cta {
-      font-family: var(--ui-font); font-size: 0.95rem; font-weight: 600;
-      padding: 14px 24px; border: none; border-radius: 10px; cursor: pointer;
-      transition: transform 0.15s;
-    }
-    #end-screen .cta:hover { transform: translateY(-2px); }
-    #end-cta { background: #4DA6FF; color: #0a1020; }
-    #end-replay { background: rgba(255,255,255,0.12); color: #FFF1B0; border: 1px solid rgba(255,255,255,0.25); }
-    #end-screen .cta:focus-visible { outline: 3px solid #FFF1B0; outline-offset: 3px; }
+.char-select.visible { opacity: 1 !important; }
 
-    .sr-only {
-      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0,0,0,0); border: 0;
-    }
+.char-option.selected {
+  border-color: #FF8C42 !important;
+  color: #FFD580 !important;
+  box-shadow: 0 0 16px rgba(255, 140, 66, 0.35);
+}
+
+.char-option:focus-visible {
+  outline: 2px solid #00F5FF;
+  outline-offset: 2px;
+}
+
+/* Nastavenia */
+.settings-btn:hover { color: var(--btn-border); }
+
+.settings-btn.active {
+  border-color: var(--btn-accent) !important;
+  color: var(--btn-border) !important;
+  background: rgba(255, 140, 66, 0.15);
+}
+
+.settings-btn:focus-visible {
+  outline: 2px solid var(--modal-accent);
+  outline-offset: 2px;
+}
+
+#interact-btn.visible { display: block !important; }
+
+#interact-btn:focus-visible {
+  outline: 3px solid #00F5FF;
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+  #joystick-zone { display: block !important; }
+}
+
+/* Modaly */
+.modal-backdrop.open {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.modal-backdrop.open .modal {
+  transform: translateY(0) !important;
+}
+
+.modal .tag {
+  background: rgba(0, 245, 255, 0.15);
+  color: var(--modal-accent);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--modal-accent);
+  outline-offset: 2px;
+}
+
+/* Cutscene & koniec */
+#cutscene.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: all;
+}
+
+#end-screen.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#end-screen .cta:focus-visible {
+  outline: 3px solid #FFF1B0;
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
