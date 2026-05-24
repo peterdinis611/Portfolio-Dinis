@@ -145,32 +145,32 @@ window.GameData = {
 
   levels: {
     sk: [
-      { id: 0, name: 'LEVEL 1 — O mne', sub: 'Dedinka', colors: ['#FFD580', '#FF8C42', '#3D2B1F'], overlay: 'rgba(255,140,66,0.12)' },
-      { id: 1, name: 'LEVEL 2 — Projekty', sub: 'Cyber mesto', colors: ['#0D0D1A', '#00F5FF', '#FF00A0'], overlay: 'rgba(0,245,255,0.08)' },
-      { id: 2, name: 'LEVEL 3 — Skúsenosti', sub: 'Les', colors: ['#1A2E1A', '#5C8A3C', '#C9A84C'], overlay: 'rgba(92,138,60,0.1)' },
-      { id: 3, name: 'LEVEL 4 — Kontakt', sub: 'Pláž', colors: ['#FFF1B0', '#4DA6FF', '#FF7043'], overlay: 'rgba(77,166,255,0.1)' }
+      { id: 0, name: 'LEVEL 1 — O mne', sub: 'Jar', colors: ['#B8E6F5', '#FFE4EC', '#8BC98B'], overlay: 'rgba(255,180,200,0.08)' },
+      { id: 1, name: 'LEVEL 2 — Projekty', sub: 'Leto', colors: ['#4DA6FF', '#87CEEB', '#FFD580'], overlay: 'rgba(255,200,100,0.07)' },
+      { id: 2, name: 'LEVEL 3 — Skúsenosti', sub: 'Jeseň', colors: ['#6B8EC8', '#E8A060', '#8B4513'], overlay: 'rgba(220,140,60,0.09)' },
+      { id: 3, name: 'LEVEL 4 — Kontakt', sub: 'Zima', colors: ['#C8D8E8', '#A8B8C8', '#E8EEF5'], overlay: 'rgba(180,200,230,0.08)' }
     ],
     en: [
-      { id: 0, name: 'LEVEL 1 — About Me', sub: 'Cozy Village', colors: ['#FFD580', '#FF8C42', '#3D2B1F'], overlay: 'rgba(255,140,66,0.12)' },
-      { id: 1, name: 'LEVEL 2 — Projects', sub: 'Futuristic City', colors: ['#0D0D1A', '#00F5FF', '#FF00A0'], overlay: 'rgba(0,245,255,0.08)' },
-      { id: 2, name: 'LEVEL 3 — Experience', sub: 'Ancient Forest', colors: ['#1A2E1A', '#5C8A3C', '#C9A84C'], overlay: 'rgba(92,138,60,0.1)' },
-      { id: 3, name: 'LEVEL 4 — Contact', sub: 'Harbor Beach', colors: ['#FFF1B0', '#4DA6FF', '#FF7043'], overlay: 'rgba(77,166,255,0.1)' }
+      { id: 0, name: 'LEVEL 1 — About Me', sub: 'Spring', colors: ['#B8E6F5', '#FFE4EC', '#8BC98B'], overlay: 'rgba(255,180,200,0.08)' },
+      { id: 1, name: 'LEVEL 2 — Projects', sub: 'Summer', colors: ['#4DA6FF', '#87CEEB', '#FFD580'], overlay: 'rgba(255,200,100,0.07)' },
+      { id: 2, name: 'LEVEL 3 — Experience', sub: 'Autumn', colors: ['#6B8EC8', '#E8A060', '#8B4513'], overlay: 'rgba(220,140,60,0.09)' },
+      { id: 3, name: 'LEVEL 4 — Contact', sub: 'Winter', colors: ['#C8D8E8', '#A8B8C8', '#E8EEF5'], overlay: 'rgba(180,200,230,0.08)' }
     ]
   },
 
   /** Nočné palety pre canvas (dark mode) */
   levelsNight: {
     sk: [
-      { id: 0, name: 'LEVEL 1 — O mne', sub: 'Dedinka', colors: ['#1a1520', '#3d2a4a', '#0f0a14'], overlay: 'rgba(80,60,120,0.2)' },
-      { id: 1, name: 'LEVEL 2 — Projekty', sub: 'Cyber mesto', colors: ['#050508', '#00a8b3', '#990066'], overlay: 'rgba(0,180,200,0.12)' },
-      { id: 2, name: 'LEVEL 3 — Skúsenosti', sub: 'Les', colors: ['#0a140a', '#2a4a2a', '#3a3520'], overlay: 'rgba(40,80,50,0.15)' },
-      { id: 3, name: 'LEVEL 4 — Kontakt', sub: 'Pláž', colors: ['#1a1a2e', '#1a4a6a', '#2a3040'], overlay: 'rgba(30,80,120,0.15)' }
+      { id: 0, name: 'LEVEL 1 — O mne', sub: 'Jar', colors: ['#1a2838', '#2a3048', '#1a2820'], overlay: 'rgba(80,100,140,0.15)' },
+      { id: 1, name: 'LEVEL 2 — Projekty', sub: 'Leto', colors: ['#050508', '#00a8b3', '#990066'], overlay: 'rgba(0,180,200,0.12)' },
+      { id: 2, name: 'LEVEL 3 — Skúsenosti', sub: 'Jeseň', colors: ['#141820', '#3a2818', '#201810'], overlay: 'rgba(120,80,40,0.14)' },
+      { id: 3, name: 'LEVEL 4 — Kontakt', sub: 'Zima', colors: ['#101820', '#1a2838', '#243040'], overlay: 'rgba(100,140,180,0.14)' }
     ],
     en: [
-      { id: 0, name: 'LEVEL 1 — About Me', sub: 'Cozy Village', colors: ['#1a1520', '#3d2a4a', '#0f0a14'], overlay: 'rgba(80,60,120,0.2)' },
-      { id: 1, name: 'LEVEL 2 — Projects', sub: 'Futuristic City', colors: ['#050508', '#00a8b3', '#990066'], overlay: 'rgba(0,180,200,0.12)' },
-      { id: 2, name: 'LEVEL 3 — Experience', sub: 'Ancient Forest', colors: ['#0a140a', '#2a4a2a', '#3a3520'], overlay: 'rgba(40,80,50,0.15)' },
-      { id: 3, name: 'LEVEL 4 — Contact', sub: 'Harbor Beach', colors: ['#1a1a2e', '#1a4a6a', '#2a3040'], overlay: 'rgba(30,80,120,0.15)' }
+      { id: 0, name: 'LEVEL 1 — About Me', sub: 'Spring', colors: ['#1a2838', '#2a3048', '#1a2820'], overlay: 'rgba(80,100,140,0.15)' },
+      { id: 1, name: 'LEVEL 2 — Projects', sub: 'Summer', colors: ['#050508', '#00a8b3', '#990066'], overlay: 'rgba(0,180,200,0.12)' },
+      { id: 2, name: 'LEVEL 3 — Experience', sub: 'Autumn', colors: ['#141820', '#3a2818', '#201810'], overlay: 'rgba(120,80,40,0.14)' },
+      { id: 3, name: 'LEVEL 4 — Contact', sub: 'Winter', colors: ['#101820', '#1a2838', '#243040'], overlay: 'rgba(100,140,180,0.14)' }
     ]
   },
 
