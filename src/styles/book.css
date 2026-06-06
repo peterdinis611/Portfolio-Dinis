@@ -1205,27 +1205,26 @@ a.book-contact-row:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   text-align: center;
-  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
-  gap: 1.5rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
 }
 
-.book-finale-top,
-.book-finale-middle,
-.book-finale-bottom {
-  position: relative;
-  z-index: 1;
+.book-finale-inner {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
+  max-width: 26rem;
+  gap: 0;
 }
 
 .book-finale-label {
   font-size: 0.625rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent-on-paper);
   margin-bottom: 1rem;
@@ -1235,8 +1234,8 @@ a.book-contact-row:hover {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  width: min(220px, 70%);
-  margin-bottom: 1.25rem;
+  width: min(180px, 55%);
+  margin-bottom: 1.5rem;
 }
 
 .book-finale-ornament-line {
@@ -1246,107 +1245,53 @@ a.book-contact-row:hover {
 }
 
 .book-finale-ornament-mark {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--accent-on-paper);
   line-height: 1;
 }
 
 .book-finale-title {
   font-family: var(--font-display);
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 4.5vw, 3rem);
   font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  max-width: 12ch;
-  margin-bottom: 0.75rem;
-}
-
-.book-finale-subtitle {
-  font-family: var(--font-display);
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  font-style: italic;
-  color: var(--paper-muted);
-  max-width: 22em;
-  line-height: 1.45;
-}
-
-.book-finale-stats {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
-  border: 1px solid var(--paper-border);
-  border-radius: var(--radius);
-  background: var(--paper-surface);
-  width: min(100%, 320px);
-}
-
-.book-finale-stat {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-}
-
-.book-finale-stat-value {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  line-height: 1;
-  color: var(--accent-on-paper);
-}
-
-.book-finale-stat-label {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--paper-muted);
-  text-align: center;
-  line-height: 1.3;
-}
-
-.book-finale-stat-divider {
-  width: 1px;
-  align-self: stretch;
-  background: var(--paper-border);
-}
-
-.book-finale-invite {
-  font-size: 0.9375rem;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   color: var(--paper-text);
-  max-width: 24em;
-  line-height: 1.55;
-  margin-bottom: 1rem;
+  margin: 0 0 0.75rem;
 }
 
-.book-finale-middle {
-  flex: 1;
-  justify-content: center;
-}
-
-.book-finale-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 1.25rem;
-}
-
-.book-finale-signature {
+.book-finale-lead {
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 2vw, 1.125rem);
   font-style: italic;
   color: var(--paper-muted);
-  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  margin: 0 0 1.75rem;
+  max-width: 22em;
+}
+
+.book-finale-rule {
+  width: 2.5rem;
+  height: 1px;
+  background: var(--accent-on-paper);
+  margin-bottom: 1.75rem;
+  opacity: 0.6;
+}
+
+.book-finale-body {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--paper-muted);
+  margin: 0 0 2rem;
+  max-width: 28em;
 }
 
 .book-finale-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.6rem 1.25rem;
-  font-size: 0.8125rem;
+  padding: 0.7rem 1.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
   border-radius: 999px;
   border: 1px solid var(--paper-border);
@@ -1366,8 +1311,6 @@ a.book-contact-row:hover {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
-  padding: 0.7rem 1.75rem;
-  font-size: 0.875rem;
 }
 
 .book-sheet a.book-finale-btn--primary:hover {
@@ -1376,11 +1319,80 @@ a.book-contact-row:hover {
   color: #fff;
 }
 
-.book-finale-colophon {
+.book-finale-signoff {
+  margin-top: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.book-finale-signoff-line {
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--paper-border);
+  margin-bottom: 0.75rem;
+}
+
+.book-finale-name {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-style: italic;
+  color: var(--paper-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.book-finale-role {
   font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-muted);
+  margin: 0;
+}
+
+.book-finale-foot {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  padding-top: 1rem;
+  width: 100%;
+}
+
+.book-finale-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--paper-muted);
+  background: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.book-finale-link:hover {
+  color: var(--accent-on-paper);
+}
+
+.book-finale-foot-dot {
+  color: var(--paper-border);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.book-finale-colophon {
+  flex-basis: 100%;
+  font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--paper-muted);
+  opacity: 0.75;
+  margin: 0.35rem 0 0;
 }
 
 /* ── Toolbar ── */
