@@ -14,7 +14,9 @@ export type SocialLink = {
 
 export const profile = {
   name: 'Peter Dinis',
-  email: 'hello@peterdinis.dev',
+  email: 'peterdinis611@gmail.com',
+  phone: '+421 950 460 254',
+  phoneHref: '+421950460254',
   interests: ['React', 'TypeScript', 'UI/UX', 'Design Systems', 'Node.js'],
 }
 
@@ -42,7 +44,6 @@ export const projects: Project[] = [
 ]
 
 export const socials: SocialLink[] = [
-  { name: 'GitHub', icon: 'GH', url: 'https://github.com' },
-  { name: 'LinkedIn', icon: 'In', url: 'https://linkedin.com' },
-  { name: 'Email', icon: '@', url: `mailto:hello@peterdinis.dev` },
+  { name: 'GitHub', icon: 'github', url: 'https://github.com' },
+  { name: 'LinkedIn', icon: 'linkedin', url: 'https://linkedin.com' },
 ]

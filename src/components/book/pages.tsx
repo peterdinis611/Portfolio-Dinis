@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import profilePhoto from '../../assets/profile.png'
-import { profile, projects, socials } from '../../data/portfolio'
+import { profile, projects } from '../../data/portfolio'
+import { techBookPages } from '../../data/technologies'
 import { translations, type Lang } from '../../i18n/translations'
+import { ContactPanel } from './ContactPanel'
 import { BookFinale } from './BookFinale'
 import { TechStack } from './TechStack'
 
@@ -49,13 +51,38 @@ export function getBookPages(lang: Lang): BookPageDef[] {
               <span>{job.period}</span>
             </div>
             <p className="book-job-company">{job.company}</p>
-            <ul>
+            {'summary' in job && job.summary ? (
+              <p className="book-job-summary">{job.summary}</p>
+            ) : null}
+            <ul className="book-job-list">
               {job.highlights.map((h) => (
                 <li key={h}>{h}</li>
               ))}
             </ul>
+            {'projects' in job && job.projects ? (
+              <p className="book-job-meta">
+                <span>{ui.expProjects}</span> {job.projects}
+              </p>
+            ) : null}
+            {'tech' in job && job.tech ? (
+              <p className="book-job-tech">{job.tech}</p>
+            ) : null}
           </article>
         ))}
+      </>
+    ),
+  }))
+
+  const techPages: BookPageDef[] = techBookPages.map((slice, idx) => ({
+    id: slice.id,
+    chapter: ui.chapter2,
+    title: ui.tech,
+    render: () => (
+      <>
+        {idx === 0 ? (
+          <p className="book-page-text book-page-text--tech">{ui.techIntro}</p>
+        ) : null}
+        <TechStack lang={lang} page={slice} />
       </>
     ),
   }))
@@ -68,7 +95,14 @@ export function getBookPages(lang: Lang): BookPageDef[] {
       render: () => (
         <>
           <div className="book-page-hero">
-            <img src={profilePhoto} alt={profile.name} className="book-page-photo" />
+            <img
+              src={profilePhoto}
+              alt={profile.name}
+              className="book-page-photo"
+              width={272}
+              height={272}
+              decoding="async"
+            />
             <div>
               <p className="book-page-lead">{t.profile.tagline}</p>
             </div>
@@ -82,19 +116,8 @@ export function getBookPages(lang: Lang): BookPageDef[] {
               <li key={tag}>{tag}</li>
             ))}
           </ul>
-        </>
-      ),
-    },
-    {
-      id: 'tech',
-      chapter: ui.chapter2,
-      title: ui.tech,
-      render: () => (
-        <>
-          <p className="book-page-text">{ui.techIntro}</p>
-          <TechStack lang={lang} />
-          <h3 className="book-subtitle">{ui.whatIDo}</h3>
-          <ol className="book-services">
+          <h3 className="book-subtitle book-subtitle--about">{ui.whatIDo}</h3>
+          <ol className="book-services book-services--about">
             {t.services.map((s) => (
               <li key={s.id}>
                 <span>{s.id}</span>
@@ -105,6 +128,7 @@ export function getBookPages(lang: Lang): BookPageDef[] {
         </>
       ),
     },
+    ...techPages,
     ...expPages,
     {
       id: 'projects',
@@ -135,20 +159,8 @@ export function getBookPages(lang: Lang): BookPageDef[] {
       render: () => (
         <>
           <p className="book-page-lead">{ui.contactLead}</p>
-          <p className="book-page-text">{ui.contactText}</p>
-          <a className="book-contact-email" href={`mailto:${profile.email}`}>
-            {profile.email}
-          </a>
-          <ul className="book-socials">
-            {socials.map((s) => (
-              <li key={s.name}>
-                <a href={s.url} target="_blank" rel="noreferrer">
-                  <span>{s.icon}</span>
-                  {s.name}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <p className="book-page-text book-page-text--contact">{ui.contactText}</p>
+          <ContactPanel lang={lang} />
         </>
       ),
     },
@@ -163,7 +175,7 @@ export function getBookPages(lang: Lang): BookPageDef[] {
 
 export function getTocEntries(lang: Lang, pages: BookPageDef[]): TocEntry[] {
   const ui = translations[lang].ui
-  const ids = ['about', 'tech', 'exp-1', 'projects', 'contact'] as const
+  const ids = ['about', 'tech-1', 'exp-1', 'projects', 'contact'] as const
   const labels = [ui.about, ui.tech, ui.experience, ui.projects, ui.contact]
 
   return ids.map((id, i) => ({

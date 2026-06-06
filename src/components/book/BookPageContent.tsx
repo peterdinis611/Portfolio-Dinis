@@ -23,7 +23,11 @@ export function BookPageContent({
           <h2 className="book-sheet-title">{page.title}</h2>
         </header>
       )}
-      <div className={`book-sheet-body ${isFinale ? 'book-sheet-body--finale' : ''}`}>{page.render()}</div>
+      <div
+        className={`book-sheet-body ${isFinale ? 'book-sheet-body--finale' : ''}${page.id.startsWith('tech-') ? ' book-sheet-body--tech' : ''}`}
+      >
+        {page.render()}
+      </div>
       {!isFinale && (
         <footer className="book-sheet-footer">
           <span>{profile.name}</span>
