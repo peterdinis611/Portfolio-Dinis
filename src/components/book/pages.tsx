@@ -32,7 +32,7 @@ export function getBookPages(lang: Lang): BookPageDef[] {
   })
 
   const exp = t.experience
-  const expChunks: (typeof exp[number])[][] = []
+  const expChunks: (typeof exp)[number][][] = []
   for (let i = 0; i < exp.length; i += EXP_PER_PAGE) {
     expChunks.push([...exp.slice(i, i + EXP_PER_PAGE)])
   }
@@ -64,9 +64,7 @@ export function getBookPages(lang: Lang): BookPageDef[] {
                 <span>{ui.expProjects}</span> {job.projects}
               </p>
             ) : null}
-            {'tech' in job && job.tech ? (
-              <p className="book-job-tech">{job.tech}</p>
-            ) : null}
+            {'tech' in job && job.tech ? <p className="book-job-tech">{job.tech}</p> : null}
           </article>
         ))}
       </>
@@ -79,9 +77,7 @@ export function getBookPages(lang: Lang): BookPageDef[] {
     title: ui.tech,
     render: () => (
       <>
-        {idx === 0 ? (
-          <p className="book-page-text book-page-text--tech">{ui.techIntro}</p>
-        ) : null}
+        {idx === 0 ? <p className="book-page-text book-page-text--tech">{ui.techIntro}</p> : null}
         <TechStack lang={lang} page={slice} />
       </>
     ),

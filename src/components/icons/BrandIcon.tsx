@@ -9,14 +9,7 @@ type BrandIconProps = {
   fallback?: string
 }
 
-export function BrandIcon({
-  slug,
-  color,
-  size,
-  className,
-  label,
-  fallback,
-}: BrandIconProps) {
+export function BrandIcon({ slug, color, size, className, label, fallback }: BrandIconProps) {
   const icon = getBrandIcon(slug)
 
   if (!icon) {

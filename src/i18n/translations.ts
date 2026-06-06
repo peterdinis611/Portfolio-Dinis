@@ -19,7 +19,8 @@ export const translations = {
       {
         id: 'frontend',
         title: 'Frontend',
-        skills: 'HTML, CSS, SCSS, JavaScript, TypeScript, React, Next.js, Tailwind CSS, TanStack Query, Less, Chakra UI',
+        skills:
+          'HTML, CSS, SCSS, JavaScript, TypeScript, React, Next.js, Tailwind CSS, TanStack Query, Less, Chakra UI',
       },
       {
         id: 'backend',
@@ -75,8 +76,7 @@ export const translations = {
           'Frontend +40 % rýchlejší, HR procesy kratšie o 60 %',
           'Mentor 2 juniorov — produktivita tímu +30 %',
         ],
-        projects:
-          'Komora daňových poradcov, ÚDZS, EForms, denné menu scraper (95 % presnosť)',
+        projects: 'Komora daňových poradcov, ÚDZS, EForms, denné menu scraper (95 % presnosť)',
         tech: 'React · TypeScript · Java · PostgreSQL · Docker · Tailwind · TanStack Query',
       },
       {
@@ -134,19 +134,23 @@ export const translations = {
     projects: [
       {
         id: 'legato',
-        description: 'Interná aplikácia pre domovy dôchodcov — sledovanie polohy klientov cez náramky a práca personálu.',
+        description:
+          'Interná aplikácia pre domovy dôchodcov — sledovanie polohy klientov cez náramky a práca personálu.',
       },
       {
         id: 'carter',
-        description: 'Objednávkový formulár pre tlačiarenskú firmu — upload dokumentov a spracovanie cez backend a Zoho hooks.',
+        description:
+          'Objednávkový formulár pre tlačiarenskú firmu — upload dokumentov a spracovanie cez backend a Zoho hooks.',
       },
       {
         id: 'library',
-        description: 'Školská knižnica z competition projektu Unicorn — výpožičky kníh, správa kategórií a oprávnení.',
+        description:
+          'Školská knižnica z competition projektu Unicorn — výpožičky kníh, správa kategórií a oprávnení.',
       },
       {
         id: 'licenses',
-        description: 'E-shop na predaj softvérových licencií s rolami predajca, výrobca a distribútor.',
+        description:
+          'E-shop na predaj softvérových licencií s rolami predajca, výrobca a distribútor.',
       },
     ],
     ui: {
@@ -233,7 +237,8 @@ export const translations = {
       {
         id: 'frontend',
         title: 'Frontend',
-        skills: 'HTML, CSS, SCSS, JavaScript, TypeScript, React, Next.js, Tailwind CSS, TanStack Query, Less, Chakra UI',
+        skills:
+          'HTML, CSS, SCSS, JavaScript, TypeScript, React, Next.js, Tailwind CSS, TanStack Query, Less, Chakra UI',
       },
       {
         id: 'backend',
@@ -289,8 +294,7 @@ export const translations = {
           'Frontend +40% faster, HR processing time −60%',
           'Mentored 2 juniors — team productivity +30%',
         ],
-        projects:
-          'Slovak Chamber of Tax Advisors, ÚDZS, EForms, daily menu scraper (95% accuracy)',
+        projects: 'Slovak Chamber of Tax Advisors, ÚDZS, EForms, daily menu scraper (95% accuracy)',
         tech: 'React · TypeScript · Java · PostgreSQL · Docker · Tailwind · TanStack Query',
       },
       {
@@ -348,19 +352,23 @@ export const translations = {
     projects: [
       {
         id: 'legato',
-        description: 'Internal app for retirement homes — client location tracking via wristbands and staff workflows.',
+        description:
+          'Internal app for retirement homes — client location tracking via wristbands and staff workflows.',
       },
       {
         id: 'carter',
-        description: 'Order form for a printing company — document upload and processing via backend and Zoho hooks.',
+        description:
+          'Order form for a printing company — document upload and processing via backend and Zoho hooks.',
       },
       {
         id: 'library',
-        description: 'School library from Unicorn competition — book lending, category management, and permissions.',
+        description:
+          'School library from Unicorn competition — book lending, category management, and permissions.',
       },
       {
         id: 'licenses',
-        description: 'E-shop for software licenses with seller, manufacturer, and distributor roles.',
+        description:
+          'E-shop for software licenses with seller, manufacturer, and distributor roles.',
       },
     ],
     ui: {

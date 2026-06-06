@@ -31,8 +31,7 @@ export function PreloadScreen({ progress = 0 }: PreloadScreenProps) {
   const pct = Math.round(Math.min(1, Math.max(0, progress)) * 100)
   const hasProgress = progress > 0
 
-  const label =
-    hasProgress && pct < 100 ? t.loadingPct(pct) : pct >= 100 ? t.done : t.loading
+  const label = hasProgress && pct < 100 ? t.loadingPct(pct) : pct >= 100 ? t.done : t.loading
 
   return (
     <div className="preload" role="status" aria-live="polite" aria-label="Loading portfolio">

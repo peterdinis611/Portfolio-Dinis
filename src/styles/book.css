@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap");
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --app-bg: #111110;
   --app-text: #f5f3ef;
   --app-muted: #9c9890;
@@ -22,7 +22,7 @@
   --paper-finale: #232220;
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   --app-bg: #f0ece4;
   --app-text: #1a1816;
   --app-muted: #6b665e;
@@ -47,8 +47,8 @@
 :root {
   --accent: #18747a;
   --accent-hover: #1f939b;
-  --font-display: 'Instrument Serif', Georgia, serif;
-  --font-ui: 'DM Sans', system-ui, sans-serif;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-ui: "DM Sans", system-ui, sans-serif;
   --radius: 10px;
   --radius-sm: 6px;
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
@@ -84,7 +84,9 @@ body {
   background: var(--app-bg);
   color: var(--app-text);
   -webkit-font-smoothing: antialiased;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 button {
@@ -149,7 +151,7 @@ img {
 }
 
 .book-app-chapter::before {
-  content: '—';
+  content: "—";
   margin-right: 0.75rem;
   color: var(--app-border);
 }
@@ -175,7 +177,9 @@ img {
   letter-spacing: 0.04em;
   color: var(--app-muted);
   border-radius: 999px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .book-segment-btn:hover {
@@ -195,7 +199,9 @@ img {
   border-radius: 999px;
   background: var(--app-surface);
   color: var(--app-muted);
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .book-icon-btn:hover {
@@ -298,7 +304,9 @@ img {
   color: #fff;
   background: var(--accent);
   border-radius: 999px;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .book-landing-btn:hover {
@@ -321,7 +329,9 @@ img {
   border: 1px solid var(--app-border);
   border-radius: 999px;
   background: var(--app-surface);
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .book-landing-nav-item:hover {
@@ -397,19 +407,25 @@ img {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--book-shadow);
-  transition: opacity 0.45s var(--ease) 0.15s, visibility 0s linear 0.6s;
+  transition:
+    opacity 0.45s var(--ease) 0.15s,
+    visibility 0s linear 0.6s;
 }
 
 .book-spread--show {
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.4s var(--ease) 0.2s, visibility 0s;
+  transition:
+    opacity 0.4s var(--ease) 0.2s,
+    visibility 0s;
 }
 
 .book--closing .book-spread {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s var(--ease), visibility 0s linear 0.3s;
+  transition:
+    opacity 0.3s var(--ease),
+    visibility 0s linear 0.3s;
 }
 
 .book-spine-line {
@@ -452,7 +468,9 @@ img {
   transform-style: preserve-3d;
   transform-origin: left center;
   z-index: 5;
-  transition: width 0.85s var(--ease), left 0.85s var(--ease);
+  transition:
+    width 0.85s var(--ease),
+    left 0.85s var(--ease);
   cursor: pointer;
 }
 
@@ -503,7 +521,9 @@ img {
   transform: rotateY(180deg);
   background: var(--paper);
   border-left: 1px solid var(--paper-border);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .book-cover-name {
@@ -598,7 +618,9 @@ img {
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--paper-surface) 92%, var(--tech-brand));
   min-width: 0;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .book-tech-item:hover {
@@ -687,7 +709,9 @@ img {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 .book-sheet a {
@@ -959,7 +983,7 @@ img {
 }
 
 .book-job-list li::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0.55em;
@@ -1165,7 +1189,9 @@ a.book-contact-row:hover {
   border: 1px solid var(--paper-border);
   border-radius: var(--radius-sm);
   background: var(--paper-surface);
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .book-socials a:hover {
@@ -1298,7 +1324,11 @@ a.book-contact-row:hover {
   background: var(--paper-surface);
   color: var(--paper-text);
   text-decoration: none;
-  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    color 0.2s,
+    transform 0.2s;
 }
 
 .book-finale-btn:hover {
@@ -1426,7 +1456,9 @@ a.book-contact-row:hover {
   padding: 0;
   border-radius: 50%;
   background: var(--app-border);
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .book-dot.active {
@@ -1451,7 +1483,9 @@ a.book-contact-row:hover {
   border-radius: 50%;
   background: var(--app-surface);
   color: var(--app-text);
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .book-nav-btn:hover:not(:disabled) {
@@ -1488,7 +1522,6 @@ a.book-contact-row:hover {
   background: var(--app-surface);
   border-color: var(--app-border);
 }
-
 
 /* ── Mobile ── */
 @media (max-width: 720px) {

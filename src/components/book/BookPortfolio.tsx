@@ -185,7 +185,9 @@ export function BookPortfolio() {
             >
               <div
                 className={`book-page book-page--left ${canPrev ? 'can-click' : ''}`}
-                onClick={canPrev && !isFlipping ? () => bookActor.send({ type: 'PREV' }) : undefined}
+                onClick={
+                  canPrev && !isFlipping ? () => bookActor.send({ type: 'PREV' }) : undefined
+                }
               >
                 <AnimatePresence mode="wait">
                   {leftPage && (
@@ -207,7 +209,9 @@ export function BookPortfolio() {
 
               <div
                 className={`book-page book-page--right ${canNext ? 'can-click' : ''}`}
-                onClick={canNext && !isFlipping ? () => bookActor.send({ type: 'NEXT' }) : undefined}
+                onClick={
+                  canNext && !isFlipping ? () => bookActor.send({ type: 'NEXT' }) : undefined
+                }
               >
                 {isFlipping && flipDir === 1 && bookPages[page + 2] && (
                   <div className="book-page-under">
@@ -248,7 +252,9 @@ export function BookPortfolio() {
               type="button"
               className={`book-cover ${coverFolded ? 'book-cover--hidden' : ''}`}
               onClick={() =>
-                coverOpen ? bookActor.send({ type: 'REQUEST_CLOSE' }) : bookActor.send({ type: 'OPEN' })
+                coverOpen
+                  ? bookActor.send({ type: 'REQUEST_CLOSE' })
+                  : bookActor.send({ type: 'OPEN' })
               }
               animate={{ rotateY: coverOpen ? -180 : 0 }}
               transition={{ duration: 0.85, ease: EASE }}
