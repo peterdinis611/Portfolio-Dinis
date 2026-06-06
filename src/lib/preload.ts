@@ -1,4 +1,4 @@
-import profilePhoto from '../assets/profile.png'
+import { profilePhotoSources } from './profile-image'
 
 function loadImage(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -11,7 +11,7 @@ function loadImage(src: string): Promise<void> {
 
 const preloadSteps = [
   () => document.fonts.ready,
-  () => loadImage(profilePhoto),
+  () => Promise.all(profilePhotoSources.map(loadImage)),
   () => import('../components/book/BookPortfolio'),
   () => import('../components/book/pages'),
   () => import('../components/book/TechStack'),

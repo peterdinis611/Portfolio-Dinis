@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import profilePhoto from '../../assets/profile.png'
+import { ProfilePhoto } from '../ui/ProfilePhoto'
 import { profile, projects } from '../../data/portfolio'
 import { techBookPages } from '../../data/technologies'
 import { translations, type Lang } from '../../i18n/translations'
@@ -91,14 +91,7 @@ export function getBookPages(lang: Lang): BookPageDef[] {
       render: () => (
         <>
           <div className="book-page-hero">
-            <img
-              src={profilePhoto}
-              alt={profile.name}
-              className="book-page-photo"
-              width={272}
-              height={272}
-              decoding="async"
-            />
+            <ProfilePhoto className="book-page-photo" priority />
             <div>
               <p className="book-page-lead">{t.profile.tagline}</p>
             </div>
