@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
-import { ProfilePhoto } from '../ui/ProfilePhoto'
 import { profile, projects } from '../../data/portfolio'
 import { techBookPages } from '../../data/technologies'
-import { translations, type Lang } from '../../i18n/translations'
-import { ContactPanel } from './ContactPanel'
+import { type Lang, translations } from '../../i18n/translations'
+import { ProfilePhoto } from '../ui/ProfilePhoto'
 import { BookFinale } from './BookFinale'
+import { ContactPanel } from './ContactPanel'
+import { ProjectsList } from './ProjectsList'
 import { TechStack } from './TechStack'
 
 export type BookPageDef = {
@@ -125,19 +126,8 @@ export function getBookPages(lang: Lang): BookPageDef[] {
       title: ui.projects,
       render: () => (
         <>
-          <p className="book-page-text">{ui.projectsIntro}</p>
-          <ul className="book-projects">
-            {projectMeta.map((p, i) => (
-              <li key={p.id}>
-                <span className="book-project-num">{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <strong>{p.name}</strong>
-                  <span className="book-project-tech">{p.tech}</span>
-                  <p>{p.description}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <p className="book-page-text book-page-text--projects">{ui.projectsIntro}</p>
+          <ProjectsList projects={projectMeta} />
         </>
       ),
     },
@@ -145,13 +135,7 @@ export function getBookPages(lang: Lang): BookPageDef[] {
       id: 'contact',
       chapter: ui.epilogue,
       title: ui.contact,
-      render: () => (
-        <>
-          <p className="book-page-lead">{ui.contactLead}</p>
-          <p className="book-page-text book-page-text--contact">{ui.contactText}</p>
-          <ContactPanel lang={lang} />
-        </>
-      ),
+      render: () => <ContactPanel lang={lang} />,
     },
     {
       id: 'finale',

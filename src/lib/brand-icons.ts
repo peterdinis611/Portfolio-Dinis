@@ -1,3 +1,4 @@
+import type { SimpleIcon } from 'simple-icons'
 import {
   siChakraui,
   siCss,
@@ -22,7 +23,6 @@ import {
   siTailwindcss,
   siTypescript,
 } from 'simple-icons'
-import type { SimpleIcon } from 'simple-icons'
 
 export type BrandIconData = Pick<SimpleIcon, 'path' | 'hex' | 'title'>
 

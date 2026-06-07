@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { PreloadScreen } from './components/PreloadScreen'
 import { preloadApp } from './lib/preload'
 

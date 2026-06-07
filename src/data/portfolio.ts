@@ -17,7 +17,23 @@ export const profile = {
   email: 'peterdinis611@gmail.com',
   phone: '+421 950 460 254',
   phoneHref: '+421950460254',
-  interests: ['React', 'TypeScript', 'UI/UX', 'Design Systems', 'Node.js'],
+  interests: [
+    'React',
+    'TypeScript',
+    'Next.js',
+    'Node.js',
+    'NestJS',
+    'PostgreSQL',
+    'MongoDB',
+    'GraphQL',
+    'Tailwind CSS',
+    'Docker',
+    'AWS',
+    'Azure',
+    'React Native',
+    'UI/UX',
+    'Design Systems',
+  ],
 }
 
 export const projects: Project[] = [

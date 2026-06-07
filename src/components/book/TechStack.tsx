@@ -1,12 +1,12 @@
-import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
+import type { CSSProperties } from 'react'
 import {
   getTechIconPresentation,
   resolveTechPageSections,
   type TechPageSlice,
 } from '../../data/technologies'
+import { type Lang, translations } from '../../i18n/translations'
 import { BrandIcon } from '../icons/BrandIcon'
-import { translations, type Lang } from '../../i18n/translations'
 
 const EASE = [0.32, 0.72, 0, 1] as const
 

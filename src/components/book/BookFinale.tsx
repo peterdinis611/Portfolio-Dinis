@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
+import { BookContext, SettingsContext } from '../../context/AppProviders'
 import { profile } from '../../data/portfolio'
 import { translations } from '../../i18n/translations'
-import { BookContext, SettingsContext } from '../../context/AppProviders'
 
 const EASE = [0.32, 0.72, 0, 1] as const
 

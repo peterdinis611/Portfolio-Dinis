@@ -11,7 +11,7 @@ Interactive portfolio presented as a digital book. Open the cover, flip through 
 | State | XState (`@xstate/react`) |
 | Components | Chakra UI v3 (optional; existing styles use CSS) |
 | Icons | [simple-icons](https://simpleicons.org/) + custom brand SVGs |
-| Quality | Biome (lint + format), ESLint (React hooks) |
+| Quality | Biome (lint + format) |
 
 ## Getting started
 
@@ -97,12 +97,31 @@ src/
 | `npm run check:staged` | Biome — staged files only (git hooks) |
 | `npm run format` | Format all files |
 | `npm run format:check` | Check formatting |
-| `npm run lint` | ESLint |
-| `npm run lint:eslint` | ESLint (alias) |
-| `npm run lint:biome` | Biome lint only |
+| `npm run lint` | Biome lint |
+| `npm run lint:biome` | Biome lint (alias) |
 | `npm run lint:biome:fix` | Biome lint + fix |
 | `npm run biome:ci` | Strict Biome check for CI |
-| `npm run verify` | `tsc` + Biome CI + ESLint |
+| `npm run verify` | `tsc` + Biome CI |
+
+## SEO
+
+The app updates meta tags, Open Graph, Twitter cards, canonical URLs and JSON-LD when the language changes.
+
+| File | Purpose |
+|------|---------|
+| `index.html` | Default SK meta tags + noscript fallback |
+| `src/lib/seo.ts` | Dynamic SEO per language (SK / EN) |
+| `public/robots.txt` | Crawler rules |
+| `public/sitemap.xml` | Sitemap (update domain before deploy) |
+| `public/og-image.jpg` | Social preview image |
+
+Before deploy, copy `.env.example` to `.env` and set your production URL:
+
+```bash
+VITE_SITE_URL=https://your-domain.com
+```
+
+Also update `<loc>` in `public/sitemap.xml` and `Sitemap:` in `public/robots.txt` to match.
 
 ## Editor setup
 

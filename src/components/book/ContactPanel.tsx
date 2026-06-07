@@ -1,6 +1,7 @@
 import { profile, socials } from '../../data/portfolio'
-import { translations, type Lang } from '../../i18n/translations'
+import { type Lang, translations } from '../../i18n/translations'
 import { BrandIcon } from '../icons/BrandIcon'
+import { ProfilePhoto } from '../ui/ProfilePhoto'
 
 function ContactIcon({ type }: { type: 'email' | 'phone' | 'location' }) {
   const paths = {
@@ -13,66 +14,103 @@ function ContactIcon({ type }: { type: 'email' | 'phone' | 'location' }) {
   }
 
   return (
-    <svg viewBox="0 0 24 24" width={18} height={18} aria-hidden>
+    <svg viewBox="0 0 24 24" width={15} height={15} aria-hidden>
       <path fill="currentColor" d={paths[type]} />
     </svg>
   )
 }
 
+function ContactItem({
+  type,
+  label,
+  value,
+  href,
+}: {
+  type: 'email' | 'phone' | 'location'
+  label: string
+  value: string
+  href?: string
+}) {
+  const body = (
+    <>
+      <span className="book-contact-icon" aria-hidden>
+        <ContactIcon type={type} />
+      </span>
+      <span className="book-contact-copy">
+        <span className="book-contact-label">{label}</span>
+        <span className="book-contact-value">{value}</span>
+      </span>
+    </>
+  )
+
+  if (href) {
+    return (
+      <a className="book-contact-item" href={href}>
+        {body}
+      </a>
+    )
+  }
+
+  return <div className="book-contact-item book-contact-item--static">{body}</div>
+}
+
 export function ContactPanel({ lang }: { lang: Lang }) {
-  const ui = translations[lang].ui
+  const t = translations[lang]
+  const ui = t.ui
 
   return (
-    <div className="book-contact-card">
-      <h3 className="book-contact-card-title">{ui.getInTouch}</h3>
-
-      <div className="book-contact-rows">
-        <a className="book-contact-row" href={`mailto:${profile.email}`}>
-          <span className="book-contact-icon book-contact-icon--email">
-            <ContactIcon type="email" />
-          </span>
-          <span className="book-contact-copy">
-            <span className="book-contact-label">{ui.emailLabel}</span>
-            <span className="book-contact-value">{profile.email}</span>
-          </span>
-        </a>
-
-        <a className="book-contact-row" href={`tel:${profile.phoneHref}`}>
-          <span className="book-contact-icon book-contact-icon--phone">
-            <ContactIcon type="phone" />
-          </span>
-          <span className="book-contact-copy">
-            <span className="book-contact-label">{ui.phoneLabel}</span>
-            <span className="book-contact-value">{profile.phone}</span>
-          </span>
-        </a>
-
-        <div className="book-contact-row book-contact-row--static">
-          <span className="book-contact-icon book-contact-icon--location">
-            <ContactIcon type="location" />
-          </span>
-          <span className="book-contact-copy">
-            <span className="book-contact-label">{ui.locationLabel}</span>
-            <span className="book-contact-value">{ui.contactLocation}</span>
-          </span>
+    <address className="book-contact-card">
+      <div className="book-contact-header">
+        <ProfilePhoto className="book-contact-avatar" />
+        <div className="book-contact-header-copy">
+          <p className="book-contact-name">{profile.name}</p>
+          <p className="book-contact-role">{t.profile.title}</p>
         </div>
       </div>
 
-      <div className="book-contact-divider" aria-hidden />
+      <p className="book-contact-lead">{ui.contactLead}</p>
+      <p className="book-contact-text">{ui.contactText}</p>
 
-      <p className="book-contact-follow">{ui.followMe}</p>
-      <ul className="book-socials">
-        {socials.map((s) => (
-          <li key={s.name}>
-            <a href={s.url} target="_blank" rel="noreferrer">
-              <span className="book-social-icon">
-                <BrandIcon slug={s.icon} label={s.name} />
-              </span>
-              {s.name}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="book-contact-list">
+        <ContactItem
+          type="email"
+          label={ui.emailLabel}
+          value={profile.email}
+          href={`mailto:${profile.email}`}
+        />
+        <ContactItem
+          type="phone"
+          label={ui.phoneLabel}
+          value={profile.phone}
+          href={`tel:${profile.phoneHref}`}
+        />
+        <ContactItem type="location" label={ui.locationLabel} value={ui.contactLocation} />
+      </div>
+
+      <div className="book-contact-actions">
+        <a className="book-contact-cta" href={`mailto:${profile.email}`}>
+          {ui.endCta}
+        </a>
+
+        <div className="book-contact-social">
+          <p className="book-contact-social-label">{ui.followMe}</p>
+          <ul className="book-contact-social-list">
+            {socials.map((s) => (
+              <li key={s.name}>
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.name}
+                  title={s.name}
+                >
+                  <BrandIcon slug={s.icon} className="book-contact-social-icon" label={s.name} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </address>
   )
 }

@@ -1,5 +1,6 @@
 import { createActorContext } from '@xstate/react'
-import { lazy, Suspense, type ReactNode } from 'react'
+import { lazy, type ReactNode, Suspense } from 'react'
+import { SeoManager } from '../components/SeoManager'
 import { bookMachine } from '../machines/bookMachine'
 import { settingsMachine } from '../machines/settingsMachine'
 
@@ -15,6 +16,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <Suspense fallback={null}>
       <LazyChakraAppProvider>
         <SettingsContext.Provider>
+          <SeoManager />
           <BookContext.Provider>{children}</BookContext.Provider>
         </SettingsContext.Provider>
       </LazyChakraAppProvider>

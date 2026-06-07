@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { BookContext, SettingsContext } from '../../context/AppProviders'
 import { profile } from '../../data/portfolio'
 import { translations } from '../../i18n/translations'
-import { BookContext, SettingsContext } from '../../context/AppProviders'
 import { FLIP_DURATION_MS } from '../../machines/bookMachine'
-import { getBookPages } from './pages'
+import { BookCoverContent } from './BookCoverContent'
 import { BookPageContent } from './BookPageContent'
+import { getBookPages } from './pages'
 
 const EASE = [0.32, 0.72, 0, 1] as const
 
@@ -53,10 +54,6 @@ export function BookPortfolio() {
   useEffect(() => {
     if (isClosing) setCoverFolded(false)
   }, [isClosing])
-
-  useEffect(() => {
-    document.documentElement.lang = lang
-  }, [lang])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -160,7 +157,7 @@ export function BookPortfolio() {
         </div>
       )}
 
-      <div className="book-viewport">
+      <div className="book-viewport" id="main-content">
         <div className={`book-stage ${isExpanded ? 'book-stage--open' : ''}`}>
           <motion.div
             className={[
@@ -265,11 +262,11 @@ export function BookPortfolio() {
               style={{ transformStyle: 'preserve-3d' }}
             >
               <div className="book-cover-face book-cover-front">
-                <h1 className="book-cover-name">{profile.name}</h1>
-                <p className="book-cover-title">{translations[lang].profile.title}</p>
-                <span className="book-cover-cta">
-                  {isClosing ? ui.closing : coverOpen ? ui.close : ui.openBook}
-                </span>
+                <BookCoverContent
+                  lang={lang}
+                  ctaLabel={isClosing ? ui.closing : coverOpen ? ui.close : ui.openBook}
+                  showHint={!coverOpen && !isClosing}
+                />
               </div>
               <div className="book-cover-face book-cover-inside" aria-hidden />
             </motion.button>

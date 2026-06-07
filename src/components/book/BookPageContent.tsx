@@ -11,6 +11,7 @@ export function BookPageContent({
   pageNum?: number
 }) {
   const isFinale = page.id === 'finale'
+  const year = new Date().getFullYear()
 
   return (
     <div className={`book-sheet book-sheet--${side} ${isFinale ? 'book-sheet--finale' : ''}`}>
@@ -31,6 +32,7 @@ export function BookPageContent({
       {!isFinale && (
         <footer className="book-sheet-footer">
           <span>{profile.name}</span>
+          <span>{year}</span>
         </footer>
       )}
     </div>

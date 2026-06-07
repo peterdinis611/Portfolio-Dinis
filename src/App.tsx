@@ -1,5 +1,5 @@
-import { AppProviders } from './context/AppProviders'
 import { AppRoot } from './AppRoot'
+import { AppProviders } from './context/AppProviders'
 import './styles/book.css'
 import './styles/preload.css'
 
