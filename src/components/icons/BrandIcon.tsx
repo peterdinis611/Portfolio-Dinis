@@ -1,3 +1,4 @@
+import { SettingsContext } from '../../context/AppProviders'
 import { brandIconColor, getBrandIcon } from '../../lib/brand-icons'
 
 type BrandIconProps = {
@@ -10,6 +11,7 @@ type BrandIconProps = {
 }
 
 export function BrandIcon({ slug, color, size, className, label, fallback }: BrandIconProps) {
+  const theme = SettingsContext.useSelector((s) => s.context.theme)
   const icon = getBrandIcon(slug)
 
   if (!icon) {
@@ -35,7 +37,7 @@ export function BrandIcon({ slug, color, size, className, label, fallback }: Bra
     )
   }
 
-  const fill = brandIconColor(slug, color)
+  const fill = brandIconColor(slug, color, { theme })
 
   return (
     <svg

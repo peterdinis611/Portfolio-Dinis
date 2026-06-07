@@ -6,6 +6,7 @@ import { translations } from '../../i18n/translations'
 import { FLIP_DURATION_MS } from '../../machines/bookMachine'
 import { BookCoverContent } from './BookCoverContent'
 import { BookPageContent } from './BookPageContent'
+import { ThemeToggleIcon } from '../icons/ThemeToggleIcon'
 import { getBookPages } from './pages'
 
 const EASE = [0.32, 0.72, 0, 1] as const
@@ -107,7 +108,7 @@ export function BookPortfolio() {
             onClick={() => settingsActor.send({ type: 'TOGGLE_THEME' })}
             aria-label={theme === 'dark' ? ui.themeLight : ui.themeDark}
           >
-            {theme === 'dark' ? 'Light' : 'Dark'}
+            <ThemeToggleIcon theme={theme} />
           </button>
         </div>
       ) : (
@@ -141,7 +142,7 @@ export function BookPortfolio() {
               onClick={() => settingsActor.send({ type: 'TOGGLE_THEME' })}
               aria-label={theme === 'dark' ? ui.themeLight : ui.themeDark}
             >
-              {theme === 'dark' ? 'Light' : 'Dark'}
+              <ThemeToggleIcon theme={theme} />
             </button>
           </div>
         </header>

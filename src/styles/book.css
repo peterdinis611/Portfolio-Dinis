@@ -210,9 +210,11 @@ img {
 }
 
 .book-icon-btn {
-  padding: 0.35rem 0.65rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
   border: 1px solid var(--app-border);
   border-radius: 999px;
   background: var(--app-surface);

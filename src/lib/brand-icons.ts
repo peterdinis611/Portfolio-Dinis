@@ -85,7 +85,28 @@ export function getBrandIcon(slug: string): BrandIconData | null {
   return customBrandIcons[slug] ?? packageBrandIcons[slug] ?? null
 }
 
-export function brandIconColor(slug: string, override?: string): string {
-  const hex = override?.replace('#', '') ?? getBrandIcon(slug)?.hex
-  return hex ? `#${hex}` : 'currentColor'
+function hexLuminance(hex: string): number {
+  const normalized = hex.replace('#', '')
+  const r = Number.parseInt(normalized.slice(0, 2), 16)
+  const g = Number.parseInt(normalized.slice(2, 4), 16)
+  const b = Number.parseInt(normalized.slice(4, 6), 16)
+  return (r * 299 + g * 587 + b * 114) / 1000
+}
+
+export function brandIconColor(
+  slug: string,
+  override?: string,
+  options?: { theme?: 'light' | 'dark' },
+): string {
+  if (override === 'currentColor') return 'currentColor'
+  if (override) return override.startsWith('#') ? override : `#${override.replace('#', '')}`
+
+  const icon = getBrandIcon(slug)
+  if (!icon) return 'currentColor'
+
+  if (options?.theme === 'dark' && hexLuminance(icon.hex) < 90) {
+    return 'currentColor'
+  }
+
+  return `#${icon.hex}`
 }
