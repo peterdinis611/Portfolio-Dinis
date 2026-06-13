@@ -66,22 +66,18 @@ export type TechPageSlice = {
   }>
 }
 
-/** Book pages for tech chapter — no scroll, all icons visible per spread side. */
+/** Book pages for tech chapter — balanced spreads, no empty halves. */
 export const techBookPages: TechPageSlice[] = [
   {
     id: 'tech-1',
-    categories: [{ categoryId: 'frontend', from: 0, to: 6 }],
+    categories: [{ categoryId: 'frontend' }],
   },
   {
     id: 'tech-2',
-    categories: [{ categoryId: 'frontend', from: 6 }],
-  },
-  {
-    id: 'tech-3',
     categories: [{ categoryId: 'backend' }],
   },
   {
-    id: 'tech-4',
+    id: 'tech-3',
     categories: [{ categoryId: 'cloud' }, { categoryId: 'mobile' }],
   },
 ]

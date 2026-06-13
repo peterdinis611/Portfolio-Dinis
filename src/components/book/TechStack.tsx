@@ -8,8 +8,6 @@ import {
 import { type Lang, translations } from '../../i18n/translations'
 import { BrandIcon } from '../icons/BrandIcon'
 
-const EASE = [0.32, 0.72, 0, 1] as const
-
 export function TechStack({ lang, page }: { lang: Lang; page: TechPageSlice }) {
   const t = translations[lang]
   const titleMap = Object.fromEntries(t.techCategories.map((c) => [c.id, c.title])) as Record<
@@ -20,20 +18,19 @@ export function TechStack({ lang, page }: { lang: Lang; page: TechPageSlice }) {
 
   return (
     <div className="book-tech-stack">
-      {sections.map((cat, catIdx) => (
+      {sections.map((cat) => (
         <section key={cat.id} className="book-tech-group">
           <h3 className="book-tech-group-title">{titleMap[cat.id]}</h3>
           <ul className="book-tech-grid">
-            {cat.items.map((item, i) => {
+            {cat.items.map((item) => {
               const icon = getTechIconPresentation(item)
               return (
                 <motion.li
                   key={item.id}
                   className="book-tech-item"
                   style={{ '--tech-brand': icon.brand } as CSSProperties}
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: catIdx * 0.06 + i * 0.03, duration: 0.35, ease: EASE }}
                 >
                   <span className="book-tech-icon-wrap book-tech-icon-wrap--solid">
                     <BrandIcon

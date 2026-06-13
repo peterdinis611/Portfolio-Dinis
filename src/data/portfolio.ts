@@ -14,7 +14,6 @@ export type SocialLink = {
 
 export const profile = {
   name: 'Peter Dinis',
-  email: 'peterdinis611@gmail.com',
   phone: '+421 950 460 254',
   phoneHref: '+421950460254',
   interests: [

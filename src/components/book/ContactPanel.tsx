@@ -1,5 +1,8 @@
+import type { ReactNode } from 'react'
 import { profile, socials } from '../../data/portfolio'
 import { type Lang, translations } from '../../i18n/translations'
+import { EmailDisplay } from '../ui/EmailDisplay'
+import { MailtoLink } from '../ui/MailtoLink'
 import { BrandIcon } from '../icons/BrandIcon'
 import { ProfilePhoto } from '../ui/ProfilePhoto'
 
@@ -25,11 +28,13 @@ function ContactItem({
   label,
   value,
   href,
+  mailto,
 }: {
   type: 'email' | 'phone' | 'location'
   label: string
-  value: string
+  value?: ReactNode
   href?: string
+  mailto?: boolean
 }) {
   const body = (
     <>
@@ -42,6 +47,14 @@ function ContactItem({
       </span>
     </>
   )
+
+  if (mailto) {
+    return (
+      <MailtoLink className="book-contact-item" aria-label={label}>
+        {body}
+      </MailtoLink>
+    )
+  }
 
   if (href) {
     return (
@@ -75,8 +88,8 @@ export function ContactPanel({ lang }: { lang: Lang }) {
         <ContactItem
           type="email"
           label={ui.emailLabel}
-          value={profile.email}
-          href={`mailto:${profile.email}`}
+          value={<EmailDisplay />}
+          mailto
         />
         <ContactItem
           type="phone"
@@ -88,9 +101,9 @@ export function ContactPanel({ lang }: { lang: Lang }) {
       </div>
 
       <div className="book-contact-actions">
-        <a className="book-contact-cta" href={`mailto:${profile.email}`}>
+        <MailtoLink className="book-contact-cta">
           {ui.endCta}
-        </a>
+        </MailtoLink>
 
         <div className="book-contact-social">
           <p className="book-contact-social-label">{ui.followMe}</p>

@@ -16,12 +16,6 @@ export function BookCoverContent({ lang, ctaLabel, showHint = false }: BookCover
   return (
     <>
       <div className="book-cover-spine" aria-hidden />
-      <div className="book-cover-frame" aria-hidden>
-        <span className="book-cover-corner book-cover-corner--tl" />
-        <span className="book-cover-corner book-cover-corner--tr" />
-        <span className="book-cover-corner book-cover-corner--bl" />
-        <span className="book-cover-corner book-cover-corner--br" />
-      </div>
 
       <div className="book-cover-inner">
         <div className="book-cover-ornament" aria-hidden>

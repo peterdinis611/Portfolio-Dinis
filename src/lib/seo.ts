@@ -1,3 +1,4 @@
+import { decodeEmail } from './email'
 import { profile, socials } from '../data/portfolio'
 import { type Lang, translations } from '../i18n/translations'
 
@@ -66,7 +67,7 @@ function buildJsonLd(lang: Lang, siteUrl: string) {
         '@id': `${siteUrl}/#person`,
         name: profile.name,
         jobTitle: t.profile.title,
-        email: profile.email,
+        email: decodeEmail(),
         telephone: profile.phone,
         url: siteUrl,
         image: siteUrl ? `${siteUrl}/og-image.jpg` : undefined,

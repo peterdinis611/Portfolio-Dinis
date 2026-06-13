@@ -106,15 +106,6 @@ export function getBookPages(lang: Lang): BookPageDef[] {
               <li key={tag}>{tag}</li>
             ))}
           </ul>
-          <h3 className="book-subtitle book-subtitle--about">{ui.whatIDo}</h3>
-          <ol className="book-services book-services--about">
-            {t.services.map((s) => (
-              <li key={s.id}>
-                <span>{s.id}</span>
-                {s.label}
-              </li>
-            ))}
-          </ol>
         </>
       ),
     },
