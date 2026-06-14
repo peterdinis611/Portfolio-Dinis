@@ -19,23 +19,23 @@
     "verify": "tsc -b && biome ci ."
   },
   "dependencies": {
-    "@chakra-ui/react": "^3.35.0",
+    "@chakra-ui/react": "^3.36.0",
     "@emotion/react": "^11.14.0",
     "@xstate/react": "^6.1.0",
     "framer-motion": "^12.40.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "simple-icons": "^16.22.0",
-    "xstate": "^5.32.0"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "simple-icons": "^16.23.0",
+    "xstate": "^5.32.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
-    "@types/node": "^24.12.3",
-    "@types/react": "^19.2.14",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "typescript": "~6.0.2",
-    "vite": "^8.0.12",
+    "@vitejs/plugin-react": "^6.0.2",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16",
     "vite-imagetools": "^10.0.0"
   }
 }

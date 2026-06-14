@@ -11,6 +11,8 @@ type BookSpreadProps = {
   isCrossfading: boolean
   canPrev: boolean
   canNext: boolean
+  prevLabel: string
+  nextLabel: string
   onPrev: () => void
   onNext: () => void
   onFlipDone: () => void
@@ -24,6 +26,8 @@ export function BookSpread({
   isCrossfading,
   canPrev,
   canNext,
+  prevLabel,
+  nextLabel,
   onPrev,
   onNext,
   onFlipDone,
@@ -49,7 +53,25 @@ export function BookSpread({
       <div
         className={`book-page book-page--left ${canPrev ? 'can-click' : ''}${flipBackward ? ' book-page--turning' : ''}`}
         onClick={canPrev && !isBusy ? onPrev : undefined}
+        role={canPrev ? 'button' : undefined}
+        tabIndex={canPrev ? 0 : undefined}
+        onKeyDown={
+          canPrev && !isBusy
+            ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onPrev()
+                }
+              }
+            : undefined
+        }
+        aria-label={canPrev ? prevLabel : undefined}
       >
+        {canPrev && !isBusy && (
+          <span className="book-page-hint book-page-hint--left" aria-hidden>
+            ‹
+          </span>
+        )}
         {flipBackward && bookPages[page - 1] && (
           <div className="book-page-under">
             <BookPageContent page={bookPages[page - 1]!} side="left" pageNum={page} />
@@ -81,7 +103,25 @@ export function BookSpread({
       <div
         className={`book-page book-page--right ${canNext ? 'can-click' : ''}${flipForward ? ' book-page--turning' : ''}`}
         onClick={canNext && !isBusy ? onNext : undefined}
+        role={canNext ? 'button' : undefined}
+        tabIndex={canNext ? 0 : undefined}
+        onKeyDown={
+          canNext && !isBusy
+            ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onNext()
+                }
+              }
+            : undefined
+        }
+        aria-label={canNext ? nextLabel : undefined}
       >
+        {canNext && !isBusy && (
+          <span className="book-page-hint book-page-hint--right" aria-hidden>
+            ›
+          </span>
+        )}
         {flipForward && bookPages[page + 2] && (
           <div className="book-page-under">
             <BookPageContent page={bookPages[page + 2]!} side="right" pageNum={page + 3} />

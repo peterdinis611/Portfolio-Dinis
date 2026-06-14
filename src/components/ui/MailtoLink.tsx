@@ -23,7 +23,7 @@ export function MailtoLink({ mailto, onNavigate, children, ...rest }: MailtoLink
   )
 
   return (
-    <a {...rest} href="#" onClick={handleClick} rel="nofollow noopener">
+    <a {...rest} href="#" onClick={handleClick} target="_blank" rel="nofollow noopener noreferrer">
       {children}
     </a>
   )

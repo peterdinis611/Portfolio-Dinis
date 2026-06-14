@@ -1,3 +1,5 @@
+import { openInNewTab } from './links'
+
 declare const emailBrand: unique symbol
 
 /** Decoded contact address — do not construct manually. */
@@ -54,5 +56,5 @@ export function buildMailtoHref(email: EmailAddress, options?: MailtoOptions): s
 }
 
 export function openMailto(options?: MailtoOptions): void {
-  window.location.assign(buildMailtoHref(decodeEmail(), options))
+  openInNewTab(buildMailtoHref(decodeEmail(), options))
 }

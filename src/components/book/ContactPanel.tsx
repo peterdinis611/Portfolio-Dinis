@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { profile, socials } from '../../data/portfolio'
 import { type Lang, translations } from '../../i18n/translations'
 import { EmailDisplay } from '../ui/EmailDisplay'
+import { ExternalLink } from '../ui/ExternalLink'
 import { MailtoLink } from '../ui/MailtoLink'
 import { BrandIcon } from '../icons/BrandIcon'
 import { ProfilePhoto } from '../ui/ProfilePhoto'
@@ -110,15 +111,13 @@ export function ContactPanel({ lang }: { lang: Lang }) {
           <ul className="book-contact-social-list">
             {socials.map((s) => (
               <li key={s.name}>
-                <a
+                <ExternalLink
                   href={s.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   aria-label={s.name}
                   title={s.name}
                 >
                   <BrandIcon slug={s.icon} className="book-contact-social-icon" label={s.name} />
-                </a>
+                </ExternalLink>
               </li>
             ))}
           </ul>

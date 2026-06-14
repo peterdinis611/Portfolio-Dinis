@@ -5,17 +5,21 @@ import { ProfilePhoto } from '../ui/ProfilePhoto'
 type BookCoverContentProps = {
   lang: Lang
   ctaLabel: string
-  showHint?: boolean
 }
 
-export function BookCoverContent({ lang, ctaLabel, showHint = false }: BookCoverContentProps) {
+export function BookCoverContent({ lang, ctaLabel }: BookCoverContentProps) {
   const t = translations[lang]
-  const ui = t.ui
   const year = new Date().getFullYear()
 
   return (
     <>
       <div className="book-cover-spine" aria-hidden />
+      <div className="book-cover-frame" aria-hidden>
+        <span className="book-cover-corner book-cover-corner--tl" />
+        <span className="book-cover-corner book-cover-corner--tr" />
+        <span className="book-cover-corner book-cover-corner--bl" />
+        <span className="book-cover-corner book-cover-corner--br" />
+      </div>
 
       <div className="book-cover-inner">
         <div className="book-cover-ornament" aria-hidden>
@@ -32,8 +36,6 @@ export function BookCoverContent({ lang, ctaLabel, showHint = false }: BookCover
         <div className="book-cover-rule" aria-hidden />
 
         <span className="book-cover-cta">{ctaLabel}</span>
-
-        {showHint ? <p className="book-cover-hint">{ui.tapToOpen}</p> : null}
       </div>
 
       <span className="book-cover-year" aria-hidden>

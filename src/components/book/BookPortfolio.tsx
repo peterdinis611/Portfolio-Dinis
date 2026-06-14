@@ -11,6 +11,7 @@ import {
 } from '../../machines/bookMachine'
 import { BookCoverContent } from './BookCoverContent'
 import { BookSpread } from './BookSpread'
+import { BookToolbar } from './BookToolbar'
 import { ThemeToggleIcon } from '../icons/ThemeToggleIcon'
 import { getBookPages } from './pages'
 
@@ -277,6 +278,8 @@ export function BookPortfolio() {
                 isCrossfading={isCrossfading}
                 canPrev={canPrev}
                 canNext={canNext}
+                prevLabel={ui.turnPrev}
+                nextLabel={ui.turnNext}
                 onPrev={() => bookActor.send({ type: 'PREV' })}
                 onNext={() => bookActor.send({ type: 'NEXT' })}
                 onFlipDone={() => bookActor.send({ type: 'FLIP_DONE' })}
@@ -310,7 +313,6 @@ export function BookPortfolio() {
                 <BookCoverContent
                   lang={lang}
                   ctaLabel={isClosing ? ui.closing : isReading ? ui.close : ui.openBook}
-                  showHint={isClosed && !isClosing}
                 />
               </div>
               <div className="book-cover-face book-cover-inside" aria-hidden />
@@ -321,8 +323,7 @@ export function BookPortfolio() {
 
       <AnimatePresence>
         {showShell && (
-          <motion.footer
-            className="book-toolbar"
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 18 }}
@@ -332,59 +333,23 @@ export function BookPortfolio() {
               delay: isClosing ? 0 : 0.48,
             }}
           >
-            <button
-              type="button"
-              className="book-nav-btn"
-              onClick={() => bookActor.send({ type: 'PREV' })}
-              disabled={!canPrev || isTransitioning || isClosing}
-              aria-label={ui.back}
-            >
-              ←
-            </button>
-
-            <div className="book-toolbar-main">
-              <div className="book-toolbar-track" aria-hidden>
-                <motion.div
-                  className="book-toolbar-track-fill"
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.45, ease: EASE }}
-                />
-              </div>
-              <span className="book-toolbar-count">
-                {page + 1}–{Math.min(page + 2, total)} / {total}
-              </span>
-            </div>
-
-            {isFinaleSpread ? (
-              <button
-                type="button"
-                className="book-nav-btn book-nav-btn--text"
-                onClick={() => bookActor.send({ type: 'GO_TO', page: 0 })}
-                disabled={isClosing}
-              >
-                {ui.readAgain}
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="book-nav-btn"
-                onClick={() => bookActor.send({ type: 'NEXT' })}
-                disabled={!canNext || isTransitioning || isClosing}
-                aria-label={ui.next}
-              >
-                →
-              </button>
-            )}
-
-            <button
-              type="button"
-              className="book-nav-btn book-nav-btn--ghost"
-              onClick={() => bookActor.send({ type: 'REQUEST_CLOSE' })}
-              disabled={isClosing}
-            >
-              {ui.close}
-            </button>
-          </motion.footer>
+            <BookToolbar
+              lang={lang}
+              page={page}
+              total={total}
+              progress={progress}
+              bookPages={bookPages}
+              leftPage={leftPage}
+              rightPage={rightPage}
+              isFinaleSpread={isFinaleSpread}
+              isTransitioning={isTransitioning}
+              isClosing={isClosing}
+              onPrev={() => bookActor.send({ type: 'PREV' })}
+              onNext={() => bookActor.send({ type: 'NEXT' })}
+              onGoTo={(p) => bookActor.send({ type: 'GO_TO', page: p })}
+              onClose={() => bookActor.send({ type: 'REQUEST_CLOSE' })}
+            />
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

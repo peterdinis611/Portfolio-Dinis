@@ -14,7 +14,9 @@ export function BookPageContent({
   const year = new Date().getFullYear()
 
   return (
-    <div className={`book-sheet book-sheet--${side} ${isFinale ? 'book-sheet--finale' : ''}`}>
+    <div
+      className={`book-sheet book-sheet--${side} book-sheet--${page.id} ${isFinale ? 'book-sheet--finale' : ''}`}
+    >
       {!isFinale && (
         <header className="book-sheet-header">
           <div className="book-sheet-header-top">
