@@ -13,9 +13,10 @@ function loadSetting<T extends string>(key: string, fallback: T): T {
 
 function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme
+  document.documentElement.classList.toggle('dark', theme === 'dark')
 }
 
-const initialTheme = loadSetting<Theme>('portfolio-theme', 'dark')
+const initialTheme = loadSetting<Theme>('portfolio-theme', 'light')
 applyTheme(initialTheme)
 
 export type SettingsContext = {

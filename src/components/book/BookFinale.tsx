@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import { BookContext, SettingsContext } from '../../context/AppProviders'
 import { profile } from '../../data/portfolio'
-import { MailtoLink } from '../ui/MailtoLink'
 import { translations } from '../../i18n/translations'
+import { MailtoLink } from '../ui/MailtoLink'
 
 const EASE = [0.32, 0.72, 0, 1] as const
 
@@ -36,9 +36,7 @@ export function BookFinale() {
 
         <p className="book-finale-body">{ui.endBody}</p>
 
-        <MailtoLink className="book-finale-btn book-finale-btn--primary">
-          {ui.endCta}
-        </MailtoLink>
+        <MailtoLink className="book-finale-btn book-finale-btn--primary">{ui.endCta}</MailtoLink>
 
         <div className="book-finale-signoff">
           <span className="book-finale-signoff-line" aria-hidden />

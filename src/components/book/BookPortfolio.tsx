@@ -9,10 +9,10 @@ import {
   COVER_DURATION_MS,
   COVER_EASE,
 } from '../../machines/bookMachine'
+import { ThemeToggleIcon } from '../icons/ThemeToggleIcon'
 import { BookCoverContent } from './BookCoverContent'
 import { BookSpread } from './BookSpread'
 import { BookToolbar } from './BookToolbar'
-import { ThemeToggleIcon } from '../icons/ThemeToggleIcon'
 import { getBookPages } from './pages'
 
 const EASE = [0.32, 0.72, 0, 1] as const
@@ -35,8 +35,7 @@ export function BookPortfolio() {
 
   const isClosed = bookState === 'closed'
   const isClosing = bookState === 'closing'
-  const isReading =
-    bookState === 'open' || bookState === 'flipping' || bookState === 'crossfading'
+  const isReading = bookState === 'open' || bookState === 'flipping' || bookState === 'crossfading'
   const isOpen = isReading
   const isFlipping = bookState === 'flipping'
   const isCrossfading = bookState === 'crossfading'
@@ -288,14 +287,13 @@ export function BookPortfolio() {
 
             <motion.button
               type="button"
-              className={[
-                'book-cover',
-                coverParked && !isClosing ? 'book-cover--parked' : '',
-              ]
+              className={['book-cover', coverParked && !isClosing ? 'book-cover--parked' : '']
                 .filter(Boolean)
                 .join(' ')}
               onClick={() =>
-                isReading ? bookActor.send({ type: 'REQUEST_CLOSE' }) : bookActor.send({ type: 'OPEN' })
+                isReading
+                  ? bookActor.send({ type: 'REQUEST_CLOSE' })
+                  : bookActor.send({ type: 'OPEN' })
               }
               initial={false}
               animate={{

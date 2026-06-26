@@ -24,7 +24,7 @@ export const techCategories: TechCategory[] = [
       { id: 'tailwind', name: 'Tailwind', icon: 'tailwindcss', color: '06B6D4' },
       { id: 'tanstack', name: 'TanStack Query', icon: 'reactquery', color: 'FF4154' },
       { id: 'less', name: 'Less', icon: 'less', color: '1D365D' },
-      { id: 'chakra', name: 'Chakra UI', icon: 'chakraui', color: '319795' },
+      { id: 'shadcn', name: 'shadcn/ui', icon: 'shadcnui', color: '000000' },
     ],
   },
   {
@@ -99,24 +99,37 @@ export function getTechIconPresentation(item: TechItem) {
   type Preset = { brand: string; iconColor: string; solid: true }
 
   const presets: Record<string, Preset> = {
-    js: { brand: '#F7DF1E', iconColor: '323330', solid: true },
-    linux: { brand: '#FCC624', iconColor: '000000', solid: true },
-    aws: { brand: '#FF9900', iconColor: 'FFFFFF', solid: true },
-    next: { brand: '#000000', iconColor: 'FFFFFF', solid: true },
-    less: { brand: '#1D365D', iconColor: 'FFFFFF', solid: true },
-    mysql: { brand: '#4479A1', iconColor: 'FFFFFF', solid: true },
-    postgres: { brand: '#4169E1', iconColor: 'FFFFFF', solid: true },
-    react: { brand: '#0D2B2E', iconColor: '61DAFB', solid: true },
-    rn: { brand: '#0D2B2E', iconColor: '61DAFB', solid: true },
-    tailwind: { brand: '#0F3D45', iconColor: '06B6D4', solid: true },
-    tanstack: { brand: '#3D1218', iconColor: 'FF4154', solid: true },
+    html: { brand: '#E34F26', iconColor: '#FFFFFF', solid: true },
+    css: { brand: '#1572B6', iconColor: '#FFFFFF', solid: true },
+    scss: { brand: '#CC6699', iconColor: '#FFFFFF', solid: true },
+    js: { brand: '#F7DF1E', iconColor: '#323330', solid: true },
+    ts: { brand: '#3178C6', iconColor: '#FFFFFF', solid: true },
+    react: { brand: '#0D2B2E', iconColor: '#61DAFB', solid: true },
+    next: { brand: '#000000', iconColor: '#FFFFFF', solid: true },
+    tailwind: { brand: '#0F3D45', iconColor: '#06B6D4', solid: true },
+    tanstack: { brand: '#3D1218', iconColor: '#FF4154', solid: true },
+    less: { brand: '#1D365D', iconColor: '#FFFFFF', solid: true },
+    shadcn: { brand: '#18181B', iconColor: '#FAFAFA', solid: true },
+    node: { brand: '#339933', iconColor: '#FFFFFF', solid: true },
+    mongo: { brand: '#47A248', iconColor: '#FFFFFF', solid: true },
+    nest: { brand: '#E0234E', iconColor: '#FFFFFF', solid: true },
+    graphql: { brand: '#E10098', iconColor: '#FFFFFF', solid: true },
+    mysql: { brand: '#4479A1', iconColor: '#FFFFFF', solid: true },
+    postgres: { brand: '#4169E1', iconColor: '#FFFFFF', solid: true },
+    dotnet: { brand: '#512BD4', iconColor: '#FFFFFF', solid: true },
+    aws: { brand: '#FF9900', iconColor: '#232F3E', solid: true },
+    docker: { brand: '#2496ED', iconColor: '#FFFFFF', solid: true },
+    linux: { brand: '#FCC624', iconColor: '#000000', solid: true },
+    azure: { brand: '#0078D4', iconColor: '#FFFFFF', solid: true },
+    rn: { brand: '#0D2B2E', iconColor: '#61DAFB', solid: true },
+    pwa: { brand: '#5A0FC8', iconColor: '#FFFFFF', solid: true },
   }
 
   if (presets[item.id]) return presets[item.id]
 
   return {
     brand: `#${item.color}`,
-    iconColor: 'FFFFFF',
+    iconColor: '#FFFFFF',
     solid: true as const,
   }
 }

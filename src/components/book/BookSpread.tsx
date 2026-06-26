@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { FLIP_DURATION_MS, FLIP_EASE } from '../../machines/bookMachine'
-import type { BookPageDef } from './pages'
 import { BookPageContent } from './BookPageContent'
+import type { BookPageDef } from './pages'
 
 type BookSpreadProps = {
   page: number

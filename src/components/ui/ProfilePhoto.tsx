@@ -14,7 +14,7 @@ export function ProfilePhoto({ className, priority = false }: ProfilePhotoProps)
       <img
         src={profilePhotoJpg}
         alt={profile.name}
-        className="book-page-photo-img"
+        className="block h-full w-full object-cover"
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"

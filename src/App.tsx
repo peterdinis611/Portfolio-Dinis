@@ -1,6 +1,6 @@
 import { AppRoot } from './AppRoot'
 import { AppProviders } from './context/AppProviders'
-import './styles/book.css'
+import './index.css'
 import './styles/preload.css'
 
 export default function App() {

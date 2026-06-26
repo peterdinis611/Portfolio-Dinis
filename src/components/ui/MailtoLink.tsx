@@ -1,10 +1,5 @@
-import {
-  type ComponentPropsWithoutRef,
-  type MouseEvent,
-  type ReactNode,
-  useCallback,
-} from 'react'
-import { openMailto, type MailtoOptions } from '../../lib/email'
+import { type ComponentPropsWithoutRef, type MouseEvent, type ReactNode, useCallback } from 'react'
+import { buildMailtoHref, decodeEmail, type MailtoOptions, openMailto } from '@/lib/email'
 
 type MailtoLinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'onClick'> & {
   mailto?: MailtoOptions
@@ -23,7 +18,13 @@ export function MailtoLink({ mailto, onNavigate, children, ...rest }: MailtoLink
   )
 
   return (
-    <a {...rest} href="#" onClick={handleClick} target="_blank" rel="nofollow noopener noreferrer">
+    <a
+      {...rest}
+      href={buildMailtoHref(decodeEmail(), mailto)}
+      onClick={handleClick}
+      target="_blank"
+      rel="nofollow noopener noreferrer"
+    >
       {children}
     </a>
   )

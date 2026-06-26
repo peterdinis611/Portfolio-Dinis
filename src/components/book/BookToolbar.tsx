@@ -1,5 +1,5 @@
 import { type Lang, translations } from '../../i18n/translations'
-import { getTocEntries, pageIndexToSpread, type BookPageDef } from './pages'
+import { type BookPageDef, getTocEntries, pageIndexToSpread } from './pages'
 
 type BookToolbarProps = {
   lang: Lang

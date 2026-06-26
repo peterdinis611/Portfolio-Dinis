@@ -36,15 +36,15 @@ export function PreloadScreen({ progress = 0 }: PreloadScreenProps) {
   return (
     <div className="preload" role="status" aria-live="polite" aria-label="Loading portfolio">
       <motion.div
-        className="preload-book"
-        initial={{ opacity: 0, y: 12 }}
+        className="preload-mark"
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+        transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
       >
-        <div className="preload-book-cover">
-          <span className="preload-book-name">Peter Dinis</span>
-          <span className="preload-book-sub">Full-Stack Developer</span>
-        </div>
+        <span className="preload-mark-icon" aria-hidden>
+          🧑‍💻
+        </span>
+        <span>Peter Dinis</span>
       </motion.div>
 
       <div className="preload-bar" aria-hidden>

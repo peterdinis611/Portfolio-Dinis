@@ -1,6 +1,6 @@
-import { decodeEmail } from './email'
 import { profile, socials } from '../data/portfolio'
 import { type Lang, translations } from '../i18n/translations'
+import { decodeEmail } from './email'
 
 const SITE_NAME = 'Peter Dinis — Portfolio'
 const JSON_LD_ID = 'portfolio-jsonld'

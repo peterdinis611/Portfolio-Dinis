@@ -1,6 +1,5 @@
 import type { SimpleIcon } from 'simple-icons'
 import {
-  siChakraui,
   siCss,
   siDocker,
   siDotnet,
@@ -53,6 +52,11 @@ const customBrandIcons: Record<string, BrandIconData> = {
     hex: 'C45C3E',
     path: 'M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z',
   },
+  shadcnui: {
+    title: 'shadcn/ui',
+    hex: '000000',
+    path: 'M8.25 18.75 12.75 6h1.5L9.75 18.75h-1.5Zm6.75 0L19.5 6H21l-5.25 12.75h-1.5Z',
+  },
 }
 
 const packageBrandIcons: Record<string, BrandIconData> = {
@@ -67,7 +71,6 @@ const packageBrandIcons: Record<string, BrandIconData> = {
   tailwindcss: siTailwindcss,
   reactquery: siReactquery,
   less: siLess,
-  chakraui: siChakraui,
   nodedotjs: siNodedotjs,
   mongodb: siMongodb,
   nestjs: siNestjs,

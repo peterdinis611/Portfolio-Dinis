@@ -150,7 +150,11 @@ img {
   flex-direction: column;
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, var(--app-bg-glow), transparent 70%),
-    radial-gradient(ellipse 90% 70% at 50% 100%, color-mix(in srgb, var(--app-bg) 92%, #000), var(--app-bg));
+    radial-gradient(
+      ellipse 90% 70% at 50% 100%,
+      color-mix(in srgb, var(--app-bg) 92%, #000),
+      var(--app-bg)
+    );
 }
 
 .book-app-header {

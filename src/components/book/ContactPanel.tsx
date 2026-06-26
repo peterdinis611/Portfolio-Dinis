@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import { profile, socials } from '../../data/portfolio'
 import { type Lang, translations } from '../../i18n/translations'
+import { BrandIcon } from '../icons/BrandIcon'
 import { EmailDisplay } from '../ui/EmailDisplay'
 import { ExternalLink } from '../ui/ExternalLink'
 import { MailtoLink } from '../ui/MailtoLink'
-import { BrandIcon } from '../icons/BrandIcon'
 import { ProfilePhoto } from '../ui/ProfilePhoto'
 
 function ContactIcon({ type }: { type: 'email' | 'phone' | 'location' }) {
@@ -86,12 +86,7 @@ export function ContactPanel({ lang }: { lang: Lang }) {
       <p className="book-contact-text">{ui.contactText}</p>
 
       <div className="book-contact-list">
-        <ContactItem
-          type="email"
-          label={ui.emailLabel}
-          value={<EmailDisplay />}
-          mailto
-        />
+        <ContactItem type="email" label={ui.emailLabel} value={<EmailDisplay />} mailto />
         <ContactItem
           type="phone"
           label={ui.phoneLabel}
@@ -102,20 +97,14 @@ export function ContactPanel({ lang }: { lang: Lang }) {
       </div>
 
       <div className="book-contact-actions">
-        <MailtoLink className="book-contact-cta">
-          {ui.endCta}
-        </MailtoLink>
+        <MailtoLink className="book-contact-cta">{ui.endCta}</MailtoLink>
 
         <div className="book-contact-social">
           <p className="book-contact-social-label">{ui.followMe}</p>
           <ul className="book-contact-social-list">
             {socials.map((s) => (
               <li key={s.name}>
-                <ExternalLink
-                  href={s.url}
-                  aria-label={s.name}
-                  title={s.name}
-                >
+                <ExternalLink href={s.url} aria-label={s.name} title={s.name}>
                   <BrandIcon slug={s.icon} className="book-contact-social-icon" label={s.name} />
                 </ExternalLink>
               </li>

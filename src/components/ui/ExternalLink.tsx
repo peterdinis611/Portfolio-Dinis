@@ -1,4 +1,4 @@
-import { externalAnchorProps, type ExternalLinkProps } from '../../lib/links'
+import { type ExternalLinkProps, externalAnchorProps } from '../../lib/links'
 
 export function ExternalLink({ href, children, ...rest }: ExternalLinkProps) {
   return (

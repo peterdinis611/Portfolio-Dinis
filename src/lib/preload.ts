@@ -12,9 +12,9 @@ function loadImage(src: string): Promise<void> {
 const preloadSteps = [
   () => document.fonts.ready,
   () => Promise.all(profilePhotoSources.map(loadImage)),
-  () => import('../components/book/BookPortfolio'),
-  () => import('../components/book/pages'),
-  () => import('../components/book/TechStack'),
+  () => import('../components/notion/NotionPortfolio'),
+  () => import('../components/notion/pages/AboutPage'),
+  () => import('../components/notion/pages/TechPage'),
 ] as const
 
 let preloadPromise: Promise<void> | null = null
