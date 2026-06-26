@@ -108,15 +108,32 @@ src/
 
 ## SEO
 
-The app updates meta tags, Open Graph, Twitter cards, canonical URLs and JSON-LD when the language changes.
+Meta tags, Open Graph, Twitter cards, canonical URLs, breadcrumbs JSON-LD and `Person` / `ProfilePage` schema update when **language** or **page** (`#about`, `#tech`, …) changes.
 
-Before deploy, set your production URL:
+| File | Purpose |
+|------|---------|
+| `index.html` | Default SK meta (crawlers without JS) |
+| `src/lib/seo.ts` | Dynamic SEO per page + language |
+| `src/components/SeoManager.tsx` | Syncs SEO on navigation |
+| `public/robots.txt` | Crawler rules |
+| `public/sitemap.xml` | All portfolio sections |
+| `public/og-image.jpg` | Social preview image |
+
+### Deploy setup
 
 ```bash
-VITE_SITE_URL=https://your-domain.com
+cp .env.example .env
+# Set your production domain:
+# VITE_SITE_URL=https://your-domain.com
 ```
 
-Also update `<loc>` in `public/sitemap.xml` and `Sitemap:` in `public/robots.txt` to match.
+Regenerate `robots.txt` and `sitemap.xml` from `.env`:
+
+```bash
+npm run seo:generate
+```
+
+`npm run build` runs this automatically before the Vite build.
 
 ## License
 

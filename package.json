@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run seo:generate && tsc -b && vite build",
     "preview": "vite preview",
     "lint": "biome lint .",
     "lint:biome": "biome lint .",
@@ -17,6 +17,7 @@
     "check:staged": "biome check --staged --write --no-errors-on-unmatched",
     "biome:ci": "biome ci .",
     "notion:sync": "node scripts/sync-notion.mjs",
+    "seo:generate": "node scripts/generate-seo.mjs",
     "verify": "tsc -b && biome ci ."
   },
   "dependencies": {

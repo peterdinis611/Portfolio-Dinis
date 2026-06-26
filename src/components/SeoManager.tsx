@@ -1,13 +1,23 @@
-import { useEffect } from 'react'
-import { SettingsContext } from '../context/AppProviders'
-import { applySeo } from '../lib/seo'
+import { useEffect, useState } from 'react'
+import { pageFromHash } from '@/components/notion/nav'
+import type { NotionPageId } from '@/components/notion/types'
+import { SettingsContext } from '@/context/AppProviders'
+import { applySeo } from '@/lib/seo'
 
 export function SeoManager() {
   const lang = SettingsContext.useSelector((s) => s.context.lang)
+  const [page, setPage] = useState<NotionPageId>(() => pageFromHash())
 
   useEffect(() => {
-    applySeo(lang)
-  }, [lang])
+    const syncPage = () => setPage(pageFromHash())
+    window.addEventListener('hashchange', syncPage)
+    syncPage()
+    return () => window.removeEventListener('hashchange', syncPage)
+  }, [])
+
+  useEffect(() => {
+    applySeo(lang, page)
+  }, [lang, page])
 
   return null
 }
