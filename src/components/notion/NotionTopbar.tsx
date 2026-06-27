@@ -2,13 +2,13 @@ import { Menu, Search } from 'lucide-react'
 import { ThemeToggleIcon } from '@/components/icons/ThemeToggleIcon'
 import { Button } from '@/components/ui/button'
 import { type Lang, type Theme, translations } from '@/i18n/translations'
-import { getNotionPages } from './nav'
-import type { NotionPageId } from './types'
+import type { PortfolioRoute } from '@/lib/portfolio-route'
+import { getNotionPages, getProjectName } from './nav'
 
 type NotionTopbarProps = {
   lang: Lang
   theme: Theme
-  page: NotionPageId
+  route: PortfolioRoute
   onMenu: () => void
   onOpenSearch: () => void
   onLang: (lang: Lang) => void
@@ -18,14 +18,15 @@ type NotionTopbarProps = {
 export function NotionTopbar({
   lang,
   theme,
-  page,
+  route,
   onMenu,
   onOpenSearch,
   onLang,
   onTheme,
 }: NotionTopbarProps) {
   const ui = translations[lang].ui
-  const current = getNotionPages(lang).find((p) => p.id === page)
+  const current = getNotionPages(lang).find((p) => p.id === route.page)
+  const projectName = route.projectId ? getProjectName(route.projectId) : undefined
 
   return (
     <header className="sticky top-0 z-20 flex h-11 items-center justify-between gap-3 border-b border-border bg-background/85 px-3 backdrop-blur-md">
@@ -47,9 +48,15 @@ export function NotionTopbar({
           <span className="hidden sm:inline" aria-hidden>
             /
           </span>
-          <span className="truncate font-medium text-foreground">
+          <span className={cnTruncate(projectName)}>
             {current?.icon} {current?.label}
           </span>
+          {projectName ? (
+            <>
+              <span aria-hidden>/</span>
+              <span className="truncate font-medium text-foreground">{projectName}</span>
+            </>
+          ) : null}
         </nav>
       </div>
 
@@ -93,4 +100,8 @@ export function NotionTopbar({
       </div>
     </header>
   )
+}
+
+function cnTruncate(hasProject: string | undefined) {
+  return hasProject ? 'truncate' : 'truncate font-medium text-foreground'
 }

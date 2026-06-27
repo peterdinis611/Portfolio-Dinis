@@ -1,5 +1,6 @@
 import { profile } from '../../data/portfolio'
-import { profilePhotoJpg, profilePhotoWebp } from '../../lib/profile-image'
+import { profilePhotoLight } from '../../lib/profile-image'
+import { cn } from '../../lib/utils'
 
 type ProfilePhotoProps = {
   className?: string
@@ -9,12 +10,12 @@ type ProfilePhotoProps = {
 
 export function ProfilePhoto({ className, priority = false }: ProfilePhotoProps) {
   return (
-    <picture className={className}>
-      <source srcSet={profilePhotoWebp} type="image/webp" />
+    <picture className={cn('relative block', className)}>
+      <source srcSet={profilePhotoLight.webp} type="image/webp" />
       <img
-        src={profilePhotoJpg}
+        src={profilePhotoLight.jpg}
         alt={profile.name}
-        className="block h-full w-full object-cover"
+        className="block h-full w-full bg-white object-contain"
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"

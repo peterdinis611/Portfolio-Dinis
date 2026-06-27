@@ -809,3 +809,19 @@ img {
     display: none;
   }
 }
+
+.notion-page-link:hover {
+  text-decoration: none;
+}
+
+.notion-bookmark:hover {
+  text-decoration: none;
+}
+
+.notion-toc a:hover {
+  text-decoration: none;
+}
+
+.notion-code-block code {
+  white-space: pre;
+}

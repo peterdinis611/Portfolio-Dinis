@@ -2,6 +2,15 @@ import type { ReactNode } from 'react'
 import { getNotionTagColor, notionTagClass } from '@/lib/notion-tags'
 import { cn } from '@/lib/utils'
 
+export type InfoFactTone = 'rose' | 'yellow' | 'blue' | 'sky'
+
+const infoFactToneClass: Record<InfoFactTone, string> = {
+  rose: 'bg-rose-50/90 dark:bg-rose-950/30',
+  yellow: 'bg-amber-50/90 dark:bg-amber-950/30',
+  blue: 'bg-sky-50/90 dark:bg-sky-950/30',
+  sky: 'bg-blue-50/80 dark:bg-blue-950/25',
+}
+
 export function PageShell({
   cover,
   children,
@@ -32,15 +41,24 @@ export function PageHero({
   title,
   subtitle,
   photo,
+  circular = false,
 }: {
   name: string
   title: string
   subtitle?: string
   photo: ReactNode
+  circular?: boolean
 }) {
   return (
-    <div className="relative z-10 -mt-14 mb-6 flex flex-col items-center gap-3 sm:-mt-16 sm:flex-row sm:items-end sm:gap-4">
-      <div className="rounded-xl border-4 border-background bg-background shadow-md">{photo}</div>
+    <div className="relative z-10 -mt-[4.5rem] mb-8 flex flex-col items-center gap-3 sm:-mt-20 sm:flex-row sm:items-end sm:gap-5">
+      <div
+        className={cn(
+          'border-4 border-background bg-background shadow-md',
+          circular ? 'rounded-full' : 'rounded-xl',
+        )}
+      >
+        {photo}
+      </div>
       <div className="text-center sm:pb-1 sm:text-left">
         <p className="text-xl font-bold tracking-tight text-foreground">{name}</p>
         <p className="text-sm font-medium text-foreground/90">{title}</p>
@@ -49,6 +67,167 @@ export function PageHero({
         ) : null}
       </div>
     </div>
+  )
+}
+
+export function GreetingTitle({ greeting, role }: { greeting: string; role: string }) {
+  return (
+    <h1 className="mb-6 text-[clamp(1.75rem,4.5vw,2.35rem)] font-bold leading-[1.2] tracking-[-0.03em] text-foreground">
+      {greeting} {role}
+    </h1>
+  )
+}
+
+export function TwoColumnCards({
+  left,
+  right,
+}: {
+  left: { icon: string; title: string; body: string }
+  right: { icon: string; title: string; body: string }
+}) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {[left, right].map((column) => (
+        <section
+          key={column.title}
+          className="rounded-lg border border-border/70 bg-card px-4 py-3.5 shadow-sm"
+        >
+          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+            <span aria-hidden>{column.icon}</span>
+            {column.title}
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">{column.body}</p>
+        </section>
+      ))}
+    </div>
+  )
+}
+
+export function InfoFactGrid({
+  items,
+}: {
+  items: Array<{ label: string; value: string; tone: InfoFactTone }>
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {items.map((item) => (
+        <div
+          key={item.label}
+          className={cn(
+            'rounded-md border border-border/50 px-3 py-2.5 text-sm leading-snug',
+            infoFactToneClass[item.tone],
+          )}
+        >
+          <p className="text-[11px] font-medium text-muted-foreground">{item.label}</p>
+          <p className="mt-0.5 font-medium text-foreground">{item.value}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function SkillFeatureGrid({
+  items,
+}: {
+  items: Array<{ icon: string; title: string; description: string }>
+}) {
+  return (
+    <ul className="grid gap-3 sm:grid-cols-2">
+      {items.map((item) => (
+        <li
+          key={item.title}
+          className="rounded-lg border border-border bg-card px-4 py-3.5 shadow-sm transition-colors hover:bg-muted/20"
+        >
+          <div className="mb-2 flex items-center gap-2">
+            <span className="text-xl" aria-hidden>
+              {item.icon}
+            </span>
+            <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+          </div>
+          <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+export function NotionDatabase({
+  columns,
+  rows,
+}: {
+  columns: string[]
+  rows: Array<{
+    id: string
+    href: string
+    icon: string
+    cells: [string, string, string]
+  }>
+}) {
+  return (
+    <div className="overflow-hidden rounded-lg border border-border">
+      <div className="hidden border-b border-border bg-muted/40 px-3 py-2 sm:grid sm:grid-cols-[minmax(0,1.2fr)_minmax(0,0.7fr)_minmax(0,1fr)] sm:gap-3">
+        {columns.map((column) => (
+          <span
+            key={column}
+            className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
+          >
+            {column}
+          </span>
+        ))}
+      </div>
+      <ul>
+        {rows.map((row) => (
+          <li key={row.id} className="border-b border-border last:border-b-0">
+            <a
+              href={row.href}
+              className="grid gap-1 px-3 py-3 transition-colors hover:bg-muted/30 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,0.7fr)_minmax(0,1fr)] sm:items-center sm:gap-3"
+            >
+              <span className="flex items-center gap-2 font-medium text-foreground">
+                <span aria-hidden>{row.icon}</span>
+                {row.cells[0]}
+              </span>
+              <span className="text-xs text-muted-foreground sm:text-sm">{row.cells[1]}</span>
+              <span className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                {row.cells[2]}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export function CaseStudySection({
+  title,
+  id,
+  children,
+}: {
+  title: string
+  id?: string
+  children: ReactNode
+}) {
+  return (
+    <section className="mt-6">
+      <h2
+        id={id}
+        className="mb-2 scroll-mt-20 text-base font-semibold tracking-[-0.01em] text-foreground"
+      >
+        {title}
+      </h2>
+      <div className="text-[15px] leading-[1.65] text-foreground/90">{children}</div>
+    </section>
+  )
+}
+
+export function BackLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a
+      href={href}
+      className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+    >
+      ← {children}
+    </a>
   )
 }
 

@@ -70,16 +70,21 @@
   --secondary: #2a2a2a;
   --secondary-foreground: rgba(255, 255, 255, 0.9);
   --muted: #2a2a2a;
-  --muted-foreground: rgba(255, 255, 255, 0.5);
+  --muted-foreground: rgba(255, 255, 255, 0.55);
   --accent: #2f2f2f;
   --accent-foreground: rgba(255, 255, 255, 0.9);
-  --border: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.12);
   --ring: #529cca;
   --sidebar: #202020;
   --sidebar-foreground: rgba(255, 255, 255, 0.9);
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-accent: rgba(255, 255, 255, 0.06);
+
+  /* react-notion-x reads --fg-color from :root; keep in sync with .dark */
+  --fg-color: rgba(255, 255, 255, 0.9);
+  --fg-color-2: rgba(255, 255, 255, 0.4);
+  --fg-color-6: #ffffff;
 }
 
 @layer base {

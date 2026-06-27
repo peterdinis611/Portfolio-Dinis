@@ -6,6 +6,7 @@ import { type Lang, translations } from '@/i18n/translations'
 
 export type PortfolioSearchResult = {
   page: NotionPageId
+  projectId?: string
   pageLabel: string
   pageIcon: string
   title: string
@@ -15,6 +16,7 @@ export type PortfolioSearchResult = {
 
 type SearchEntry = {
   page: NotionPageId
+  projectId?: string
   title: string
   subtitle?: string
   terms: string[]
@@ -119,6 +121,7 @@ function buildSearchIndex(lang: Lang): SearchEntry[] {
     const copy = t.projects.find((item) => item.id === project.id)
     addEntry(entries, {
       page: 'projects',
+      projectId: project.id,
       title: project.name,
       subtitle: project.tech,
       terms: [project.name, project.tech, copy?.description],
@@ -203,6 +206,7 @@ export function searchPortfolio(lang: Lang, query: string, limit = 8): Portfolio
     const page = pageMeta[entry.page]
     results.push({
       page: entry.page,
+      projectId: entry.projectId,
       pageLabel: page.label,
       pageIcon: page.icon,
       title: entry.title,

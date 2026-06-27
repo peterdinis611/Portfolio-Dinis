@@ -7,8 +7,11 @@ import { MailtoLink } from '@/components/ui/MailtoLink'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
 import { profile, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
+import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import {
   BlockCallout,
+  BlockDivider,
+  BlockHeading,
   BlockText,
   PageShell,
   PageTitle,
@@ -16,6 +19,16 @@ import {
   PropertyTable,
 } from '../blocks'
 import { MotionSection } from '../motion'
+import {
+  BlockBookmark,
+  BlockCalloutRich,
+  BlockColumns,
+  BlockPageLink,
+  BlockQuote,
+  BlockTodoList,
+  BlockToggleGroup,
+} from '../notion-blocks'
+import { getNotionPages } from '../nav'
 import { PageCover } from '../PageCover'
 
 function ContactValue({
@@ -50,6 +63,8 @@ function ContactValue({
 export function ContactPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
+  const blocks = notionPageBlocks[lang].contact
+  const navPages = getNotionPages(lang).filter((page) => page.id !== 'contact')
 
   return (
     <PageShell cover={<PageCover variant="contact" />}>
@@ -57,30 +72,25 @@ export function ContactPage({ lang }: { lang: Lang }) {
         <PageTitle icon="✉️">{ui.contact}</PageTitle>
       </MotionSection>
 
-      <MotionSection delay={0.08}>
-        <div className="overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-            <ProfilePhoto className="h-20 w-20 overflow-hidden rounded-xl border-2 border-background shadow-md" />
-            <div className="flex-1">
-              <p className="text-xl font-bold">{profile.name}</p>
-              <p className="text-sm text-muted-foreground">{t.profile.title}</p>
-              <p className="mt-2 text-sm leading-relaxed">{ui.contactLead}</p>
-            </div>
-            <MailtoLink>
-              <Button className="h-11 shrink-0 px-6 shadow-md">{ui.endCta}</Button>
-            </MailtoLink>
-          </div>
-        </div>
+      <MotionSection delay={0.06}>
+        <BlockColumns
+          cols={2}
+          children={[
+            <div key="lead">
+              <BlockQuote>{ui.contactLead}</BlockQuote>
+              <BlockText>{ui.contactText}</BlockText>
+            </div>,
+            <div key="cta" className="flex flex-col items-start justify-center gap-3">
+              <ProfilePhoto className="h-16 w-16 overflow-hidden rounded-full border-2 border-background shadow-md" />
+              <MailtoLink>
+                <Button className="h-10 px-5 shadow-md">{ui.endCta}</Button>
+              </MailtoLink>
+            </div>,
+          ]}
+        />
       </MotionSection>
 
-      <MotionSection delay={0.14} className="mt-6">
-        <BlockText>{ui.contactText}</BlockText>
-        <BlockCallout icon="💬" variant="info">
-          {t.profile.tagline}
-        </BlockCallout>
-      </MotionSection>
-
-      <MotionSection delay={0.2} className="mt-6">
+      <MotionSection delay={0.1} className="mt-6">
         <PropertyTable>
           <PropertyRow icon="✉️" label={ui.emailLabel}>
             <ContactValue label={ui.emailLabel} value={<EmailDisplay />} mailto />
@@ -98,9 +108,35 @@ export function ContactPage({ lang }: { lang: Lang }) {
         </PropertyTable>
       </MotionSection>
 
+      <MotionSection delay={0.14} className="mt-6">
+        <BlockHeading>{blocks.faqTitle}</BlockHeading>
+        <BlockToggleGroup
+          items={blocks.faq.map((item) => ({
+            title: item.title,
+            body: <BlockText>{item.body}</BlockText>,
+          }))}
+        />
+      </MotionSection>
+
+      <MotionSection delay={0.18} className="mt-6">
+        {blocks.bookmarks.map((bookmark) => (
+          <BlockBookmark key={bookmark.href} {...bookmark} />
+        ))}
+      </MotionSection>
+
+      <MotionSection delay={0.22} className="mt-6">
+        <BlockCalloutRich icon="📋" title={blocks.nextStepsTitle} variant="info">
+          <BlockTodoList items={blocks.nextSteps} />
+        </BlockCalloutRich>
+        <BlockCallout icon="💬" variant="idea">
+          {t.profile.tagline}
+        </BlockCallout>
+      </MotionSection>
+
       <MotionSection delay={0.26} className="mt-6">
+        <BlockDivider />
+        <BlockHeading>{ui.followMe}</BlockHeading>
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm text-muted-foreground">{ui.followMe}</span>
           <ul className="flex gap-2">
             {socials.map((s) => (
               <li key={s.name}>
@@ -116,6 +152,13 @@ export function ContactPage({ lang }: { lang: Lang }) {
             ))}
           </ul>
         </div>
+      </MotionSection>
+
+      <MotionSection delay={0.3} className="mt-6">
+        <BlockText className="mb-2 font-semibold text-foreground">Pages</BlockText>
+        {navPages.map((page) => (
+          <BlockPageLink key={page.id} href={`#${page.id}`} icon={page.icon} label={page.label} />
+        ))}
       </MotionSection>
     </PageShell>
   )

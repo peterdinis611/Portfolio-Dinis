@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { pageFromHash } from '@/components/notion/nav'
+import { pageFromHash } from '@/lib/portfolio-route'
 import type { NotionPageId } from '@/components/notion/types'
 import { SettingsContext } from '@/context/AppProviders'
 import { applySeo } from '@/lib/seo'

@@ -3,6 +3,30 @@ import { cn } from '@/lib/utils'
 
 export type { PageCoverVariant }
 
+function CoverImage({
+  src,
+  objectPosition,
+  eager,
+  className,
+}: {
+  src: string
+  objectPosition?: string
+  eager?: boolean
+  className?: string
+}) {
+  return (
+    <img
+      src={src}
+      alt=""
+      className={cn('h-full w-full object-cover', className)}
+      style={objectPosition ? { objectPosition } : undefined}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      draggable={false}
+    />
+  )
+}
+
 export function PageCover({
   variant,
   className,
@@ -11,25 +35,42 @@ export function PageCover({
   className?: string
 }) {
   const cover = pageCoverImages[variant]
+  const eager = variant === 'about'
 
   return (
     <div
       className={cn(
-        'page-cover pointer-events-none relative h-36 w-full overflow-hidden sm:h-44',
+        'page-cover pointer-events-none relative h-40 w-full overflow-hidden sm:h-48',
         className,
       )}
     >
-      <img
-        src={cover.src}
-        alt=""
-        className="h-full w-full object-cover object-center"
-        loading={variant === 'about' ? 'eager' : 'lazy'}
-        decoding="async"
-        draggable={false}
-      />
-      <div className="absolute inset-0 bg-black/[0.12] dark:bg-black/30" aria-hidden />
+      {cover.srcDark ? (
+        <>
+          <CoverImage
+            src={cover.src}
+            objectPosition={cover.objectPosition}
+            eager={eager}
+            className="dark:hidden"
+          />
+          <CoverImage
+            src={cover.srcDark}
+            objectPosition={cover.objectPosition}
+            eager={eager}
+            className="hidden dark:block"
+          />
+        </>
+      ) : (
+        <CoverImage src={cover.src} objectPosition={cover.objectPosition} eager={eager} />
+      )}
       <div
-        className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background via-background/80 to-transparent"
+        className={cn(
+          'absolute inset-0',
+          cover.srcDark ? 'bg-black/[0.08] dark:bg-black/20' : 'bg-black/[0.12] dark:bg-black/40',
+        )}
+        aria-hidden
+      />
+      <div
+        className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background via-background/85 to-transparent"
         aria-hidden
       />
     </div>

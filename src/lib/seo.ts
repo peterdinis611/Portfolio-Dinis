@@ -1,4 +1,4 @@
-import { pageFromHash } from '@/components/notion/nav'
+import { pageFromHash } from '@/lib/portfolio-route'
 import type { NotionPageId } from '@/components/notion/types'
 import { profile, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'

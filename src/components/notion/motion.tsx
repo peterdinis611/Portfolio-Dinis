@@ -7,13 +7,16 @@ export function MotionSection({
   children,
   delay = 0,
   className,
+  id,
 }: {
   children: ReactNode
   delay?: number
   className?: string
+  id?: string
 }) {
   return (
     <motion.section
+      id={id}
       className={className}
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}

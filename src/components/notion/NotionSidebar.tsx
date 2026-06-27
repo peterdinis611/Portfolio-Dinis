@@ -1,20 +1,21 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { type Lang, translations } from '@/i18n/translations'
+import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
-import { getNotionPages } from './nav'
-import type { NotionPageId } from './types'
+import { getNotionPages, getProjectNavItems, isProjectsListActive } from './nav'
 
 type NotionSidebarProps = {
   lang: Lang
-  page: NotionPageId
-  onNavigate: (page: NotionPageId) => void
+  route: PortfolioRoute
+  onNavigate: (route: PortfolioRoute) => void
   className?: string
 }
 
-export function NotionSidebar({ lang, page, onNavigate, className }: NotionSidebarProps) {
+export function NotionSidebar({ lang, route, onNavigate, className }: NotionSidebarProps) {
   const ui = translations[lang].ui
   const pages = getNotionPages(lang)
+  const projectItems = getProjectNavItems()
 
   return (
     <aside
@@ -28,7 +29,7 @@ export function NotionSidebar({ lang, page, onNavigate, className }: NotionSideb
         <button
           type="button"
           className="flex h-auto w-full items-center gap-2 rounded-md px-2 py-2 text-left transition-colors hover:bg-sidebar-accent"
-          onClick={() => onNavigate('about')}
+          onClick={() => onNavigate({ page: 'about' })}
         >
           <span className="text-lg" aria-hidden>
             🧑‍💻
@@ -53,16 +54,48 @@ export function NotionSidebar({ lang, page, onNavigate, className }: NotionSideb
                 type="button"
                 className={cn(
                   'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-sidebar-accent',
-                  page === item.id && 'bg-sidebar-accent font-medium',
+                  isProjectsListActive(route) && item.id === 'projects'
+                    ? 'bg-sidebar-accent font-medium'
+                    : route.page === item.id && item.id !== 'projects'
+                      ? 'bg-sidebar-accent font-medium'
+                      : undefined,
                 )}
-                onClick={() => onNavigate(item.id)}
-                aria-current={page === item.id ? 'page' : undefined}
+                onClick={() => onNavigate({ page: item.id })}
+                aria-current={
+                  route.page === item.id && (item.id !== 'projects' || !route.projectId)
+                    ? 'page'
+                    : undefined
+                }
               >
                 <span className="w-5 text-center" aria-hidden>
                   {item.icon}
                 </span>
                 <span className="truncate">{item.label}</span>
               </button>
+
+              {item.id === 'projects' ? (
+                <ul className="ml-5 mt-0.5 space-y-0.5 border-l border-border/60 pl-2">
+                  {projectItems.map((project) => (
+                    <li key={project.id}>
+                      <button
+                        type="button"
+                        className={cn(
+                          'flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs transition-colors hover:bg-sidebar-accent',
+                          route.projectId === project.id && 'bg-sidebar-accent font-medium',
+                        )}
+                        onClick={() =>
+                          onNavigate({ page: 'projects', projectId: project.id })
+                        }
+                      >
+                        <span className="w-4 text-center" aria-hidden>
+                          {project.icon}
+                        </span>
+                        <span className="truncate">{project.name}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </li>
           ))}
         </ul>

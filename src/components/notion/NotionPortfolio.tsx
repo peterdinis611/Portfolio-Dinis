@@ -1,34 +1,37 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { SettingsContext } from '@/context/AppProviders'
+import {
+  parsePortfolioRoute,
+  type PortfolioRoute,
+  setPortfolioHash,
+} from '@/lib/portfolio-route'
 import { NotionPageView } from './NotionPageView'
 import { NotionSearchDialog } from './NotionSearchDialog'
 import { NotionSidebar } from './NotionSidebar'
 import { NotionTopbar } from './NotionTopbar'
-import { pageFromHash, setPageHash } from './nav'
-import type { NotionPageId } from './types'
 
 export function NotionPortfolio() {
   const settingsActor = SettingsContext.useActorRef()
   const lang = SettingsContext.useSelector((s) => s.context.lang)
   const theme = SettingsContext.useSelector((s) => s.context.theme)
 
-  const [page, setPage] = useState<NotionPageId>(() => pageFromHash())
+  const [route, setRoute] = useState<PortfolioRoute>(() => parsePortfolioRoute())
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
 
-  const navigate = useCallback((next: NotionPageId) => {
-    setPage(next)
-    setPageHash(next)
+  const navigate = useCallback((next: PortfolioRoute) => {
+    setRoute(next)
+    setPortfolioHash(next)
     setSidebarOpen(false)
   }, [])
 
   useEffect(() => {
-    const onHash = () => setPage(pageFromHash())
+    const onHash = () => setRoute(parsePortfolioRoute())
     window.addEventListener('hashchange', onHash)
-    setPageHash(page)
+    setPortfolioHash(route)
     return () => window.removeEventListener('hashchange', onHash)
-  }, [page])
+  }, [route])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -45,14 +48,14 @@ export function NotionPortfolio() {
   return (
     <div className="notion-app-shell flex h-dvh overflow-hidden bg-background">
       <div className="hidden md:flex">
-        <NotionSidebar lang={lang} page={page} onNavigate={navigate} />
+        <NotionSidebar lang={lang} route={route} onNavigate={navigate} />
       </div>
 
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="p-0 md:hidden">
           <NotionSidebar
             lang={lang}
-            page={page}
+            route={route}
             onNavigate={navigate}
             className="w-full border-0"
           />
@@ -70,7 +73,7 @@ export function NotionPortfolio() {
         <NotionTopbar
           lang={lang}
           theme={theme}
-          page={page}
+          route={route}
           onMenu={() => setSidebarOpen(true)}
           onOpenSearch={() => setSearchOpen(true)}
           onLang={(l) => settingsActor.send({ type: 'SET_LANG', lang: l })}
@@ -78,7 +81,12 @@ export function NotionPortfolio() {
         />
 
         <main className="flex-1 overflow-y-auto" id="main-content">
-          <NotionPageView lang={lang} page={page} darkMode={theme === 'dark'} />
+          <NotionPageView
+            lang={lang}
+            page={route.page}
+            projectId={route.projectId}
+            darkMode={theme === 'dark'}
+          />
         </main>
       </div>
     </div>

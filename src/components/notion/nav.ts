@@ -1,5 +1,19 @@
+import { projects } from '@/data/portfolio'
+import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang, translations } from '../../i18n/translations'
-import type { NotionPageDef, NotionPageId } from './types'
+import type { PortfolioRoute } from '../../lib/portfolio-route'
+import type { NotionPageDef } from './types'
+
+export type { PortfolioRoute } from '../../lib/portfolio-route'
+export {
+  getProjectName,
+  isNotionPageId,
+  isProjectId,
+  pageFromHash,
+  parsePortfolioRoute,
+  setPageHash,
+  setPortfolioHash,
+} from '../../lib/portfolio-route'
 
 export function getNotionPages(lang: Lang): NotionPageDef[] {
   const ui = translations[lang].ui
@@ -12,18 +26,15 @@ export function getNotionPages(lang: Lang): NotionPageDef[] {
   ]
 }
 
-export function isNotionPageId(value: string): value is NotionPageId {
-  return ['about', 'tech', 'experience', 'projects', 'contact'].includes(value)
+export function getProjectNavItems() {
+  return projects.map((project) => ({
+    id: project.id,
+    name: project.name,
+    icon: projectMeta[project.id]?.icon ?? '📄',
+    href: `#projects/${project.id}`,
+  }))
 }
 
-export function pageFromHash(): NotionPageId {
-  const hash = window.location.hash.replace(/^#\/?/, '')
-  return isNotionPageId(hash) ? hash : 'about'
-}
-
-export function setPageHash(page: NotionPageId) {
-  const next = `#${page}`
-  if (window.location.hash !== next) {
-    window.history.replaceState(null, '', next)
-  }
+export function isProjectsListActive(route: PortfolioRoute): boolean {
+  return route.page === 'projects' && !route.projectId
 }

@@ -1,115 +1,157 @@
-import { Badge } from '@/components/ui/badge'
+import { MailtoLink } from '@/components/ui/MailtoLink'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
 import { profile } from '@/data/portfolio'
-import { portfolioStats, serviceIcons } from '@/data/portfolio-meta'
 import { type Lang, translations } from '@/i18n/translations'
+import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { aboutTemplateContent } from '@/i18n/portfolio-template'
 import {
   BlockCallout,
+  BlockDivider,
   BlockHeading,
   BlockText,
+  GreetingTitle,
+  InfoFactGrid,
   PageHero,
   PageNavPills,
   PageShell,
-  PageTitle,
-  PropertyRow,
-  PropertyTable,
-  ServiceGrid,
-  StatGrid,
-  TagList,
+  SkillFeatureGrid,
+  TwoColumnCards,
 } from '../blocks'
 import { MotionSection } from '../motion'
+import {
+  BlockCalloutRich,
+  BlockDividerDots,
+  BlockH3,
+  BlockHighlight,
+  BlockQuote,
+  BlockTableOfContents,
+  BlockTodoList,
+  BlockToggleGroup,
+} from '../notion-blocks'
 import { getNotionPages } from '../nav'
 import { PageCover } from '../PageCover'
 
 export function AboutPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
+  const template = aboutTemplateContent[lang]
+  const blocks = notionPageBlocks[lang].about
   const navPages = getNotionPages(lang).filter((page) => page.id !== 'about')
-
-  const statLabels = {
-    years: ui.statYears,
-    roles: ui.statRoles,
-    products: ui.statProducts,
-    mentored: ui.statMentored,
-  } as const
-
-  const stats = portfolioStats.map((stat) => ({
-    value: stat.value,
-    label: statLabels[stat.id],
-  }))
 
   return (
     <PageShell cover={<PageCover variant="about" />}>
       <PageHero
+        circular
         name={profile.name}
         title={t.profile.title}
-        subtitle={t.profile.subtitle}
         photo={
-          <ProfilePhoto className="h-20 w-20 overflow-hidden rounded-lg sm:h-24 sm:w-24" priority />
+          <ProfilePhoto className="h-24 w-24 overflow-hidden rounded-full sm:h-28 sm:w-28" priority />
         }
       />
 
       <MotionSection delay={0.05}>
-        <PageTitle icon="👋">{ui.about}</PageTitle>
+        <GreetingTitle greeting={template.greeting} role={t.profile.title} />
+        <BlockHighlight tone="blue">{blocks.bioHighlight}</BlockHighlight>
+      </MotionSection>
+
+      <MotionSection delay={0.08}>
+        <BlockTableOfContents title={blocks.tocTitle} items={blocks.tocItems} />
       </MotionSection>
 
       <MotionSection delay={0.1}>
-        <StatGrid items={stats} />
+        <TwoColumnCards
+          left={{
+            icon: '🎵',
+            title: template.aboutSection,
+            body: template.aboutShort,
+          }}
+          right={{
+            icon: '✈️',
+            title: template.contactSection,
+            body: template.contactShort,
+          }}
+        />
       </MotionSection>
 
-      <MotionSection delay={0.15} className="mt-6">
-        <PropertyTable>
-          <PropertyRow icon="💼" label={ui.notionRole}>
-            {t.profile.title}
-          </PropertyRow>
-          <PropertyRow icon="📍" label={ui.locationLabel}>
-            {t.profile.location}
-          </PropertyRow>
-          <PropertyRow
-            icon={<span className="inline-block size-2 rounded-full bg-sky-500" />}
-            label={ui.notionStatus}
-          >
-            <Badge
-              variant="outline"
-              className="border-sky-200 bg-sky-50 font-normal text-sky-800 dark:border-sky-800 dark:bg-sky-950/40 dark:text-sky-200"
-            >
-              {ui.notionOpenToWork}
-            </Badge>
-          </PropertyRow>
-        </PropertyTable>
+      <MotionSection delay={0.12} className="mt-6">
+        <BlockQuote>{blocks.quote}</BlockQuote>
       </MotionSection>
 
-      <MotionSection delay={0.2} className="mt-6">
-        <BlockText>{t.profile.bio}</BlockText>
-        <BlockCallout icon="✨" variant="idea">
-          {t.profile.tagline}
-        </BlockCallout>
+      <MotionSection delay={0.15} className="mt-6" id="about-facts">
+        <BlockH3>{template.livesInLabel}</BlockH3>
+        <InfoFactGrid
+          items={[
+            {
+              label: template.livesInLabel,
+              value: template.profileFacts.livesIn,
+              tone: 'rose',
+            },
+            {
+              label: template.educationLabel,
+              value: template.profileFacts.education,
+              tone: 'yellow',
+            },
+            {
+              label: template.speaksLabel,
+              value: template.profileFacts.speaks,
+              tone: 'blue',
+            },
+            {
+              label: template.lovesLabel,
+              value: template.profileFacts.loves,
+              tone: 'sky',
+            },
+          ]}
+        />
       </MotionSection>
 
-      <MotionSection delay={0.25} className="mt-6">
-        <BlockHeading>{ui.whatIDo}</BlockHeading>
-        <ServiceGrid
-          items={t.services.map((service) => ({
-            icon: serviceIcons[service.id] ?? '✦',
-            label: service.label,
+      <MotionSection delay={0.18} className="mt-6">
+        <BlockCalloutRich icon="📍" title={blocks.currentlyTitle} variant="info">
+          {blocks.currentlyText}
+        </BlockCalloutRich>
+      </MotionSection>
+
+      <MotionSection delay={0.2} className="mt-8" id="about-skills">
+        <BlockHeading className="mt-0">{template.skillsTitle}</BlockHeading>
+        <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{template.skillsIntro}</p>
+        <SkillFeatureGrid items={template.skills} />
+      </MotionSection>
+
+      <MotionSection delay={0.24} className="mt-8" id="about-approach">
+        <BlockDivider />
+        <BlockHeading>{blocks.approachTitle}</BlockHeading>
+        <BlockTodoList items={blocks.approachTodos} />
+        <BlockToggleGroup
+          items={blocks.workingStyle.map((item) => ({
+            title: item.title,
+            body: <BlockText>{item.body}</BlockText>,
+          }))}
+          defaultOpenIndex={0}
+        />
+      </MotionSection>
+
+      <MotionSection delay={0.28} className="mt-8">
+        <BlockDividerDots />
+        <BlockHeading>{ui.explorePages}</BlockHeading>
+        <PageNavPills
+          items={navPages.map((page) => ({
+            href: page.id === 'projects' ? '#projects' : `#${page.id}`,
+            icon: page.icon,
+            label: page.label,
           }))}
         />
       </MotionSection>
 
       <MotionSection delay={0.3} className="mt-6">
-        <BlockHeading>{ui.notionInterests}</BlockHeading>
-        <TagList tags={profile.interests} />
+        <BlockCallout icon="✨" variant="idea">
+          {t.profile.tagline}
+        </BlockCallout>
       </MotionSection>
 
-      <MotionSection delay={0.35} className="mt-8">
-        <BlockHeading>{ui.explorePages}</BlockHeading>
-        <PageNavPills
-          items={navPages.map((page) => ({
-            href: `#${page.id}`,
-            icon: page.icon,
-            label: page.label,
-          }))}
-        />
+      <MotionSection delay={0.32} className="mt-4 text-center sm:text-left">
+        <MailtoLink className="text-sm font-medium text-primary hover:underline">
+          {ui.getInTouch} →
+        </MailtoLink>
       </MotionSection>
     </PageShell>
   )

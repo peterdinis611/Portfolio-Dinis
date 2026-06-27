@@ -1,9 +1,24 @@
 import { ChevronRight } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { type Lang, translations } from '@/i18n/translations'
+import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { cn } from '@/lib/utils'
-import { BlockBullets, BlockHeading, BlockText, PageShell, PageTitle } from '../blocks'
+import {
+  BlockBullets,
+  BlockDivider,
+  BlockHeading,
+  BlockText,
+  PageShell,
+  PageTitle,
+  TagList,
+} from '../blocks'
 import { MotionItem, MotionSection } from '../motion'
+import {
+  BlockCalloutRich,
+  BlockNumberedList,
+  BlockQuote,
+  BlockToggleGroup,
+} from '../notion-blocks'
 import { PageCover } from '../PageCover'
 
 type ExperienceJob = (typeof translations)[Lang]['experience'][number]
@@ -50,14 +65,14 @@ function ExperienceTimeline({
             <CollapsibleContent className="border-t border-border px-4 py-3 pl-10">
               {'summary' in job && job.summary ? <BlockText>{job.summary}</BlockText> : null}
               <BlockBullets items={job.highlights} />
+              {'tech' in job && job.tech ? (
+                <div className="mt-3">
+                  <TagList tags={job.tech.split(' · ').map((tag) => tag.trim())} />
+                </div>
+              ) : null}
               {'projects' in job && job.projects ? (
                 <p className="mt-2 text-sm text-muted-foreground">
                   <strong className="text-foreground">{expProjectsLabel}:</strong> {job.projects}
-                </p>
-              ) : null}
-              {'tech' in job && job.tech ? (
-                <p className="mt-2 rounded-md bg-muted/50 px-2 py-1.5 text-xs font-medium">
-                  {job.tech}
                 </p>
               ) : null}
             </CollapsibleContent>
@@ -71,6 +86,7 @@ function ExperienceTimeline({
 export function ExperiencePage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
+  const blocks = notionPageBlocks[lang].experience
   const production = t.experience.filter((job) => job.tier === 'production')
   const early = t.experience.filter((job) => job.tier === 'early')
 
@@ -81,8 +97,25 @@ export function ExperiencePage({ lang }: { lang: Lang }) {
         <BlockText>{ui.expIntro}</BlockText>
       </MotionSection>
 
+      <MotionSection delay={0.06}>
+        <BlockQuote>{blocks.quote}</BlockQuote>
+        <BlockToggleGroup
+          items={blocks.highlightsToggle.map((item) => ({
+            title: item.title,
+            body: <BlockText>{item.body}</BlockText>,
+          }))}
+        />
+      </MotionSection>
+
       <MotionSection delay={0.1} className="mt-6">
-        <BlockHeading>{ui.expProduction}</BlockHeading>
+        <BlockHeading>{blocks.processTitle}</BlockHeading>
+        <BlockNumberedList items={blocks.processSteps} />
+      </MotionSection>
+
+      <MotionSection delay={0.14} className="mt-6">
+        <BlockCalloutRich icon="🎯" variant="success" title={ui.expProduction}>
+          {ui.expIntro}
+        </BlockCalloutRich>
         <ExperienceTimeline
           jobs={production}
           expProjectsLabel={ui.expProjects}
@@ -92,6 +125,7 @@ export function ExperiencePage({ lang }: { lang: Lang }) {
 
       {early.length > 0 ? (
         <MotionSection delay={0.2} className="mt-8">
+          <BlockDivider />
           <BlockHeading>{ui.expEarly}</BlockHeading>
           <ExperienceTimeline
             jobs={early}

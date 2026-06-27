@@ -3,13 +3,13 @@ import { Search } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { type Lang, translations } from '@/i18n/translations'
 import { type PortfolioSearchResult, searchPortfolio } from '@/lib/portfolio-search'
-import type { NotionPageId } from './types'
+import type { PortfolioRoute } from '@/lib/portfolio-route'
 
 type NotionSearchDialogProps = {
   lang: Lang
   open: boolean
   onOpenChange: (open: boolean) => void
-  onNavigate: (page: NotionPageId) => void
+  onNavigate: (route: PortfolioRoute) => void
 }
 
 export function NotionSearchDialog({
@@ -34,7 +34,7 @@ export function NotionSearchDialog({
   }, [open])
 
   const handleSelect = (result: PortfolioSearchResult) => {
-    onNavigate(result.page)
+    onNavigate({ page: result.page, projectId: result.projectId })
     onOpenChange(false)
   }
 
