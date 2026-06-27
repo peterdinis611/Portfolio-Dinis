@@ -20,19 +20,19 @@ type SiteSeo = PageSeo & {
 
 export const seoCopy: Record<Lang, SiteSeo> = {
   sk: {
-    title: 'Peter Dinis | Full-Stack Developer — Portfólio',
+    title: 'Peter Dinis | Medior Full-Stack Developer — Portfólio',
     description:
-      'Notion-style portfólio full-stack developera Petra Dinisa. React, TypeScript, Node.js, cloud, skúsenosti, projekty a kontakt.',
+      'Portfólio medior full-stack developera Petra Dinisa. Produktové inžinierstvo, design systémy, mentoring, React, TypeScript a cloud.',
     keywords:
-      'Peter Dinis, full-stack developer, React, TypeScript, Node.js, NestJS, portfólio, Praha, frontend, backend, UX',
+      'Peter Dinis, medior full-stack developer, React, TypeScript, Node.js, NestJS, architektúra, mentoring, design systémy, Praha',
     ogLocale: 'sk_SK',
   },
   en: {
-    title: 'Peter Dinis | Full-Stack Developer — Portfolio',
+    title: 'Peter Dinis | Medior Full-Stack Developer — Portfolio',
     description:
-      'Notion-style portfolio of full-stack developer Peter Dinis. React, TypeScript, Node.js, cloud, experience, projects and contact.',
+      'Portfolio of medior full-stack developer Peter Dinis. Product engineering, design systems, mentoring, React, TypeScript, and cloud.',
     keywords:
-      'Peter Dinis, full-stack developer, React, TypeScript, Node.js, NestJS, portfolio, Prague, frontend, backend, UX',
+      'Peter Dinis, medior full-stack developer, React, TypeScript, Node.js, NestJS, architecture, mentoring, design systems, Prague',
     ogLocale: 'en_US',
   },
 }
@@ -40,56 +40,56 @@ export const seoCopy: Record<Lang, SiteSeo> = {
 const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
   sk: {
     about: {
-      title: 'O mne | Peter Dinis — Full-Stack Developer',
+      title: 'O mne | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Full-stack developer so zameraním na React, TypeScript a čisté UX. Bio, služby, technológie a záujmy.',
+        'Medior full-stack developer so zameraním na React, TypeScript, design systémy a produktové dodávky. Bio, služby a skúsenosti.',
     },
     tech: {
-      title: 'Technológie | Peter Dinis — Full-Stack Developer',
+      title: 'Technológie | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Tech stack: React, Next.js, TypeScript, Node.js, NestJS, PostgreSQL, Docker, AWS, Azure a ďalšie.',
+        'Produkčný tech stack: React, Next.js, TypeScript, Node.js, NestJS, PostgreSQL, Docker, AWS a design systémy.',
     },
     experience: {
-      title: 'Skúsenosti | Peter Dinis — Full-Stack Developer',
+      title: 'Skúsenosti | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Pracovné skúsenosti v Prahe a na Slovensku — IBA.CZ, Meditorial, JUMP soft, Navisys a ďalšie.',
+        'Produkčné skúsenosti — IBA.CZ, Meditorial, JUMP soft, Navisys. Vedenie frontendu, mentoring a enterprise dodávky.',
     },
     projects: {
-      title: 'Projekty | Peter Dinis — Full-Stack Developer',
+      title: 'Projekty | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Vybrané projekty: Legato, Carter, školská knižnica, e-shop licencií a ďalšie produkčné práce.',
+        'Produkčné projekty: ÚDZS, EForms, prolekare.cz, enterprise licenčný systém a IBA R&D aplikácie.',
     },
     contact: {
-      title: 'Kontakt | Peter Dinis — Full-Stack Developer',
+      title: 'Kontakt | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Kontaktuj Petra Dinisa — email, telefón, LinkedIn a GitHub. Full-stack developer v Prahe.',
+        'Kontaktuj Petra Dinisa — medior full-stack developer v Prahe. Email, telefón, LinkedIn a GitHub.',
     },
   },
   en: {
     about: {
-      title: 'About | Peter Dinis — Full-Stack Developer',
+      title: 'About | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Full-stack developer focused on React, TypeScript and sharp UX. Bio, services, technologies and interests.',
+        'Medior full-stack developer focused on React, TypeScript, design systems, and product delivery. Bio, services, and experience.',
     },
     tech: {
-      title: 'Technologies | Peter Dinis — Full-Stack Developer',
+      title: 'Technologies | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Tech stack: React, Next.js, TypeScript, Node.js, NestJS, PostgreSQL, Docker, AWS, Azure and more.',
+        'Production tech stack: React, Next.js, TypeScript, Node.js, NestJS, PostgreSQL, Docker, AWS, and design systems.',
     },
     experience: {
-      title: 'Experience | Peter Dinis — Full-Stack Developer',
+      title: 'Experience | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Work experience in Prague and Slovakia — IBA.CZ, Meditorial, JUMP soft, Navisys and more.',
+        'Production experience — IBA.CZ, Meditorial, JUMP soft, Navisys. Frontend leadership, mentoring, and enterprise delivery.',
     },
     projects: {
-      title: 'Projects | Peter Dinis — Full-Stack Developer',
+      title: 'Projects | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Selected projects: Legato, Carter, school library system, license e-shop and other production work.',
+        'Production projects: ÚDZS, EForms, prolekare.cz, enterprise license system, and IBA R&D applications.',
     },
     contact: {
-      title: 'Contact | Peter Dinis — Full-Stack Developer',
+      title: 'Contact | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Contact Peter Dinis — email, phone, LinkedIn and GitHub. Full-stack developer based in Prague.',
+        'Contact Peter Dinis — medior full-stack developer based in Prague. Email, phone, LinkedIn, and GitHub.',
     },
   },
 }

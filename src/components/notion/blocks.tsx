@@ -30,10 +30,12 @@ export function PageShell({
 export function PageHero({
   name,
   title,
+  subtitle,
   photo,
 }: {
   name: string
   title: string
+  subtitle?: string
   photo: ReactNode
 }) {
   return (
@@ -41,7 +43,10 @@ export function PageHero({
       <div className="rounded-xl border-4 border-background bg-background shadow-md">{photo}</div>
       <div className="text-center sm:pb-1 sm:text-left">
         <p className="text-xl font-bold tracking-tight text-foreground">{name}</p>
-        <p className="text-sm text-muted-foreground">{title}</p>
+        <p className="text-sm font-medium text-foreground/90">{title}</p>
+        {subtitle ? (
+          <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
+        ) : null}
       </div>
     </div>
   )

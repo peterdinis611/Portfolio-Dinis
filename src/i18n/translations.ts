@@ -4,16 +4,17 @@ export type Theme = 'light' | 'dark'
 export const translations = {
   sk: {
     profile: {
-      title: 'Full-Stack Developer',
-      tagline: 'Poďme spolu postaviť niečo, za čo sa oplatí spawnovať.',
-      bio: 'Budujem webové produkty, kde sa čisté UX stretáva so solídnym inžinierstvom. 4+ roky v produkčných tímoch — od Reactu a TypeScriptu po NestJS, PostgreSQL a AWS.',
-      location: 'Slovensko',
+      title: 'Medior Full-Stack Developer',
+      subtitle: 'Produktové inžinierstvo · Design systémy · Full-stack vývoj',
+      tagline: 'Premieňam nejasné požiadavky na spoľahlivé, škálovateľné produkty.',
+      bio: 'Budujem webové produkty end-to-end — od frontendu a backendu po UX. 4+ roky v produkčných tímoch pre zdravotníctvo, verejný sektor a enterprise klientov. Pracujem s design systémami, mentorigujem juniorov a dodávam platformy, ktoré denne obsluhujú stovky používateľov.',
+      location: 'Praha',
     },
     services: [
-      { id: '01', label: 'Frontend Development' },
-      { id: '02', label: 'Backend Development' },
-      { id: '03', label: 'Cloud & DevOps' },
-      { id: '04', label: 'Mobile Development' },
+      { id: '01', label: 'Produktové inžinierstvo & architektúra' },
+      { id: '02', label: 'Design systémy & frontend' },
+      { id: '03', label: 'Backend & platformové API' },
+      { id: '04', label: 'Mentoring & spolupráca v tíme' },
     ],
     techCategories: [
       {
@@ -41,35 +42,42 @@ export const translations = {
     experience: [
       {
         id: 'iba',
-        role: 'UI/UX Designer & React Developer',
+        tier: 'production',
+        role: 'React Developer & Design Systems Engineer',
         company: 'IBA.CZ · Praha',
         period: 'nov 2025 — súčasnosť',
-        summary: 'Design systémy a React aplikácie pre R&D projekty.',
+        summary:
+          'Design systémy a React aplikácie pre R&D projekty — od Figma po produkčný Fluent UI a SharePoint.',
         highlights: [
-          'Návrh komponentov a UI v Figma, implementácia vo Fluent UI a SharePoint',
-          'React aplikácie s dôrazom na konzistentné UX naprieč produktmi',
+          'Návrh komponentov a design tokenov vo Fluent UI a SharePoint',
+          'Spolupráca s produktom a R&D na konzistentných, prístupných rozhraniach',
+          'Dodávka produkčných React aplikácií s TypeScriptom a enterprise UX štandardmi',
         ],
         tech: 'React · TypeScript · Fluent UI · SharePoint · Figma',
       },
       {
         id: 'meditorial',
+        tier: 'production',
         role: 'Frontend Developer',
         company: 'Meditorial · Praha · zdravotníctvo',
         period: 'okt 2024 — júl 2025',
-        summary: 'Interné business aplikácie a platforma prolekare.cz.',
+        summary: 'Frontend pre prolekare.cz a interné zdravotnícke platformy.',
         highlights: [
-          'Znovupoužiteľné UI komponenty — rýchlosť vývoja +25 %',
-          'Optimalizácia načítania o 35 % a lepšia kompatibilita prehliadačov',
-          'AWS S3 pre bezpečné ukladanie obrázkov a assetov',
+          'Návrh a implementácia znovupoužiteľnej komponentovej knižnice — rýchlosť vývoja +25 %',
+          'Optimalizácia výkonu o 35 % a zlepšená cross-browser kompatibilita',
+          'AWS S3 integrácia pre bezpečné ukladanie assetov v produkcii',
           'Agile sprinty v Git, Jira a CI/CD pipeline',
         ],
         tech: 'React · Next.js · TypeScript · Tailwind · Git · Jira · AWS S3',
       },
       {
         id: 'jumpsoft',
-        role: 'Fullstack Developer',
+        tier: 'production',
+        role: 'Full-Stack Developer',
         company: 'JUMP soft · Bratislava',
         period: 'mar 2023 — máj 2024',
+        summary:
+          'End-to-end vlastníctvo viacerých klientskych produktov — architektúra, implementácia a mentoring tímu.',
         highlights: [
           'ÚDZS — 500+ aktívnych používateľov, 99,9 % uptime',
           'EForms — 1 000+ denných odoslaní formulárov',
@@ -81,9 +89,11 @@ export const translations = {
       },
       {
         id: 'navysis',
+        tier: 'production',
         role: 'Backend Developer',
         company: 'Navisys · Brno',
         period: 'feb 2022 — jan 2023',
+        summary: 'Návrh a dodávka škálovateľných backendov pre enterprise licenčný systém.',
         highlights: [
           'REST API — 50+ endpointov v NestJS a PostgreSQL',
           'Škálovateľný licenčný systém pre enterprise klientov',
@@ -95,6 +105,7 @@ export const translations = {
       },
       {
         id: 'thinkeasy-intern',
+        tier: 'early',
         role: 'React Developer Intern',
         company: 'Think Easy · Praha',
         period: 'apr 2021 — jún 2021',
@@ -107,6 +118,7 @@ export const translations = {
       },
       {
         id: 'unicorn',
+        tier: 'early',
         role: 'Fullstack Developer',
         company: 'SPŠT Bardejov · Unicorn',
         period: 'sep 2019 — júl 2020',
@@ -120,6 +132,7 @@ export const translations = {
       },
       {
         id: 'thinkeasy-erasmus',
+        tier: 'early',
         role: 'Frontend Developer Intern',
         company: 'Think Easy · Praha · Erasmus',
         period: 'okt 2019',
@@ -133,24 +146,29 @@ export const translations = {
     ],
     projects: [
       {
-        id: 'legato',
+        id: 'udzs',
         description:
-          'Interná aplikácia pre domovy dôchodcov — sledovanie polohy klientov cez náramky a práca personálu.',
+          'Verejný sektor — platforma pre 500+ aktívnych používateľov s 99,9 % uptime. Full-stack dodávka, Docker a produkčný monitoring.',
       },
       {
-        id: 'carter',
+        id: 'eforms',
         description:
-          'Objednávkový formulár pre tlačiarenskú firmu — upload dokumentov a spracovanie cez backend a Zoho hooks.',
+          'Firemná platforma na spracovanie formulárov — 1 000+ denných odoslaní. React frontend, optimalizácia workflow a integrácia s backendom.',
       },
       {
-        id: 'library',
+        id: 'prolekare',
         description:
-          'Školská knižnica z competition projektu Unicorn — výpožičky kníh, správa kategórií a oprávnení.',
+          'Zdravotnícka platforma prolekare.cz — interné business aplikácie, znovupoužiteľné UI komponenty a AWS S3 pre assety.',
       },
       {
         id: 'licenses',
         description:
-          'E-shop na predaj softvérových licencií s rolami predajca, výrobca a distribútor.',
+          'Enterprise licenčný systém — 50+ REST endpointov, role-based prístup a AWS deploy pre škálovateľnosť.',
+      },
+      {
+        id: 'iba-rd',
+        description:
+          'R&D aplikácie pre IBA.CZ — design systém vo Figma, Fluent UI komponenty a SharePoint integrácie.',
       },
     ],
     ui: {
@@ -196,15 +214,20 @@ export const translations = {
       epilogue: 'Epilóg',
       about: 'O mne',
       tech: 'Technológie',
-      techIntro: 'Stack, s ktorým pracujem — od UI cez backend až po cloud a mobile.',
+      techIntro:
+        'Technológie, s ktorými budujem produkčné systémy — od design systémov a Reactu po backend, cloud a mobile.',
       whatIDo: 'Čo robím',
       experience: 'Skúsenosti',
-      expIntro: 'Prehľad zastávok — produkčné tímy, interné platformy aj školské projekty.',
+      expIntro:
+        'Produkčné role v zdravotníctve, enterprise a R&D — s merateľným dopadom na používateľov, tímy a dodávku.',
+      expProduction: 'Produkčné role',
+      expEarly: 'Skoršie pozície & stáže',
       expProjects: 'Projekty',
       projects: 'Projekty',
-      projectsIntro: 'Vybrané projekty z agentúr, startupov a školských súťaží.',
+      projectsIntro:
+        'Produkčné platformy a produkty, na ktorých som pracoval — od verejného sektora po enterprise backendy.',
       contact: 'Kontakt',
-      contactLead: 'Poďme spolu niečo postaviť.',
+      contactLead: 'Poďme sa porozprávať o produktoch, technológiách alebo spolupráci.',
       contactText:
         'Rád sa porozprávam o zaujímavých produktoch, tímových projektoch alebo novej spolupráci.',
       getInTouch: 'Kontaktuj ma',
@@ -220,7 +243,7 @@ export const translations = {
       langSk: 'SK',
       langEn: 'EN',
       notionWorkspace: 'Peter Dinis',
-      notionWorkspaceSub: 'Portfólio',
+      notionWorkspaceSub: 'Medior Full-Stack',
       notionPages: 'Stránky',
       notionSidebar: 'Navigácia portfólia',
       notionMenu: 'Otvoriť menu',
@@ -236,25 +259,26 @@ export const translations = {
       notionSearchIntro: 'Napíš názov firmy, technológiu alebo projekt.',
       notionSearchEmpty: 'Nič sme nenašli.',
       notionDescription: 'Popis',
-      statYears: 'rokov skúseností',
-      statRoles: 'rolí v produkcii',
-      statProjects: 'vybraných projektov',
-      statStack: 'technológií',
+      statYears: 'rokov v produkcii',
+      statRoles: 'produkčných tímov',
+      statProducts: 'dodaných produktov',
+      statMentored: 'mentorovaných vývojárov',
       explorePages: 'Preskúmaj portfólio',
     },
   },
   en: {
     profile: {
-      title: 'Full-Stack Developer',
-      tagline: "Let's build something worth spawning in.",
-      bio: 'I build web products where sharp UX meets solid engineering. 4+ years in production teams — from React and TypeScript to NestJS, PostgreSQL, and AWS.',
-      location: 'Slovakia',
+      title: 'Medior Full-Stack Developer',
+      subtitle: 'Product engineering · Design systems · Full-stack delivery',
+      tagline: 'I turn ambiguous requirements into reliable, scalable products.',
+      bio: 'I build web products end-to-end — from frontend and backend to UX. 4+ years in production teams for healthcare, public sector, and enterprise clients. I work with design systems, mentor juniors, and deliver platforms serving hundreds of users daily.',
+      location: 'Prague',
     },
     services: [
-      { id: '01', label: 'Frontend Development' },
-      { id: '02', label: 'Backend Development' },
-      { id: '03', label: 'Cloud & DevOps' },
-      { id: '04', label: 'Mobile Development' },
+      { id: '01', label: 'Product engineering & architecture' },
+      { id: '02', label: 'Design systems & frontend' },
+      { id: '03', label: 'Backend & platform APIs' },
+      { id: '04', label: 'Mentoring & team collaboration' },
     ],
     techCategories: [
       {
@@ -282,35 +306,42 @@ export const translations = {
     experience: [
       {
         id: 'iba',
-        role: 'UI/UX Designer & React Developer',
+        tier: 'production',
+        role: 'React Developer & Design Systems Engineer',
         company: 'IBA.CZ · Prague',
         period: 'Nov 2025 — Present',
-        summary: 'Design systems and React apps for R&D projects.',
+        summary:
+          'Design systems and React apps for R&D projects — from Figma to production Fluent UI and SharePoint.',
         highlights: [
-          'Component design in Figma, implementation with Fluent UI and SharePoint',
-          'React apps with consistent UX across products',
+          'Component design and design tokens across Fluent UI and SharePoint',
+          'Collaboration with product and R&D on consistent, accessible interfaces',
+          'Production React applications with TypeScript and enterprise UX standards',
         ],
         tech: 'React · TypeScript · Fluent UI · SharePoint · Figma',
       },
       {
         id: 'meditorial',
+        tier: 'production',
         role: 'Frontend Developer',
         company: 'Meditorial · Prague · healthcare',
         period: 'Oct 2024 — Jul 2025',
-        summary: 'Internal business apps and the prolekare.cz platform.',
+        summary: 'Frontend for prolekare.cz and internal healthcare platforms.',
         highlights: [
-          'Reusable UI components — development speed +25%',
-          'Load times −35% and improved cross-browser compatibility',
-          'AWS S3 for secure image and asset storage',
+          'Designed and implemented a reusable component library — development speed +25%',
+          'Performance optimization −35% load time and improved cross-browser compatibility',
+          'AWS S3 integration for secure production asset storage',
           'Agile sprints with Git, Jira, and CI/CD pipelines',
         ],
         tech: 'React · Next.js · TypeScript · Tailwind · Git · Jira · AWS S3',
       },
       {
         id: 'jumpsoft',
-        role: 'Fullstack Developer',
+        tier: 'production',
+        role: 'Full-Stack Developer',
         company: 'JUMP soft · Bratislava',
         period: 'Mar 2023 — May 2024',
+        summary:
+          'End-to-end ownership of multiple client products — architecture, implementation, and team mentoring.',
         highlights: [
           'ÚDZS app — 500+ active users, 99.9% uptime',
           'EForms platform — 1,000+ daily submissions',
@@ -322,9 +353,11 @@ export const translations = {
       },
       {
         id: 'navysis',
+        tier: 'production',
         role: 'Backend Developer',
         company: 'Navisys · Brno',
         period: 'Feb 2022 — Jan 2023',
+        summary: 'Designed and delivered scalable backends for an enterprise license management system.',
         highlights: [
           'REST APIs — 50+ endpoints with NestJS and PostgreSQL',
           'Scalable license management for enterprise clients',
@@ -336,6 +369,7 @@ export const translations = {
       },
       {
         id: 'thinkeasy-intern',
+        tier: 'early',
         role: 'React Developer Intern',
         company: 'Think Easy · Prague',
         period: 'Apr 2021 — Jun 2021',
@@ -348,6 +382,7 @@ export const translations = {
       },
       {
         id: 'unicorn',
+        tier: 'early',
         role: 'Fullstack Developer',
         company: 'SPŠT Bardejov · Unicorn',
         period: 'Sep 2019 — Jul 2020',
@@ -361,6 +396,7 @@ export const translations = {
       },
       {
         id: 'thinkeasy-erasmus',
+        tier: 'early',
         role: 'Frontend Developer Intern',
         company: 'Think Easy · Prague · Erasmus',
         period: 'Oct 2019',
@@ -374,24 +410,29 @@ export const translations = {
     ],
     projects: [
       {
-        id: 'legato',
+        id: 'udzs',
         description:
-          'Internal app for retirement homes — client location tracking via wristbands and staff workflows.',
+          'Public sector platform for 500+ active users with 99.9% uptime. Full-stack delivery, Docker, and production monitoring.',
       },
       {
-        id: 'carter',
+        id: 'eforms',
         description:
-          'Order form for a printing company — document upload and processing via backend and Zoho hooks.',
+          'Enterprise form processing platform — 1,000+ daily submissions. React frontend, workflow optimization, and backend integration.',
       },
       {
-        id: 'library',
+        id: 'prolekare',
         description:
-          'School library from Unicorn competition — book lending, category management, and permissions.',
+          'Healthcare platform prolekare.cz — internal business apps, reusable UI components, and AWS S3 for assets.',
       },
       {
         id: 'licenses',
         description:
-          'E-shop for software licenses with seller, manufacturer, and distributor roles.',
+          'Enterprise license management — 50+ REST endpoints, role-based access, and AWS deployment for scale.',
+      },
+      {
+        id: 'iba-rd',
+        description:
+          'R&D applications for IBA.CZ — Figma design system, Fluent UI components, and SharePoint integrations.',
       },
     ],
     ui: {
@@ -437,15 +478,20 @@ export const translations = {
       epilogue: 'Epilogue',
       about: 'About',
       tech: 'Technologies',
-      techIntro: 'Stack I work with — from UI through backend to cloud and mobile.',
+      techIntro:
+        'Technologies I use to build production systems — from design systems and React through backend, cloud, and mobile.',
       whatIDo: 'What I do',
       experience: 'Experience',
-      expIntro: 'A concise path — production teams, internal platforms, and school projects.',
+      expIntro:
+        'Production roles across healthcare, enterprise, and R&D — with measurable impact on users, teams, and delivery.',
+      expProduction: 'Production roles',
+      expEarly: 'Earlier roles & internships',
       expProjects: 'Projects',
       projects: 'Projects',
-      projectsIntro: 'Selected work from agencies, startups, and school competitions.',
+      projectsIntro:
+        'Production platforms and products I worked on — from public-sector apps to enterprise backends.',
       contact: 'Contact',
-      contactLead: "Let's build something together.",
+      contactLead: "Let's talk products, technologies, or collaboration.",
       contactText:
         'Happy to chat about interesting products, team projects, or new collaborations.',
       getInTouch: 'Get In Touch',
@@ -461,7 +507,7 @@ export const translations = {
       langSk: 'SK',
       langEn: 'EN',
       notionWorkspace: 'Peter Dinis',
-      notionWorkspaceSub: 'Portfolio',
+      notionWorkspaceSub: 'Medior Full-Stack',
       notionPages: 'Pages',
       notionSidebar: 'Portfolio navigation',
       notionMenu: 'Open menu',
@@ -477,10 +523,10 @@ export const translations = {
       notionSearchHint: 'Companies, technologies, projects…',
       notionSearchIntro: 'Try a company, technology, or project name.',
       notionSearchEmpty: 'No results found.',
-      statYears: 'years experience',
-      statRoles: 'production roles',
-      statProjects: 'featured projects',
-      statStack: 'technologies',
+      statYears: 'years in production',
+      statRoles: 'production teams',
+      statProducts: 'products shipped',
+      statMentored: 'developers mentored',
       explorePages: 'Explore the portfolio',
     },
   },

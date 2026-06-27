@@ -29,8 +29,8 @@ export function AboutPage({ lang }: { lang: Lang }) {
   const statLabels = {
     years: ui.statYears,
     roles: ui.statRoles,
-    projects: ui.statProjects,
-    stack: ui.statStack,
+    products: ui.statProducts,
+    mentored: ui.statMentored,
   } as const
 
   const stats = portfolioStats.map((stat) => ({
@@ -43,6 +43,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
       <PageHero
         name={profile.name}
         title={t.profile.title}
+        subtitle={t.profile.subtitle}
         photo={
           <ProfilePhoto className="h-20 w-20 overflow-hidden rounded-lg sm:h-24 sm:w-24" priority />
         }

@@ -17,48 +17,52 @@ export const profile = {
   phone: '+421 950 460 254',
   phoneHref: '+421950460254',
   interests: [
+    'System Design',
+    'Architecture',
     'React',
     'TypeScript',
     'Next.js',
     'Node.js',
     'NestJS',
     'PostgreSQL',
-    'MongoDB',
-    'GraphQL',
-    'Tailwind CSS',
-    'Docker',
-    'AWS',
-    'Azure',
-    'React Native',
-    'UI/UX',
     'Design Systems',
+    'Technical Leadership',
+    'Mentoring',
+    'AWS',
+    'Docker',
+    'UI/UX',
   ],
 }
 
 export const projects: Project[] = [
   {
-    id: 'legato',
-    name: 'Legato',
-    tech: 'React · TypeScript · React Query',
+    id: 'udzs',
+    name: 'ÚDZS Platform',
+    tech: 'React · TypeScript · Java · PostgreSQL · Docker',
   },
   {
-    id: 'carter',
-    name: 'Carter Print Portal',
-    tech: 'React · Redux · Styled Components',
+    id: 'eforms',
+    name: 'EForms',
+    tech: 'React · TypeScript · TanStack Query · PostgreSQL',
   },
   {
-    id: 'library',
-    name: 'School Library System',
-    tech: 'React · Node.js · MongoDB',
+    id: 'prolekare',
+    name: 'prolekare.cz',
+    tech: 'React · Next.js · TypeScript · Tailwind · AWS S3',
   },
   {
     id: 'licenses',
-    name: 'License E-shop',
-    tech: 'Vue · NestJS · PostgreSQL',
+    name: 'Enterprise License System',
+    tech: 'NestJS · PostgreSQL · Vue.js · AWS',
+  },
+  {
+    id: 'iba-rd',
+    name: 'IBA R&D Applications',
+    tech: 'React · Fluent UI · SharePoint · Figma',
   },
 ]
 
 export const socials: SocialLink[] = [
-  { name: 'GitHub', icon: 'github', url: 'https://github.com' },
-  { name: 'LinkedIn', icon: 'linkedin', url: 'https://linkedin.com' },
+  { name: 'GitHub', icon: 'github', url: 'https://github.com/peterdinis' },
+  { name: 'LinkedIn', icon: 'linkedin', url: 'https://linkedin.com/in/peterdinis' },
 ]
