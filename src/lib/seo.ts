@@ -1,7 +1,8 @@
-import { parsePortfolioRoute, type PortfolioRoute } from '@/lib/portfolio-route'
+import { parsePortfolioRoute, getProjectName, type PortfolioRoute } from '@/lib/portfolio-route'
 import type { NotionPageId } from '@/components/notion/types'
-import { profile, socials } from '@/data/portfolio'
+import { profile, projects, socials, type ProjectListId } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
+import { caseStudyContent } from '@/i18n/portfolio-template'
 import { decodeEmail } from './email'
 
 const SITE_NAME = 'Peter Dinis — Portfolio'
@@ -57,7 +58,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     projects: {
       title: 'Projekty | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Produkčné projekty: ÚDZS, EForms, prolekare.cz, enterprise licenčný systém a IBA R&D aplikácie.',
+        'Produkčné a open-source projekty: ÚDZS, EForms, Docu-Nest, Boom Scope, Pulse API Client, SPST Knižnica a ďalšie.',
     },
     contact: {
       title: 'Kontakt | Peter Dinis — Medior Full-Stack Developer',
@@ -84,7 +85,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     projects: {
       title: 'Projects | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Production projects: ÚDZS, EForms, prolekare.cz, enterprise license system, and IBA R&D applications.',
+        'Production and open-source projects: ÚDZS, EForms, Docu-Nest, Boom Scope, Pulse API Client, SPST Knižnica, and more.',
     },
     contact: {
       title: 'Contact | Peter Dinis — Medior Full-Stack Developer',
@@ -120,8 +121,51 @@ function getStoredLang(): Lang {
   }
 }
 
+const projectListSeoCopy: Record<Lang, Record<ProjectListId, PageSeo>> = {
+  sk: {
+    'companies-projects': {
+      title: 'Firemné projekty | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Produkčné projekty z firemných rolí — ÚDZS, EForms, prolekare.cz, enterprise licenčný systém a IBA R&D.',
+    },
+    'my-projects': {
+      title: 'Moje projekty | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Osobné a open-source projekty — Docu-Nest, Scribe Notes, Boom Scope, Pulse API Client a SPST Knižnica.',
+    },
+  },
+  en: {
+    'companies-projects': {
+      title: 'Company projects | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Production projects from company roles — ÚDZS, EForms, prolekare.cz, enterprise license system, and IBA R&D.',
+    },
+    'my-projects': {
+      title: 'My projects | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Personal and open-source projects — Docu-Nest, Scribe Notes, Boom Scope, Pulse API Client, and SPST Knižnica.',
+    },
+  },
+}
+
 function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
   if (route.page === 'not-found') return notFoundSeoCopy[lang]
+
+  if (route.page === 'projects' && route.projectList) {
+    return projectListSeoCopy[lang][route.projectList]
+  }
+
+  if (route.page === 'projects' && route.projectId) {
+    const project = projects.find((item) => item.id === route.projectId)
+    const study = caseStudyContent[lang][route.projectId]
+    const label = lang === 'sk' ? 'Projekt' : 'Project'
+
+    return {
+      title: `${project?.name ?? route.projectId} | ${label} — Peter Dinis`,
+      description: study?.overview ?? pageSeoCopy[lang].projects.description,
+    }
+  }
+
   if (route.page === DEFAULT_PAGE) return seoCopy[lang]
   return pageSeoCopy[lang][route.page]
 }
@@ -130,6 +174,31 @@ function pageUrl(siteUrl: string, page: NotionPageId): string {
   const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
   if (!base) return ''
   return page === DEFAULT_PAGE ? base : `${base}/#${page}`
+}
+
+function projectUrl(siteUrl: string, projectId: string): string {
+  const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
+  if (!base) return ''
+  return `${base}/#projects/${projectId}`
+}
+
+function routeUrl(siteUrl: string, route: PortfolioRoute): string {
+  if (route.page === 'not-found' && route.attemptedPath) {
+    const origin = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
+    return origin ? `${origin}/#${route.attemptedPath}` : ''
+  }
+
+  if (route.page === 'projects' && route.projectId) {
+    return projectUrl(siteUrl, route.projectId)
+  }
+
+  if (route.page === 'projects' && route.projectList) {
+    const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
+    return base ? `${base}/#projects/${route.projectList}` : ''
+  }
+
+  if (route.page === 'not-found') return pageUrl(siteUrl, DEFAULT_PAGE)
+  return pageUrl(siteUrl, route.page)
 }
 
 function setMeta(name: string, content: string, property = false) {
@@ -160,70 +229,108 @@ function setLink(rel: string, href: string, hreflang?: string) {
 function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
   if (route.page === 'not-found') return null
 
-  const page = route.page
-  const t = translations[lang]
   const copy = resolveRouteSeo(lang, route)
-  const currentUrl = pageUrl(siteUrl, page)
-  const pageLabel = pageSeoCopy[lang][page].title.split(' | ')[0]
+  const isProjectDetail = route.page === 'projects' && Boolean(route.projectId)
+  const currentUrl = routeUrl(siteUrl, route)
+  const projectsLabel = lang === 'sk' ? 'Projekty' : 'Projects'
+  const pageLabel = isProjectDetail
+    ? (getProjectName(route.projectId!) ?? route.projectId!)
+    : pageSeoCopy[lang][route.page].title.split(' | ')[0]
+
+  const breadcrumbItems = [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: SITE_NAME,
+      item: siteUrl,
+    },
+  ]
+
+  if (isProjectDetail && route.projectId) {
+    breadcrumbItems.push(
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: projectsLabel,
+        item: pageUrl(siteUrl, 'projects'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: pageLabel,
+        item: currentUrl || siteUrl,
+      },
+    )
+  } else {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: pageLabel,
+      item: currentUrl || siteUrl,
+    })
+  }
+
+  const graph: Record<string, unknown>[] = [
+    {
+      '@type': 'Person',
+      '@id': `${siteUrl}/#person`,
+      name: profile.name,
+      jobTitle: translations[lang].profile.title,
+      email: decodeEmail(),
+      telephone: profile.phone,
+      url: siteUrl,
+      image: siteUrl ? `${siteUrl}/og-image.jpg` : undefined,
+      sameAs: socials.map((s) => s.url),
+      knowsAbout: profile.interests,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Prague',
+        addressCountry: 'CZ',
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      name: SITE_NAME,
+      url: siteUrl,
+      inLanguage: ['sk-SK', 'en-US'],
+      author: { '@id': `${siteUrl}/#person` },
+      description: seoCopy[lang].description,
+    },
+    {
+      '@type': 'ProfilePage',
+      '@id': `${currentUrl || siteUrl}#profile`,
+      url: currentUrl || siteUrl,
+      name: copy.title,
+      description: copy.description,
+      inLanguage: lang === 'sk' ? 'sk-SK' : 'en-US',
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      about: { '@id': `${siteUrl}/#person` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${currentUrl || siteUrl}#breadcrumb`,
+      itemListElement: breadcrumbItems,
+    },
+  ]
+
+  if (isProjectDetail && route.projectId) {
+    const project = projects.find((item) => item.id === route.projectId)
+    graph.push({
+      '@type': 'CreativeWork',
+      '@id': `${currentUrl}#project`,
+      name: project?.name ?? route.projectId,
+      description: copy.description,
+      url: currentUrl,
+      author: { '@id': `${siteUrl}/#person` },
+      inLanguage: lang === 'sk' ? 'sk-SK' : 'en-US',
+      keywords: project?.tech,
+    })
+  }
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Person',
-        '@id': `${siteUrl}/#person`,
-        name: profile.name,
-        jobTitle: t.profile.title,
-        email: decodeEmail(),
-        telephone: profile.phone,
-        url: siteUrl,
-        image: siteUrl ? `${siteUrl}/og-image.jpg` : undefined,
-        sameAs: socials.map((s) => s.url),
-        knowsAbout: profile.interests,
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: 'Prague',
-          addressCountry: 'CZ',
-        },
-      },
-      {
-        '@type': 'WebSite',
-        '@id': `${siteUrl}/#website`,
-        name: SITE_NAME,
-        url: siteUrl,
-        inLanguage: ['sk-SK', 'en-US'],
-        author: { '@id': `${siteUrl}/#person` },
-        description: seoCopy[lang].description,
-      },
-      {
-        '@type': 'ProfilePage',
-        '@id': `${siteUrl}/#profile`,
-        url: currentUrl || siteUrl,
-        name: copy.title,
-        description: copy.description,
-        inLanguage: lang === 'sk' ? 'sk-SK' : 'en-US',
-        isPartOf: { '@id': `${siteUrl}/#website` },
-        about: { '@id': `${siteUrl}/#person` },
-      },
-      {
-        '@type': 'BreadcrumbList',
-        '@id': `${currentUrl}#breadcrumb`,
-        itemListElement: [
-          {
-            '@type': 'ListItem',
-            position: 1,
-            name: SITE_NAME,
-            item: siteUrl,
-          },
-          {
-            '@type': 'ListItem',
-            position: 2,
-            name: pageLabel,
-            item: currentUrl || siteUrl,
-          },
-        ],
-      },
-    ],
+    '@graph': graph,
   }
 }
 
@@ -248,13 +355,8 @@ function setJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
 export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAGE }) {
   const site = seoCopy[lang]
   const copy = resolveRouteSeo(lang, route)
-  const page = route.page === 'not-found' ? DEFAULT_PAGE : route.page
   const siteUrl = getSiteUrl()
-  const origin = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-  const canonical =
-    route.page === 'not-found' && route.attemptedPath
-      ? `${origin}/#${route.attemptedPath}`
-      : pageUrl(siteUrl, page)
+  const canonical = routeUrl(siteUrl, route)
   const ogImage = siteUrl ? `${siteUrl}/og-image.jpg` : '/og-image.jpg'
 
   document.documentElement.lang = lang
@@ -305,3 +407,5 @@ export const notionPagesForSitemap: NotionPageId[] = [
   'projects',
   'contact',
 ]
+
+export const projectIdsForSitemap = projects.map((project) => project.id)

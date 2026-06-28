@@ -166,7 +166,7 @@ export const notionPageBlocks: Record<
       techNotesTitle: 'Technické poznámky',
       techNotesBody:
         'Kód je štruktúrovaný po feature moduloch, s typovanými API vrstvami a znovupoužiteľnými UI komponentmi.',
-      relatedTitle: 'Súvisiace stránky',
+      relatedTitle: 'Ďalšie projekty',
     },
   },
   en: {
@@ -290,7 +290,7 @@ export const notionPageBlocks: Record<
       techNotesTitle: 'Technical notes',
       techNotesBody:
         'Code is structured by feature modules, with typed API layers and reusable UI components.',
-      relatedTitle: 'Related pages',
+      relatedTitle: 'More projects',
     },
   },
 }

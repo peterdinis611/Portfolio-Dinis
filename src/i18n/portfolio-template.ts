@@ -220,6 +220,86 @@ export const caseStudyContent: Record<Lang, Record<string, ProjectCaseStudy>> = 
         'Prístupné enterprise rozhrania',
       ],
     },
+    'docu-nest': {
+      roles: ['Full-Stack Developer'],
+      date: 'jún 2026',
+      type: 'SIDE PROJECT',
+      overview:
+        'AI-powered platforma pre dokumentové notebooky — knižnica, analytika a workspace s Clerk auth a Drizzle ORM.',
+      problem:
+        'Dokumenty a poznámky boli roztrúsené bez prehľadnej štruktúry, vyhľadávania a stavu workflow.',
+      solution:
+        'Next.js App Router aplikácia s XState strojmi, SQLite databázou a modulárnou architektúrou views a komponentov.',
+      features: [
+        'Dashboard, knižnica dokumentov a analytika',
+        'Notebook workspace s vyhľadávaním',
+        'Drizzle migrácie, seed a Drizzle Studio',
+      ],
+    },
+    'scribe-notes': {
+      roles: ['Full-Stack Developer'],
+      date: 'jún 2026',
+      type: 'DESKTOP APP',
+      overview:
+        'macOS desktopová aplikácia pre písanie dokumentov — TipTap editor, stromová štruktúra a lokálne SQLite úložisko.',
+      problem:
+        'Potreba čistého rich-text editora s organizáciou súborov, offline prístupom a natívnym desktop zážitkom.',
+      solution:
+        'Tauri 2 + React aplikácia s TipTap, Jotai state, Rust commands a FTS5 fulltextovým vyhľadávaním.',
+      features: [
+        'Slash commands, Cmd+K vyhľadávanie a drag & drop',
+        'Export PDF, DOCX a Markdown',
+        'Tabuľky, obrázky, komentáre a undo história',
+      ],
+    },
+    'boom-scope': {
+      roles: ['Full-Stack Developer'],
+      date: 'máj — jún 2026',
+      type: 'SIDE PROJECT',
+      overview:
+        'Full-stack design workspace — projekty, rich notes, canvas, AI design systém a Pomodoro timer na Convex backende.',
+      problem:
+        'Kreatívna práca vyžadovala jeden nástroj na poznámky, vizuálny návrh, design tokeny a produktivitu.',
+      solution:
+        'Next.js 16 dashboard s TipTap, Konva canvasom, OpenAI generátorom a Convex Auth s real-time dátami.',
+      features: [
+        'Projekty, poznámky a infinite canvas',
+        'AI generovanie design systémov a layoutov',
+        'Pomodoro timer, dark mode a Vitest testy',
+      ],
+    },
+    'pulse-apiclient': {
+      roles: ['Full-Stack Developer'],
+      date: 'jún 2026',
+      type: 'DESKTOP APP',
+      overview:
+        'Desktop API klient v štýle Postman — HTTP requesty, kolekcie, prostredia a história v Tauri + Rust.',
+      problem:
+        'Webové API nástroje neponúkali rýchly natívny zážitok, offline históriu a plnú kontrolu nad request engine.',
+      solution:
+        'Tauri 2 aplikácia s XState orchestráciou, reqwest HTTP engine v Ruste a SQLite per-user úložiskom.',
+      features: [
+        'GET/POST/PUT/PATCH/DELETE s auth a multipart',
+        'Import Postman/OpenAPI, kolekcie a runner',
+        'WebSocket klient, témy a fuzzy search',
+      ],
+    },
+    'spst-kniznica': {
+      roles: ['Full-Stack Developer'],
+      date: 'máj — jún 2026',
+      type: 'SIDE PROJECT',
+      overview:
+        'Študentská digitálna knižnica pre SPST — katalóg kníh, výpožičky, admin panel a notifikácie.',
+      problem:
+        'Škola potrebovala moderný online katalóg s objednávkami, kontrolou skladu a administračným workflow.',
+      solution:
+        'TanStack Start aplikácia s PostgreSQL, Drizzle ORM, Auth.js a atomickými transakciami pri výpožičkách.',
+      features: [
+        'Katalóg, obľúbené a študentské objednávky',
+        'Admin dashboard, audit log a whitelist',
+        'Client/server cache, stress testy a SEO',
+      ],
+    },
   },
   en: {
     udzs: {
@@ -302,6 +382,86 @@ export const caseStudyContent: Record<Lang, Record<string, ProjectCaseStudy>> = 
         'Accessible enterprise interfaces',
       ],
     },
+    'docu-nest': {
+      roles: ['Full-Stack Developer'],
+      date: 'Jun 2026',
+      type: 'SIDE PROJECT',
+      overview:
+        'AI-powered document notebook platform — library, analytics, and workspace with Clerk auth and Drizzle ORM.',
+      problem:
+        'Documents and notes were scattered without clear structure, search, or workflow state management.',
+      solution:
+        'Next.js App Router app with XState machines, SQLite database, and modular views and component architecture.',
+      features: [
+        'Dashboard, document library, and analytics',
+        'Notebook workspace with search',
+        'Drizzle migrations, seed, and Drizzle Studio',
+      ],
+    },
+    'scribe-notes': {
+      roles: ['Full-Stack Developer'],
+      date: 'Jun 2026',
+      type: 'DESKTOP APP',
+      overview:
+        'macOS desktop writing app — TipTap editor, tree-structured files, and local SQLite storage.',
+      problem:
+        'Need for a clean rich-text editor with file organization, offline access, and a native desktop experience.',
+      solution:
+        'Tauri 2 + React app with TipTap, Jotai state, Rust commands, and FTS5 full-text search.',
+      features: [
+        'Slash commands, Cmd+K search, and drag & drop',
+        'Export PDF, DOCX, and Markdown',
+        'Tables, images, comments, and undo history',
+      ],
+    },
+    'boom-scope': {
+      roles: ['Full-Stack Developer'],
+      date: 'May — Jun 2026',
+      type: 'SIDE PROJECT',
+      overview:
+        'Full-stack design workspace — projects, rich notes, canvas, AI design system, and Pomodoro timer on Convex.',
+      problem:
+        'Creative work needed one tool for notes, visual design, design tokens, and productivity.',
+      solution:
+        'Next.js 16 dashboard with TipTap, Konva canvas, OpenAI generator, and Convex Auth with real-time data.',
+      features: [
+        'Projects, notes, and infinite canvas',
+        'AI design system and layout generation',
+        'Pomodoro timer, dark mode, and Vitest tests',
+      ],
+    },
+    'pulse-apiclient': {
+      roles: ['Full-Stack Developer'],
+      date: 'Jun 2026',
+      type: 'DESKTOP APP',
+      overview:
+        'Desktop API client inspired by Postman — HTTP requests, collections, environments, and history in Tauri + Rust.',
+      problem:
+        'Web API tools lacked a fast native experience, offline history, and full control over the request engine.',
+      solution:
+        'Tauri 2 app with XState orchestration, reqwest HTTP engine in Rust, and per-user SQLite storage.',
+      features: [
+        'GET/POST/PUT/PATCH/DELETE with auth and multipart',
+        'Postman/OpenAPI import, collections, and runner',
+        'WebSocket client, themes, and fuzzy search',
+      ],
+    },
+    'spst-kniznica': {
+      roles: ['Full-Stack Developer'],
+      date: 'May — Jun 2026',
+      type: 'SIDE PROJECT',
+      overview:
+        'Student digital library for SPST — book catalog, loans, admin panel, and notifications.',
+      problem:
+        'The school needed a modern online catalog with orders, inventory control, and admin workflows.',
+      solution:
+        'TanStack Start app with PostgreSQL, Drizzle ORM, Auth.js, and atomic transactions for book loans.',
+      features: [
+        'Catalog, favorites, and student orders',
+        'Admin dashboard, audit log, and whitelist',
+        'Client/server cache, stress tests, and SEO',
+      ],
+    },
   },
 }
 
@@ -317,6 +477,11 @@ export const caseStudyUi: Record<
     solution: string
     mainFeatures: string
     backToProjects: string
+    previousProject: string
+    nextProject: string
+    sourceCode: string
+    liveDemo: string
+    linksTitle: string
     dbName: string
     dbType: string
     dbStack: string
@@ -333,6 +498,11 @@ export const caseStudyUi: Record<
     solution: 'Riešenie',
     mainFeatures: 'Hlavné funkcie',
     backToProjects: 'Späť na projekty',
+    previousProject: 'Predchádzajúci projekt',
+    nextProject: 'Ďalší projekt',
+    sourceCode: 'Zdrojový kód na GitHub',
+    liveDemo: 'Live demo',
+    linksTitle: 'Odkazy',
     dbName: 'Názov',
     dbType: 'Typ',
     dbStack: 'Stack',
@@ -348,6 +518,11 @@ export const caseStudyUi: Record<
     solution: 'Solution',
     mainFeatures: 'Main Features',
     backToProjects: 'Back to projects',
+    previousProject: 'Previous project',
+    nextProject: 'Next project',
+    sourceCode: 'Source code on GitHub',
+    liveDemo: 'Live demo',
+    linksTitle: 'Links',
     dbName: 'Name',
     dbType: 'Type',
     dbStack: 'Stack',

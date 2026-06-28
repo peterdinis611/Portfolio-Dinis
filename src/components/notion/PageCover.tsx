@@ -1,4 +1,8 @@
-import { type PageCoverVariant, pageCoverImages } from '@/data/page-covers'
+import {
+  getProjectCover,
+  type PageCoverVariant,
+  pageCoverImages,
+} from '@/data/page-covers'
 import { cn } from '@/lib/utils'
 
 export type { PageCoverVariant }
@@ -30,13 +34,17 @@ function CoverImage({
 
 export function PageCover({
   variant,
+  projectId,
   className,
 }: {
-  variant: PageCoverVariant
+  variant?: PageCoverVariant
+  projectId?: string
   className?: string
 }) {
-  const cover = pageCoverImages[variant]
-  const eager = variant === 'about' || variant === 'projects'
+  const cover = projectId
+    ? (getProjectCover(projectId) ?? pageCoverImages.projects)
+    : pageCoverImages[variant ?? 'about']
+  const eager = Boolean(projectId) || variant === 'about' || variant === 'projects'
 
   return (
     <div
@@ -68,7 +76,7 @@ export function PageCover({
           'absolute inset-0',
           cover.srcDark
             ? 'bg-black/[0.08] dark:bg-black/15'
-            : variant === 'projects' || variant === 'tech'
+            : projectId || variant === 'projects' || variant === 'tech'
               ? 'bg-black/[0.08] dark:bg-black/25'
               : 'bg-black/[0.12] dark:bg-black/40',
         )}

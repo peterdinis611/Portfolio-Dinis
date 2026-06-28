@@ -225,7 +225,13 @@ export const translations = {
       expProjects: 'Projekty',
       projects: 'Projekty',
       projectsIntro:
-        'Produkčné platformy a produkty, na ktorých som pracoval — od verejného sektora po enterprise backendy.',
+        'Prehľad produkčných a osobných projektov — od firemných platforiem po open-source side projekty.',
+      companiesProjects: 'Firemné projekty',
+      companiesProjectsIntro:
+        'Produkčné platformy a produkty z firemných rolí — verejný sektor, zdravotníctvo, enterprise a R&D.',
+      myProjects: 'Moje projekty',
+      myProjectsIntro:
+        'Osobné a open-source projekty z GitHubu — desktop aplikácie, full-stack nástroje a študentské produkty.',
       contact: 'Kontakt',
       contactLead: 'Poďme sa porozprávať o produktoch, technológiách alebo spolupráci.',
       contactText:
@@ -500,7 +506,13 @@ export const translations = {
       expProjects: 'Projects',
       projects: 'Projects',
       projectsIntro:
-        'Production platforms and products I worked on — from public-sector apps to enterprise backends.',
+        'Overview of production and personal projects — from company platforms to open-source side projects.',
+      companiesProjects: 'Company projects',
+      companiesProjectsIntro:
+        'Production platforms from company roles — public sector, healthcare, enterprise, and R&D.',
+      myProjects: 'My projects',
+      myProjectsIntro:
+        'Personal and open-source GitHub projects — desktop apps, full-stack tools, and student products.',
       contact: 'Contact',
       contactLead: "Let's talk products, technologies, or collaboration.",
       contactText:

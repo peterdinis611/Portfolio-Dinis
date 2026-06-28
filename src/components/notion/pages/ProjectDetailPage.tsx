@@ -1,8 +1,9 @@
-import { projects } from '@/data/portfolio'
+import { PROJECT_CATEGORY_BY_LIST, projects } from '@/data/portfolio'
 import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
+import { getAdjacentProjects, projectHref, projectListHref } from '@/lib/portfolio-route'
 import {
   BackLink,
   BlockBullets,
@@ -18,6 +19,7 @@ import {
 import { MotionSection } from '../motion'
 import {
   BlockCalloutRich,
+  BlockBookmark,
   BlockCode,
   BlockHighlight,
   BlockPageLink,
@@ -25,7 +27,6 @@ import {
   BlockTableOfContents,
   BlockToggle,
 } from '../notion-blocks'
-import { getNotionPages } from '../nav'
 import { PageCover } from '../PageCover'
 
 const codeSnippets: Record<string, string> = {
@@ -51,6 +52,35 @@ findOne(@Param('id') id: string, @Req() req: AuthRequest) {
 <FluentProvider theme={teamsTheme}>
   <Button appearance="primary">{label}</Button>
 </FluentProvider>`,
+  'docu-nest': `// Notebook route with typed queries
+export async function getNotebook(notebookId: string) {
+  return db.query.notebooks.findFirst({
+    where: eq(notebooks.id, notebookId),
+  })
+}`,
+  'scribe-notes': `// TipTap editor with slash commands
+const editor = useEditor({
+  extensions: [StarterKit, SlashCommand, Table],
+  onUpdate: ({ editor }) => saveDocument(editor.getJSON()),
+})`,
+  'boom-scope': `// Convex project mutation
+export const createProject = mutation({
+  args: { name: v.string() },
+  handler: async (ctx, { name }) => {
+    return await ctx.db.insert('projects', { name, createdAt: Date.now() })
+  },
+})`,
+  'pulse-apiclient': `// Rust HTTP engine via Tauri
+#[tauri::command]
+async fn send_request(req: HttpRequest) -> Result<HttpResponse, String> {
+  client.execute(build_reqwest(&req)?).await.map_err(|e| e.to_string())
+}`,
+  'spst-kniznica': `// Atomic book order with row lock
+await db.transaction(async (tx) => {
+  const book = await tx.select().from(books).where(eq(books.id, id)).for('update')
+  if (book.availableCopies < 1) throw new Error('Out of stock')
+  await tx.update(books).set({ availableCopies: book.availableCopies - 1 })
+})`,
 }
 
 export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: string }) {
@@ -59,7 +89,6 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   const csUi = caseStudyUi[lang]
   const blocks = notionPageBlocks[lang].projectDetail
   const meta = projectMeta[projectId] ?? { icon: '📄' }
-  const navPages = getNotionPages(lang).filter((page) => page.id !== 'projects')
 
   if (!project || !study) {
     return (
@@ -69,6 +98,12 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
       </PageShell>
     )
   }
+
+  const relatedProjects = projects.filter(
+    (item) => item.id !== projectId && item.category === project.category,
+  )
+  const { prev, next } = getAdjacentProjects(projectId)
+  const backHref = projectListHref(PROJECT_CATEGORY_BY_LIST[project.category])
 
   const tools = project.tech.split(' · ').map((tag) => tag.trim())
   const code = codeSnippets[projectId]
@@ -81,9 +116,9 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   ]
 
   return (
-    <PageShell cover={<PageCover variant="projects" />}>
+    <PageShell cover={<PageCover projectId={projectId} />}>
       <MotionSection className="pt-2">
-        <BackLink href="#projects">{csUi.backToProjects}</BackLink>
+        <BackLink href={backHref}>{csUi.backToProjects}</BackLink>
         <PageTitle icon={meta.icon}>{project.name}</PageTitle>
         <BlockHighlight tone="pink">{study.type}</BlockHighlight>
       </MotionSection>
@@ -109,6 +144,28 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
         <BlockTableOfContents title={blocks.tocTitle} items={tocItems} />
         <BlockQuote>{study.overview}</BlockQuote>
       </MotionSection>
+
+      {(project.githubUrl || project.liveUrl) && (
+        <MotionSection delay={0.11}>
+          <BlockText className="mb-2 font-semibold text-foreground">{csUi.linksTitle}</BlockText>
+          {project.githubUrl ? (
+            <BlockBookmark
+              href={project.githubUrl}
+              title={csUi.sourceCode}
+              description={project.name}
+              external
+            />
+          ) : null}
+          {project.liveUrl ? (
+            <BlockBookmark
+              href={project.liveUrl}
+              title={csUi.liveDemo}
+              description={project.name}
+              external
+            />
+          ) : null}
+        </MotionSection>
+      )}
 
       <MotionSection delay={0.12}>
         <CaseStudySection id="cs-overview" title={csUi.overview}>
@@ -140,16 +197,52 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
         <BlockDivider />
         <BlockText className="mb-2 font-semibold text-foreground">{blocks.relatedTitle}</BlockText>
         <div className="flex flex-col gap-0.5">
-          {navPages.map((page) => (
+          {relatedProjects.map((item) => (
             <BlockPageLink
-              key={page.id}
-              href={`#${page.id}`}
-              icon={page.icon}
-              label={page.label}
+              key={item.id}
+              href={projectHref(item.id)}
+              icon={projectMeta[item.id]?.icon ?? '📄'}
+              label={item.name}
             />
           ))}
         </div>
       </MotionSection>
+
+      {(prev || next) && (
+        <MotionSection delay={0.18} className="mt-2">
+          <nav
+            className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-stretch sm:justify-between"
+            aria-label={blocks.relatedTitle}
+          >
+            {prev ? (
+              <a
+                href={projectHref(prev.id)}
+                className="group flex flex-1 flex-col rounded-lg border border-border px-4 py-3 transition-colors hover:bg-muted/50 sm:max-w-[48%]"
+              >
+                <span className="text-xs text-muted-foreground">{csUi.previousProject}</span>
+                <span className="mt-1 text-sm font-medium group-hover:text-primary">
+                  <span aria-hidden>{projectMeta[prev.id]?.icon ?? '📄'} </span>
+                  {prev.name}
+                </span>
+              </a>
+            ) : (
+              <span className="hidden flex-1 sm:block" aria-hidden />
+            )}
+            {next ? (
+              <a
+                href={projectHref(next.id)}
+                className="group flex flex-1 flex-col rounded-lg border border-border px-4 py-3 text-right transition-colors hover:bg-muted/50 sm:max-w-[48%]"
+              >
+                <span className="text-xs text-muted-foreground">{csUi.nextProject}</span>
+                <span className="mt-1 text-sm font-medium group-hover:text-primary">
+                  {next.name}
+                  <span aria-hidden> {projectMeta[next.id]?.icon ?? '📄'}</span>
+                </span>
+              </a>
+            ) : null}
+          </nav>
+        </MotionSection>
+      )}
     </PageShell>
   )
 }

@@ -3,7 +3,12 @@ import { Separator } from '@/components/ui/separator'
 import { type Lang, translations } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
-import { getNotionPages, getProjectNavItems, isProjectsListActive } from './nav'
+import {
+  getNotionPages,
+  getProjectNavGroups,
+  isProjectListActive,
+  isProjectsOverviewActive,
+} from './nav'
 
 type NotionSidebarProps = {
   lang: Lang
@@ -15,7 +20,7 @@ type NotionSidebarProps = {
 export function NotionSidebar({ lang, route, onNavigate, className }: NotionSidebarProps) {
   const ui = translations[lang].ui
   const pages = getNotionPages(lang)
-  const projectItems = getProjectNavItems()
+  const projectGroups = getProjectNavGroups(lang)
 
   return (
     <aside
@@ -54,7 +59,7 @@ export function NotionSidebar({ lang, route, onNavigate, className }: NotionSide
                 type="button"
                 className={cn(
                   'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-sidebar-accent',
-                  isProjectsListActive(route) && item.id === 'projects'
+                  isProjectsOverviewActive(route) && item.id === 'projects'
                     ? 'bg-sidebar-accent font-medium'
                     : route.page === item.id && item.id !== 'projects'
                       ? 'bg-sidebar-accent font-medium'
@@ -62,7 +67,7 @@ export function NotionSidebar({ lang, route, onNavigate, className }: NotionSide
                 )}
                 onClick={() => onNavigate({ page: item.id })}
                 aria-current={
-                  route.page === item.id && (item.id !== 'projects' || !route.projectId)
+                  route.page === item.id && (item.id !== 'projects' || isProjectsOverviewActive(route))
                     ? 'page'
                     : undefined
                 }
@@ -74,24 +79,49 @@ export function NotionSidebar({ lang, route, onNavigate, className }: NotionSide
               </button>
 
               {item.id === 'projects' ? (
-                <ul className="ml-5 mt-0.5 space-y-0.5 border-l border-border/60 pl-2">
-                  {projectItems.map((project) => (
-                    <li key={project.id}>
+                <ul className="ml-5 mt-0.5 space-y-1 border-l border-border/60 pl-2">
+                  {projectGroups.map((group) => (
+                    <li key={group.id}>
                       <button
                         type="button"
                         className={cn(
-                          'flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs transition-colors hover:bg-sidebar-accent',
-                          route.projectId === project.id && 'bg-sidebar-accent font-medium',
+                          'flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs font-medium transition-colors hover:bg-sidebar-accent',
+                          (isProjectListActive(route, group.id) ||
+                            (route.projectId &&
+                              group.items.some((project) => project.id === route.projectId))) &&
+                            !isProjectsOverviewActive(route)
+                            ? 'bg-sidebar-accent/70 text-foreground'
+                            : 'text-muted-foreground',
                         )}
-                        onClick={() =>
-                          onNavigate({ page: 'projects', projectId: project.id })
-                        }
+                        onClick={() => onNavigate({ page: 'projects', projectList: group.id })}
                       >
                         <span className="w-4 text-center" aria-hidden>
-                          {project.icon}
+                          {group.icon}
                         </span>
-                        <span className="truncate">{project.name}</span>
+                        <span className="truncate">{group.label}</span>
                       </button>
+
+                      <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-border/40 pl-2">
+                        {group.items.map((project) => (
+                          <li key={project.id}>
+                            <button
+                              type="button"
+                              className={cn(
+                                'flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs transition-colors hover:bg-sidebar-accent',
+                                route.projectId === project.id && 'bg-sidebar-accent font-medium',
+                              )}
+                              onClick={() =>
+                                onNavigate({ page: 'projects', projectId: project.id })
+                              }
+                            >
+                              <span className="w-4 text-center" aria-hidden>
+                                {project.icon}
+                              </span>
+                              <span className="truncate">{project.name}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </li>
                   ))}
                 </ul>

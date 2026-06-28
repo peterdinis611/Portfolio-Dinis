@@ -3,7 +3,8 @@ import { ThemeToggleIcon } from '@/components/icons/ThemeToggleIcon'
 import { Button } from '@/components/ui/button'
 import { type Lang, type Theme, translations } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
-import { getNotionPages, getProjectName } from './nav'
+import { PROJECT_CATEGORY_BY_LIST, projects } from '@/data/portfolio'
+import { getNotionPages, getProjectListLabel } from './nav'
 
 type NotionTopbarProps = {
   lang: Lang
@@ -26,7 +27,14 @@ export function NotionTopbar({
 }: NotionTopbarProps) {
   const ui = translations[lang].ui
   const current = getNotionPages(lang).find((p) => p.id === route.page)
-  const projectName = route.projectId ? getProjectName(route.projectId) : undefined
+  const activeProject = route.projectId
+    ? projects.find((project) => project.id === route.projectId)
+    : undefined
+  const projectName = activeProject?.name
+  const projectListId =
+    route.projectList ??
+    (activeProject ? PROJECT_CATEGORY_BY_LIST[activeProject.category] : undefined)
+  const projectListLabel = projectListId ? getProjectListLabel(lang, projectListId) : undefined
 
   return (
     <header className="sticky top-0 z-20 flex h-11 items-center justify-between gap-3 border-b border-border bg-background/85 px-3 backdrop-blur-md">
@@ -54,12 +62,22 @@ export function NotionTopbar({
             </span>
           ) : (
             <>
-              <span className={cnTruncate(projectName)}>
+              <span className={cnTruncate(projectName ?? projectListLabel)}>
                 {current?.icon} {current?.label}
               </span>
+              {projectListLabel && !projectName ? (
+                <>
+                  <span aria-hidden>/</span>
+                  <span className="truncate font-medium text-foreground">{projectListLabel}</span>
+                </>
+              ) : null}
               {projectName ? (
                 <>
                   <span aria-hidden>/</span>
+                  {projectListLabel ? (
+                    <span className="truncate">{projectListLabel}</span>
+                  ) : null}
+                  {projectListLabel ? <span aria-hidden>/</span> : null}
                   <span className="truncate font-medium text-foreground">{projectName}</span>
                 </>
               ) : null}

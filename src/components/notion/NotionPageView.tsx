@@ -24,11 +24,13 @@ function FallbackPage({
   lang,
   page,
   projectId,
+  projectList,
   attemptedPath,
 }: {
   lang: Lang
   page: PortfolioRoute['page']
   projectId?: string
+  projectList?: PortfolioRoute['projectList']
   attemptedPath?: string
 }) {
   if (page === 'not-found') {
@@ -47,20 +49,21 @@ function FallbackPage({
     case 'experience':
       return <ExperiencePage lang={lang} />
     case 'projects':
-      return <ProjectsPage lang={lang} />
+      return <ProjectsPage lang={lang} projectList={projectList} />
     case 'contact':
       return <ContactPage lang={lang} />
   }
 }
 
 export function NotionPageView({ lang, route, darkMode }: NotionPageViewProps) {
-  const { page, projectId, attemptedPath } = route
-  const useNotionRenderer = page !== 'not-found' && hasNotionContent(page) && !projectId
+  const { page, projectId, projectList, attemptedPath } = route
+  const useNotionRenderer =
+    page !== 'not-found' && hasNotionContent(page) && !projectId && !projectList
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={`${lang}-${page}-${projectId ?? 'root'}-${attemptedPath ?? ''}-${useNotionRenderer ? 'notion' : 'fallback'}`}
+        key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${attemptedPath ?? ''}-${useNotionRenderer ? 'notion' : 'fallback'}`}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -6 }}
@@ -73,6 +76,7 @@ export function NotionPageView({ lang, route, darkMode }: NotionPageViewProps) {
             lang={lang}
             page={page}
             projectId={projectId}
+            projectList={projectList}
             attemptedPath={attemptedPath}
           />
         )}
