@@ -3,6 +3,7 @@ export type PageCoverImage = {
   alt: string
   srcDark?: string
   objectPosition?: string
+  objectPositionDark?: string
 }
 
 export type PageCoverVariant = 'about' | 'tech' | 'experience' | 'projects' | 'contact'
@@ -14,10 +15,12 @@ export const pageCoverImages: Record<PageCoverVariant, PageCoverImage> = {
     srcDark: '/covers/about-dark.jpg',
     alt: 'Developer workspace with laptop showing code',
     objectPosition: 'center 40%',
+    objectPositionDark: 'left 42%',
   },
   tech: {
     src: '/covers/tech.jpg',
     alt: 'Source code on a screen',
+    objectPosition: 'left 42%',
   },
   experience: {
     src: '/covers/experience.jpg',
@@ -26,6 +29,7 @@ export const pageCoverImages: Record<PageCoverVariant, PageCoverImage> = {
   projects: {
     src: '/covers/projects.jpg',
     alt: 'Code editor on a monitor',
+    objectPosition: 'left 42%',
   },
   contact: {
     src: '/covers/contact.jpg',

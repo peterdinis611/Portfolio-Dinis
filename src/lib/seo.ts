@@ -1,4 +1,4 @@
-import { pageFromHash } from '@/lib/portfolio-route'
+import { parsePortfolioRoute, type PortfolioRoute } from '@/lib/portfolio-route'
 import type { NotionPageId } from '@/components/notion/types'
 import { profile, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
@@ -94,6 +94,17 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
   },
 }
 
+const notFoundSeoCopy: Record<Lang, PageSeo> = {
+  sk: {
+    title: '404 | Stránka sa nenašla — Peter Dinis',
+    description: 'Táto stránka v portfóliu neexistuje. Vráť sa na úvod alebo preskúmaj dostupné sekcie.',
+  },
+  en: {
+    title: '404 | Page not found — Peter Dinis',
+    description: 'This page does not exist in the portfolio. Return home or explore the available sections.',
+  },
+}
+
 export function getSiteUrl(): string {
   const envUrl = import.meta.env.VITE_SITE_URL as string | undefined
   if (envUrl) return envUrl.replace(/\/$/, '')
@@ -109,9 +120,10 @@ function getStoredLang(): Lang {
   }
 }
 
-function resolvePageSeo(lang: Lang, page: NotionPageId): PageSeo {
-  if (page === DEFAULT_PAGE) return seoCopy[lang]
-  return pageSeoCopy[lang][page]
+function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
+  if (route.page === 'not-found') return notFoundSeoCopy[lang]
+  if (route.page === DEFAULT_PAGE) return seoCopy[lang]
+  return pageSeoCopy[lang][route.page]
 }
 
 function pageUrl(siteUrl: string, page: NotionPageId): string {
@@ -145,9 +157,12 @@ function setLink(rel: string, href: string, hreflang?: string) {
   el.href = href
 }
 
-function buildJsonLd(lang: Lang, page: NotionPageId, siteUrl: string) {
+function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
+  if (route.page === 'not-found') return null
+
+  const page = route.page
   const t = translations[lang]
-  const copy = resolvePageSeo(lang, page)
+  const copy = resolveRouteSeo(lang, route)
   const currentUrl = pageUrl(siteUrl, page)
   const pageLabel = pageSeoCopy[lang][page].title.split(' | ')[0]
 
@@ -212,22 +227,34 @@ function buildJsonLd(lang: Lang, page: NotionPageId, siteUrl: string) {
   }
 }
 
-function setJsonLd(lang: Lang, page: NotionPageId, siteUrl: string) {
+function setJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
+  const data = buildJsonLd(lang, route, siteUrl)
   let script = document.getElementById(JSON_LD_ID) as HTMLScriptElement | null
+
+  if (!data) {
+    script?.remove()
+    return
+  }
+
   if (!script) {
     script = document.createElement('script')
     script.id = JSON_LD_ID
     script.type = 'application/ld+json'
     document.head.appendChild(script)
   }
-  script.textContent = JSON.stringify(buildJsonLd(lang, page, siteUrl))
+  script.textContent = JSON.stringify(data)
 }
 
-export function applySeo(lang: Lang, page: NotionPageId = DEFAULT_PAGE) {
+export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAGE }) {
   const site = seoCopy[lang]
-  const copy = resolvePageSeo(lang, page)
+  const copy = resolveRouteSeo(lang, route)
+  const page = route.page === 'not-found' ? DEFAULT_PAGE : route.page
   const siteUrl = getSiteUrl()
-  const canonical = pageUrl(siteUrl, page)
+  const origin = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
+  const canonical =
+    route.page === 'not-found' && route.attemptedPath
+      ? `${origin}/#${route.attemptedPath}`
+      : pageUrl(siteUrl, page)
   const ogImage = siteUrl ? `${siteUrl}/og-image.jpg` : '/og-image.jpg'
 
   document.documentElement.lang = lang
@@ -236,7 +263,7 @@ export function applySeo(lang: Lang, page: NotionPageId = DEFAULT_PAGE) {
   setMeta('description', copy.description)
   setMeta('keywords', site.keywords)
   setMeta('author', profile.name)
-  setMeta('robots', 'index, follow, max-image-preview:large')
+  setMeta('robots', route.page === 'not-found' ? 'noindex, follow' : 'index, follow, max-image-preview:large')
   setMeta('googlebot', 'index, follow')
 
   setMeta('og:title', copy.title, true)
@@ -262,13 +289,13 @@ export function applySeo(lang: Lang, page: NotionPageId = DEFAULT_PAGE) {
     setLink('alternate', canonical, 'x-default')
   }
 
-  if (siteUrl) setJsonLd(lang, page, siteUrl)
+  if (siteUrl) setJsonLd(lang, route, siteUrl)
 }
 
 /** Run once before React mounts — uses stored language and current hash. */
 export function initSeo() {
-  const page = typeof window !== 'undefined' ? pageFromHash() : DEFAULT_PAGE
-  applySeo(getStoredLang(), page)
+  const route = typeof window !== 'undefined' ? parsePortfolioRoute() : { page: DEFAULT_PAGE }
+  applySeo(getStoredLang(), route)
 }
 
 export const notionPagesForSitemap: NotionPageId[] = [

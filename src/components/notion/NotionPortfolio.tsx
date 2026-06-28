@@ -27,11 +27,24 @@ export function NotionPortfolio() {
   }, [])
 
   useEffect(() => {
-    const onHash = () => setRoute(parsePortfolioRoute())
-    window.addEventListener('hashchange', onHash)
-    setPortfolioHash(route)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [route])
+    const syncRoute = () => {
+      const next = parsePortfolioRoute()
+      setRoute(next)
+      return next
+    }
+
+    const initial = syncRoute()
+    if (initial.page !== 'not-found') {
+      setPortfolioHash(initial)
+    }
+
+    window.addEventListener('hashchange', syncRoute)
+    window.addEventListener('popstate', syncRoute)
+    return () => {
+      window.removeEventListener('hashchange', syncRoute)
+      window.removeEventListener('popstate', syncRoute)
+    }
+  }, [])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -81,12 +94,7 @@ export function NotionPortfolio() {
         />
 
         <main className="flex-1 overflow-y-auto" id="main-content">
-          <NotionPageView
-            lang={lang}
-            page={route.page}
-            projectId={route.projectId}
-            darkMode={theme === 'dark'}
-          />
+          <NotionPageView lang={lang} route={route} darkMode={theme === 'dark'} />
         </main>
       </div>
     </div>

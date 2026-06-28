@@ -18,9 +18,10 @@ function CoverImage({
     <img
       src={src}
       alt=""
-      className={cn('h-full w-full object-cover', className)}
+      className={cn('h-full w-full scale-[1.02] object-cover', className)}
       style={objectPosition ? { objectPosition } : undefined}
       loading={eager ? 'eager' : 'lazy'}
+      fetchPriority={eager ? 'high' : 'auto'}
       decoding="async"
       draggable={false}
     />
@@ -35,7 +36,7 @@ export function PageCover({
   className?: string
 }) {
   const cover = pageCoverImages[variant]
-  const eager = variant === 'about'
+  const eager = variant === 'about' || variant === 'projects'
 
   return (
     <div
@@ -54,7 +55,7 @@ export function PageCover({
           />
           <CoverImage
             src={cover.srcDark}
-            objectPosition={cover.objectPosition}
+            objectPosition={cover.objectPositionDark ?? cover.objectPosition}
             eager={eager}
             className="hidden dark:block"
           />
@@ -65,7 +66,11 @@ export function PageCover({
       <div
         className={cn(
           'absolute inset-0',
-          cover.srcDark ? 'bg-black/[0.08] dark:bg-black/20' : 'bg-black/[0.12] dark:bg-black/40',
+          cover.srcDark
+            ? 'bg-black/[0.08] dark:bg-black/15'
+            : variant === 'projects' || variant === 'tech'
+              ? 'bg-black/[0.08] dark:bg-black/25'
+              : 'bg-black/[0.12] dark:bg-black/40',
         )}
         aria-hidden
       />

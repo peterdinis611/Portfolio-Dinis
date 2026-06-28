@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react'
-import { pageFromHash } from '@/lib/portfolio-route'
-import type { NotionPageId } from '@/components/notion/types'
+import { parsePortfolioRoute, type PortfolioRoute } from '@/lib/portfolio-route'
 import { SettingsContext } from '@/context/AppProviders'
 import { applySeo } from '@/lib/seo'
 
 export function SeoManager() {
   const lang = SettingsContext.useSelector((s) => s.context.lang)
-  const [page, setPage] = useState<NotionPageId>(() => pageFromHash())
+  const [route, setRoute] = useState<PortfolioRoute>(() => parsePortfolioRoute())
 
   useEffect(() => {
-    const syncPage = () => setPage(pageFromHash())
-    window.addEventListener('hashchange', syncPage)
-    syncPage()
-    return () => window.removeEventListener('hashchange', syncPage)
+    const syncRoute = () => setRoute(parsePortfolioRoute())
+    window.addEventListener('hashchange', syncRoute)
+    window.addEventListener('popstate', syncRoute)
+    syncRoute()
+    return () => {
+      window.removeEventListener('hashchange', syncRoute)
+      window.removeEventListener('popstate', syncRoute)
+    }
   }, [])
 
   useEffect(() => {
-    applySeo(lang, page)
-  }, [lang, page])
+    applySeo(lang, route)
+  }, [lang, route])
 
   return null
 }

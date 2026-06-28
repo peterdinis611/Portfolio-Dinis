@@ -48,15 +48,23 @@ export function NotionTopbar({
           <span className="hidden sm:inline" aria-hidden>
             /
           </span>
-          <span className={cnTruncate(projectName)}>
-            {current?.icon} {current?.label}
-          </span>
-          {projectName ? (
+          {route.page === 'not-found' ? (
+            <span className="truncate font-medium text-foreground">
+              🔍 {ui.notionNotFoundTitle}
+            </span>
+          ) : (
             <>
-              <span aria-hidden>/</span>
-              <span className="truncate font-medium text-foreground">{projectName}</span>
+              <span className={cnTruncate(projectName)}>
+                {current?.icon} {current?.label}
+              </span>
+              {projectName ? (
+                <>
+                  <span aria-hidden>/</span>
+                  <span className="truncate font-medium text-foreground">{projectName}</span>
+                </>
+              ) : null}
             </>
-          ) : null}
+          )}
         </nav>
       </div>
 

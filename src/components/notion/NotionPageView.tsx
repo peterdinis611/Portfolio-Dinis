@@ -1,10 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Lang } from '@/i18n/translations'
+import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { hasNotionContent } from '@/lib/notion-recordmaps'
 import { NotionRendererPage } from './NotionRendererPage'
 import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
 import { ExperiencePage } from './pages/ExperiencePage'
+import { NotFoundPage } from './pages/NotFoundPage'
 import { ProjectDetailPage } from './pages/ProjectDetailPage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { TechPage } from './pages/TechPage'
@@ -14,8 +16,7 @@ const EASE = [0.32, 0.72, 0, 1] as const
 
 type NotionPageViewProps = {
   lang: Lang
-  page: NotionPageId
-  projectId?: string
+  route: PortfolioRoute
   darkMode: boolean
 }
 
@@ -23,11 +24,17 @@ function FallbackPage({
   lang,
   page,
   projectId,
+  attemptedPath,
 }: {
   lang: Lang
-  page: NotionPageId
+  page: PortfolioRoute['page']
   projectId?: string
+  attemptedPath?: string
 }) {
+  if (page === 'not-found') {
+    return <NotFoundPage lang={lang} attemptedPath={attemptedPath} />
+  }
+
   if (page === 'projects' && projectId) {
     return <ProjectDetailPage lang={lang} projectId={projectId} />
   }
@@ -46,22 +53,28 @@ function FallbackPage({
   }
 }
 
-export function NotionPageView({ lang, page, projectId, darkMode }: NotionPageViewProps) {
-  const useNotionRenderer = hasNotionContent(page) && !projectId
+export function NotionPageView({ lang, route, darkMode }: NotionPageViewProps) {
+  const { page, projectId, attemptedPath } = route
+  const useNotionRenderer = page !== 'not-found' && hasNotionContent(page) && !projectId
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={`${lang}-${page}-${projectId ?? 'root'}-${useNotionRenderer ? 'notion' : 'fallback'}`}
+        key={`${lang}-${page}-${projectId ?? 'root'}-${attemptedPath ?? ''}-${useNotionRenderer ? 'notion' : 'fallback'}`}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.28, ease: EASE }}
       >
         {useNotionRenderer ? (
-          <NotionRendererPage page={page} darkMode={darkMode} />
+          <NotionRendererPage page={page as NotionPageId} darkMode={darkMode} />
         ) : (
-          <FallbackPage lang={lang} page={page} projectId={projectId} />
+          <FallbackPage
+            lang={lang}
+            page={page}
+            projectId={projectId}
+            attemptedPath={attemptedPath}
+          />
         )}
       </motion.div>
     </AnimatePresence>
