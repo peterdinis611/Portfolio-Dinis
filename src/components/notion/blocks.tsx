@@ -40,17 +40,19 @@ export function PageHero({
   name,
   title,
   subtitle,
+  tagline,
   photo,
   circular = false,
 }: {
   name: string
   title: string
   subtitle?: string
+  tagline?: string
   photo: ReactNode
   circular?: boolean
 }) {
   return (
-    <div className="relative z-10 -mt-[4.5rem] mb-8 flex flex-col items-center gap-3 sm:-mt-20 sm:flex-row sm:items-end sm:gap-5">
+    <div className="relative z-10 -mt-[4.5rem] mb-6 flex flex-col items-center gap-3 sm:-mt-20 sm:flex-row sm:items-end sm:gap-5">
       <div
         className={cn(
           'border-4 border-background bg-background shadow-md',
@@ -59,14 +61,60 @@ export function PageHero({
       >
         {photo}
       </div>
-      <div className="text-center sm:pb-1 sm:text-left">
+      <div className="max-w-md text-center sm:pb-1 sm:text-left">
         <p className="text-xl font-bold tracking-tight text-foreground">{name}</p>
         <p className="text-sm font-medium text-foreground/90">{title}</p>
+        {tagline ? (
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{tagline}</p>
+        ) : null}
         {subtitle ? (
           <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
         ) : null}
       </div>
     </div>
+  )
+}
+
+export function BioTagPills({ items }: { items: string[] }) {
+  return (
+    <ul className="mb-6 flex flex-wrap justify-center gap-1.5 sm:justify-start">
+      {items.map((item) => (
+        <li
+          key={item}
+          className="rounded-full border border-border/70 bg-muted/40 px-2.5 py-1 text-xs font-medium text-muted-foreground"
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+export function SectionAnchorNav({
+  label,
+  items,
+}: {
+  label: string
+  items: Array<{ id: string; label: string }>
+}) {
+  return (
+    <nav
+      className="flex flex-wrap items-center gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2.5"
+      aria-label={label}
+    >
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
+      {items.map((item) => (
+        <a
+          key={item.id}
+          href={`#${item.id}`}
+          className="rounded-full border border-border/70 bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
   )
 }
 
@@ -106,20 +154,29 @@ export function TwoColumnCards({
 export function InfoFactGrid({
   items,
 }: {
-  items: Array<{ label: string; value: string; tone: InfoFactTone }>
+  items: Array<{ label: string; value: string; tone: InfoFactTone; icon?: string }>
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
       {items.map((item) => (
         <div
           key={item.label}
           className={cn(
-            'rounded-md border border-border/50 px-3 py-2.5 text-sm leading-snug',
+            'flex gap-3 rounded-lg border border-border/50 px-3.5 py-3 text-sm leading-snug',
             infoFactToneClass[item.tone],
           )}
         >
-          <p className="text-[11px] font-medium text-muted-foreground">{item.label}</p>
-          <p className="mt-0.5 font-medium text-foreground">{item.value}</p>
+          {item.icon ? (
+            <span className="mt-0.5 text-base leading-none" aria-hidden>
+              {item.icon}
+            </span>
+          ) : null}
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {item.label}
+            </p>
+            <p className="mt-1 font-medium leading-snug text-foreground">{item.value}</p>
+          </div>
         </div>
       ))}
     </div>
@@ -268,21 +325,38 @@ export function PageNavPills({
   )
 }
 
-export function ServiceGrid({ items }: { items: Array<{ icon: string; label: string }> }) {
+export function AboutCtaPanel({
+  title,
+  body,
+  tagline,
+  action,
+  footer,
+}: {
+  title: string
+  body: string
+  tagline?: string
+  action: ReactNode
+  footer?: ReactNode
+}) {
   return (
-    <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-      {items.map((item) => (
-        <li
-          key={item.label}
-          className="rounded-lg border border-border/70 bg-muted/20 px-3 py-3 text-center transition-colors hover:bg-muted/50"
-        >
-          <span className="text-lg" aria-hidden>
-            {item.icon}
-          </span>
-          <p className="mt-1 text-xs font-medium leading-tight">{item.label}</p>
-        </li>
-      ))}
-    </ul>
+    <section className="overflow-hidden rounded-xl border border-border bg-gradient-to-br from-card via-card to-muted/25 shadow-sm">
+      <div className="grid gap-4 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6 sm:p-6">
+        <div>
+          <h2 className="mb-1.5 flex items-center gap-2 text-base font-semibold text-foreground">
+            <span aria-hidden>✉️</span>
+            {title}
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+          {tagline ? (
+            <p className="mt-3 text-sm italic leading-relaxed text-foreground/80">{tagline}</p>
+          ) : null}
+        </div>
+        <div className="shrink-0">{action}</div>
+      </div>
+      {footer ? (
+        <div className="border-t border-border/70 bg-muted/15 px-5 py-4 sm:px-6">{footer}</div>
+      ) : null}
+    </section>
   )
 }
 

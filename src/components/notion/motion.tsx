@@ -1,7 +1,33 @@
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import type { ReactNode } from 'react'
 
 export const MOTION_EASE = [0.32, 0.72, 0, 1] as const
+
+export const staggerContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.07, delayChildren: 0.08 },
+  },
+}
+
+export const staggerItem: Variants = {
+  hidden: { opacity: 0, y: 14, filter: 'blur(6px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.42, ease: MOTION_EASE },
+  },
+}
+
+export const staggerItemLeft: Variants = {
+  hidden: { opacity: 0, x: -16 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.36, ease: MOTION_EASE },
+  },
+}
 
 export function MotionSection({
   children,

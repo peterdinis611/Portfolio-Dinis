@@ -1,18 +1,18 @@
+import { motion } from 'framer-motion'
 import { type Lang, translations } from '@/i18n/translations'
-import {
-  BackLink,
-  BlockHeading,
-  BlockText,
-  PageShell,
-} from '../blocks'
-import { MotionSection } from '../motion'
-import {
-  BlockCalloutRich,
-  BlockDividerDots,
-  BlockPageLink,
-  BlockQuote,
-} from '../notion-blocks'
+import { BlockText, PageShell } from '../blocks'
+import { BlockCalloutRich, BlockQuote } from '../notion-blocks'
 import { getNotionPages } from '../nav'
+import {
+  AnimatedExploreLinks,
+  staggerContainer,
+  staggerItem,
+  StatusBackLink,
+  StatusDetail,
+  StatusPageIcon,
+  StatusPageRoot,
+  StatusPageTitle,
+} from './status-page-parts'
 
 export function NotFoundPage({
   lang,
@@ -26,45 +26,39 @@ export function NotFoundPage({
 
   return (
     <PageShell>
-      <MotionSection>
-        <BackLink href="#about">{ui.notionBackHome}</BackLink>
+      <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+        <StatusPageRoot watermark="404" watermarkVariant="not-found">
+          <motion.div variants={staggerItem}>
+            <StatusBackLink href="#about">{ui.notionBackHome}</StatusBackLink>
+          </motion.div>
 
-        <div
-          className="mb-5 flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-md border border-border bg-muted/35 text-[2.35rem] shadow-sm"
-          aria-hidden
-        >
-          🔍
-        </div>
+          <StatusPageIcon icon="🔍" />
+          <StatusPageTitle>{ui.notionNotFoundHeading}</StatusPageTitle>
 
-        <h1 className="mb-2 text-[2.125rem] font-bold leading-[1.2] tracking-[-0.02em] text-foreground">
-          {ui.notionNotFoundHeading}
-        </h1>
-        <BlockText className="mb-1">{ui.notionNotFoundBody}</BlockText>
+          <motion.div variants={staggerItem}>
+            <BlockText>{ui.notionNotFoundBody}</BlockText>
+          </motion.div>
 
-        {attemptedPath ? (
-          <p className="mb-6 font-mono text-sm text-muted-foreground">
-            <span className="text-foreground/70">{ui.notionNotFoundPathLabel}: </span>
-            #{attemptedPath}
-          </p>
-        ) : (
-          <div className="mb-6" />
-        )}
+          {attemptedPath ? (
+            <StatusDetail
+              label={ui.notionNotFoundPathLabel}
+              value={`#${attemptedPath}`}
+            />
+          ) : null}
 
-        <BlockQuote>{ui.notionNotFoundQuote}</BlockQuote>
-        <BlockCalloutRich icon="💡" title={ui.notionNotFoundTipTitle} variant="idea">
-          {ui.notionNotFoundTipBody}
-        </BlockCalloutRich>
-      </MotionSection>
+          <motion.div variants={staggerItem} className="mt-6">
+            <BlockQuote>{ui.notionNotFoundQuote}</BlockQuote>
+          </motion.div>
 
-      <MotionSection delay={0.08} className="mt-8">
-        <BlockDividerDots />
-        <BlockHeading className="mt-0">{ui.notionNotFoundExplore}</BlockHeading>
-        <div className="flex flex-col gap-0.5">
-          {pages.map((page) => (
-            <BlockPageLink key={page.id} href={`#${page.id}`} icon={page.icon} label={page.label} />
-          ))}
-        </div>
-      </MotionSection>
+          <motion.div variants={staggerItem} className="mt-4">
+            <BlockCalloutRich icon="💡" title={ui.notionNotFoundTipTitle} variant="idea">
+              {ui.notionNotFoundTipBody}
+            </BlockCalloutRich>
+          </motion.div>
+        </StatusPageRoot>
+      </motion.div>
+
+      <AnimatedExploreLinks title={ui.notionNotFoundExplore} pages={pages} />
     </PageShell>
   )
 }

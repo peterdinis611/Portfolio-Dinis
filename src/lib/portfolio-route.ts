@@ -8,7 +8,7 @@ import type { NotionPageId } from '@/components/notion/types'
 
 export type { ProjectListId } from '@/data/portfolio'
 
-export type PortfolioPageId = NotionPageId | 'not-found'
+export type PortfolioPageId = NotionPageId | 'not-found' | 'error'
 
 export type PortfolioRoute = {
   page: PortfolioPageId
@@ -52,6 +52,10 @@ function parseRoutePath(path: string): PortfolioRoute {
 
   if (extra.length > 0) {
     return { page: 'not-found', attemptedPath: path }
+  }
+
+  if (pagePart === 'error') {
+    return { page: 'error' }
   }
 
   if (pagePart === 'projects') {
@@ -107,7 +111,7 @@ export function setPortfolioHash(route: PortfolioRoute) {
 /** @deprecated Use parsePortfolioRoute().page */
 export function pageFromHash(): NotionPageId {
   const route = parsePortfolioRoute()
-  return route.page === 'not-found' ? 'about' : route.page
+  return route.page === 'not-found' || route.page === 'error' ? 'about' : route.page
 }
 
 /** @deprecated Use setPortfolioHash */

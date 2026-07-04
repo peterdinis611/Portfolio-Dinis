@@ -60,6 +60,10 @@ export function NotionTopbar({
             <span className="truncate font-medium text-foreground">
               🔍 {ui.notionNotFoundTitle}
             </span>
+          ) : route.page === 'error' ? (
+            <span className="truncate font-medium text-foreground">
+              ⚠️ {ui.notionErrorTitle}
+            </span>
           ) : (
             <>
               <span className={cnTruncate(projectName ?? projectListLabel)}>

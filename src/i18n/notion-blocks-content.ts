@@ -11,6 +11,7 @@ export const notionPageBlocks: Record<
       workingStyle: Array<{ title: string; body: string }>
       tocTitle: string
       tocItems: Array<{ id: string; label: string }>
+      basicInfoTitle: string
       currentlyTitle: string
       currentlyText: string
     }
@@ -77,6 +78,7 @@ export const notionPageBlocks: Record<
         { id: 'about-skills', label: 'Schopnosti' },
         { id: 'about-approach', label: 'Ako pracujem' },
       ],
+      basicInfoTitle: 'Základné info',
       currentlyTitle: 'Momentálne',
       currentlyText: 'Pracujem na R&D projektoch v IBA.CZ — design systémy, Fluent UI a React aplikácie.',
     },
@@ -201,6 +203,7 @@ export const notionPageBlocks: Record<
         { id: 'about-skills', label: 'Skills' },
         { id: 'about-approach', label: 'How I work' },
       ],
+      basicInfoTitle: 'Basic info',
       currentlyTitle: 'Currently',
       currentlyText: 'Working on R&D projects at IBA.CZ — design systems, Fluent UI, and React applications.',
     },

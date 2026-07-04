@@ -41,7 +41,7 @@ export function getProjectListLabel(lang: Lang, listId: ProjectListId): string {
 export function getProjectNavGroups(lang: Lang) {
   const ui = translations[lang].ui
 
-  return ([
+  return [
     {
       id: 'companies-projects' as const,
       label: ui.companiesProjects,
@@ -64,7 +64,7 @@ export function getProjectNavGroups(lang: Lang) {
         href: projectHref(project.id),
       })),
     },
-  ])
+  ]
 }
 
 /** @deprecated Use getProjectNavGroups */

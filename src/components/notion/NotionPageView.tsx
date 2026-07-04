@@ -6,6 +6,7 @@ import { NotionRendererPage } from './NotionRendererPage'
 import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
 import { ExperiencePage } from './pages/ExperiencePage'
+import { ErrorPage } from './pages/ErrorPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { ProjectDetailPage } from './pages/ProjectDetailPage'
 import { ProjectsPage } from './pages/ProjectsPage'
@@ -37,6 +38,10 @@ function FallbackPage({
     return <NotFoundPage lang={lang} attemptedPath={attemptedPath} />
   }
 
+  if (page === 'error') {
+    return <ErrorPage lang={lang} demo />
+  }
+
   if (page === 'projects' && projectId) {
     return <ProjectDetailPage lang={lang} projectId={projectId} />
   }
@@ -58,7 +63,11 @@ function FallbackPage({
 export function NotionPageView({ lang, route, darkMode }: NotionPageViewProps) {
   const { page, projectId, projectList, attemptedPath } = route
   const useNotionRenderer =
-    page !== 'not-found' && hasNotionContent(page) && !projectId && !projectList
+    page !== 'not-found' &&
+    page !== 'error' &&
+    hasNotionContent(page) &&
+    !projectId &&
+    !projectList
 
   return (
     <AnimatePresence mode="wait">

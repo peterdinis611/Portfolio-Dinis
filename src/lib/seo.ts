@@ -106,6 +106,17 @@ const notFoundSeoCopy: Record<Lang, PageSeo> = {
   },
 }
 
+const errorSeoCopy: Record<Lang, PageSeo> = {
+  sk: {
+    title: '500 | Chyba — Peter Dinis',
+    description: 'V portfóliu nastala neočakávaná chyba. Skús obnoviť stránku alebo sa vráť na úvod.',
+  },
+  en: {
+    title: '500 | Error — Peter Dinis',
+    description: 'An unexpected error occurred in the portfolio. Try reloading or return to the home page.',
+  },
+}
+
 export function getSiteUrl(): string {
   const envUrl = import.meta.env.VITE_SITE_URL as string | undefined
   if (envUrl) return envUrl.replace(/\/$/, '')
@@ -150,6 +161,7 @@ const projectListSeoCopy: Record<Lang, Record<ProjectListId, PageSeo>> = {
 
 function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
   if (route.page === 'not-found') return notFoundSeoCopy[lang]
+  if (route.page === 'error') return errorSeoCopy[lang]
 
   if (route.page === 'projects' && route.projectList) {
     return projectListSeoCopy[lang][route.projectList]
@@ -186,6 +198,11 @@ function routeUrl(siteUrl: string, route: PortfolioRoute): string {
   if (route.page === 'not-found' && route.attemptedPath) {
     const origin = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
     return origin ? `${origin}/#${route.attemptedPath}` : ''
+  }
+
+  if (route.page === 'error') {
+    const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
+    return base ? `${base}/#error` : ''
   }
 
   if (route.page === 'projects' && route.projectId) {
@@ -227,7 +244,7 @@ function setLink(rel: string, href: string, hreflang?: string) {
 }
 
 function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
-  if (route.page === 'not-found') return null
+  if (route.page === 'not-found' || route.page === 'error') return null
 
   const copy = resolveRouteSeo(lang, route)
   const isProjectDetail = route.page === 'projects' && Boolean(route.projectId)
@@ -365,7 +382,7 @@ export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAG
   setMeta('description', copy.description)
   setMeta('keywords', site.keywords)
   setMeta('author', profile.name)
-  setMeta('robots', route.page === 'not-found' ? 'noindex, follow' : 'index, follow, max-image-preview:large')
+  setMeta('robots', route.page === 'not-found' || route.page === 'error' ? 'noindex, follow' : 'index, follow, max-image-preview:large')
   setMeta('googlebot', 'index, follow')
 
   setMeta('og:title', copy.title, true)
