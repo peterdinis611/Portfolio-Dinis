@@ -43,8 +43,8 @@ export const aboutTemplateContent: Record<
   }
 > = {
   sk: {
-    greeting: 'Ahoj 👋 som',
-    aboutShort: 'Full-stack developer cez deň ☀️ · side projekty v noci 🌙',
+    greeting: 'Ahoj, som',
+    aboutShort: 'Full-stack developer cez deň · side projekty v noci',
     contactShort:
       'Ak hľadáš niekoho, kto spojí solídny kód s citom pre UX — napíš mi. Rád sa porozprávam o produktoch, tíme alebo novej spolupráci.',
     profileFacts: {
@@ -53,7 +53,7 @@ export const aboutTemplateContent: Record<
       speaks: 'Slovenčina, Angličtina',
       loves: 'React, hry, turistika',
     },
-    skillsTitle: '👑 Moje schopnosti',
+    skillsTitle: 'Moje schopnosti',
     skillsIntro:
       'Zameriavam sa na produkčný vývoj naprieč frontendom, backendom a UX — od návrhu po deploy.',
     skills: [
@@ -90,8 +90,8 @@ export const aboutTemplateContent: Record<
     lovesLabel: 'Milujem',
   },
   en: {
-    greeting: "Hi 👋 I'm a",
-    aboutShort: 'Full-stack developer by day ☀️ · side projects by night 🌙',
+    greeting: "Hi, I'm a",
+    aboutShort: 'Full-stack developer by day · side projects by night',
     contactShort:
       'If you need someone who combines solid code with UX thinking — reach out. Happy to talk products, teams, or new collaborations.',
     profileFacts: {
@@ -100,7 +100,7 @@ export const aboutTemplateContent: Record<
       speaks: 'Slovak, English',
       loves: 'React, gaming, hiking',
     },
-    skillsTitle: '👑 My Skills',
+    skillsTitle: 'My skills',
     skillsIntro:
       'I focus on production development across frontend, backend, and UX — from design to deployment.',
     skills: [

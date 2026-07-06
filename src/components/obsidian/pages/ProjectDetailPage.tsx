@@ -1,7 +1,7 @@
 import { PROJECT_CATEGORY_BY_LIST, projects } from '@/data/portfolio'
 import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang } from '@/i18n/translations'
-import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
 import { getAdjacentProjects, projectHref, projectListHref } from '@/lib/portfolio-route'
 import {
@@ -26,8 +26,7 @@ import {
   BlockQuote,
   BlockTableOfContents,
   BlockToggle,
-} from '../notion-blocks'
-import { PageCover } from '../PageCover'
+} from '../obsidian-blocks'
 
 const codeSnippets: Record<string, string> = {
   udzs: `// Feature module + typed API layer
@@ -87,8 +86,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   const project = projects.find((item) => item.id === projectId)
   const study = caseStudyContent[lang][projectId]
   const csUi = caseStudyUi[lang]
-  const blocks = notionPageBlocks[lang].projectDetail
-  const meta = projectMeta[projectId] ?? { icon: '📄' }
+  const blocks = obsidianPageBlocks[lang].projectDetail
 
   if (!project || !study) {
     return (
@@ -116,10 +114,10 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   ]
 
   return (
-    <PageShell cover={<PageCover projectId={projectId} />}>
-      <MotionSection className="pt-2">
+    <PageShell>
+      <MotionSection>
         <BackLink href={backHref}>{csUi.backToProjects}</BackLink>
-        <PageTitle icon={meta.icon}>{project.name}</PageTitle>
+        <PageTitle fileName={`projects/${projectId}.md`}>{project.name}</PageTitle>
         <BlockHighlight tone="pink">{study.type}</BlockHighlight>
       </MotionSection>
 
@@ -187,7 +185,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
 
         <BlockToggle title={blocks.techNotesTitle} defaultOpen={false}>
           <BlockText>{blocks.techNotesBody}</BlockText>
-          <BlockCalloutRich icon="⚙️" variant="warning" title={csUi.toolsUsed}>
+          <BlockCalloutRich variant="warning" title={csUi.toolsUsed}>
             <TagList tags={tools} />
           </BlockCalloutRich>
         </BlockToggle>
@@ -217,13 +215,13 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
             {prev ? (
               <a
                 href={projectHref(prev.id)}
-                className="group flex flex-1 flex-col rounded-lg border border-border px-4 py-3 transition-colors hover:bg-muted/50 sm:max-w-[48%]"
+                className="group flex flex-1 flex-col border border-border px-3 py-2 transition-colors hover:bg-muted/40 sm:max-w-[48%]"
               >
-                <span className="text-xs text-muted-foreground">{csUi.previousProject}</span>
-                <span className="mt-1 text-sm font-medium group-hover:text-primary">
-                  <span aria-hidden>{projectMeta[prev.id]?.icon ?? '📄'} </span>
-                  {prev.name}
+                <span className="font-mono text-[10px] text-muted-foreground">{csUi.previousProject}</span>
+                <span className="mt-1 font-mono text-[12px] text-primary group-hover:underline">
+                  {prev.id}.md
                 </span>
+                <span className="text-[12px] text-foreground">{prev.name}</span>
               </a>
             ) : (
               <span className="hidden flex-1 sm:block" aria-hidden />
@@ -231,13 +229,13 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
             {next ? (
               <a
                 href={projectHref(next.id)}
-                className="group flex flex-1 flex-col rounded-lg border border-border px-4 py-3 text-right transition-colors hover:bg-muted/50 sm:max-w-[48%]"
+                className="group flex flex-1 flex-col border border-border px-3 py-2 text-right transition-colors hover:bg-muted/40 sm:max-w-[48%]"
               >
-                <span className="text-xs text-muted-foreground">{csUi.nextProject}</span>
-                <span className="mt-1 text-sm font-medium group-hover:text-primary">
-                  {next.name}
-                  <span aria-hidden> {projectMeta[next.id]?.icon ?? '📄'}</span>
+                <span className="font-mono text-[10px] text-muted-foreground">{csUi.nextProject}</span>
+                <span className="mt-1 font-mono text-[12px] text-primary group-hover:underline">
+                  {next.id}.md
                 </span>
+                <span className="text-[12px] text-foreground">{next.name}</span>
               </a>
             ) : null}
           </nav>

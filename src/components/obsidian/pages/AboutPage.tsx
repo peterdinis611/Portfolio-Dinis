@@ -3,7 +3,7 @@ import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
 import { profile } from '@/data/portfolio'
 import { portfolioStats } from '@/data/portfolio-meta'
 import { type Lang, translations } from '@/i18n/translations'
-import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
 import { aboutTemplateContent } from '@/i18n/portfolio-template'
 import {
   AboutCtaPanel,
@@ -12,9 +12,9 @@ import {
   BlockHeading,
   BlockText,
   InfoFactGrid,
-  PageHero,
   PageNavPills,
   PageShell,
+  PageTitle,
   SectionAnchorNav,
   SkillFeatureGrid,
   StatGrid,
@@ -25,9 +25,8 @@ import {
   BlockQuote,
   BlockTodoList,
   BlockToggleGroup,
-} from '../notion-blocks'
-import { getNotionPages } from '../nav'
-import { PageCover } from '../PageCover'
+} from '../obsidian-blocks'
+import { getObsidianPages } from '../nav'
 
 const statLabelKey = {
   years: 'statYears',
@@ -40,8 +39,8 @@ export function AboutPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
   const template = aboutTemplateContent[lang]
-  const blocks = notionPageBlocks[lang].about
-  const navPages = getNotionPages(lang).filter((page) => page.id !== 'about')
+  const blocks = obsidianPageBlocks[lang].about
+  const navPages = getObsidianPages(lang).filter((page) => page.id !== 'about')
   const bioTags = blocks.bioHighlight.split(' · ').map((tag) => tag.trim())
 
   const stats = portfolioStats.map((item) => ({
@@ -50,23 +49,22 @@ export function AboutPage({ lang }: { lang: Lang }) {
   }))
 
   return (
-    <PageShell cover={<PageCover variant="about" />}>
+    <PageShell>
       <MotionSection>
-        <PageHero
-          circular
-          name={profile.name}
-          title={t.profile.title}
-          tagline={template.aboutShort}
-          photo={
-            <ProfilePhoto className="h-24 w-24 overflow-hidden rounded-full sm:h-28 sm:w-28" priority />
-          }
-        />
+        <PageTitle fileName="about.md">{profile.name}</PageTitle>
+        <div className="mb-6 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4">
+          <ProfilePhoto className="h-20 w-20 overflow-hidden rounded-full border border-border sm:h-24 sm:w-24" priority />
+          <div className="text-center sm:text-left">
+            <p className="text-sm font-medium text-foreground">{t.profile.title}</p>
+            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{template.aboutShort}</p>
+          </div>
+        </div>
         <BioTagPills items={bioTags} />
         <StatGrid items={stats} />
       </MotionSection>
 
       <MotionSection delay={0.06} className="mt-6">
-        <BlockCalloutRich icon="📍" title={blocks.currentlyTitle} variant="info">
+        <BlockCalloutRich title={blocks.currentlyTitle} variant="info">
           {blocks.currentlyText}
         </BlockCalloutRich>
       </MotionSection>
@@ -84,25 +82,21 @@ export function AboutPage({ lang }: { lang: Lang }) {
         <InfoFactGrid
           items={[
             {
-              icon: '📍',
               label: template.livesInLabel,
               value: template.profileFacts.livesIn,
               tone: 'rose',
             },
             {
-              icon: '🎓',
               label: template.educationLabel,
               value: template.profileFacts.education,
               tone: 'yellow',
             },
             {
-              icon: '🗣️',
               label: template.speaksLabel,
               value: template.profileFacts.speaks,
               tone: 'blue',
             },
             {
-              icon: '❤️',
               label: template.lovesLabel,
               value: template.profileFacts.loves,
               tone: 'sky',
@@ -137,14 +131,11 @@ export function AboutPage({ lang }: { lang: Lang }) {
           tagline={t.profile.tagline}
           action={
             <div className="flex flex-col gap-2 sm:items-end">
-              <MailtoLink className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90">
+              <MailtoLink className="obsidian-wikilink inline-flex items-center border border-[color-mix(in_srgb,var(--link)_35%,var(--border))] bg-[color-mix(in_srgb,var(--link)_10%,transparent)] px-3 py-1.5 transition-colors hover:bg-[color-mix(in_srgb,var(--link)_16%,transparent)]">
                 {ui.getInTouch} →
               </MailtoLink>
-              <a
-                href="#contact"
-                className="text-center text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-right"
-              >
-                {ui.contact} ↗
+              <a href="#contact" className="obsidian-wikilink text-[12px] text-muted-foreground">
+                [[{ui.contact}]]
               </a>
             </div>
           }

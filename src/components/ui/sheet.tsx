@@ -16,10 +16,10 @@ export function SheetContent({
 }) {
   return (
     <SheetPrimitive.Portal>
-      <SheetPrimitive.Overlay className="fixed inset-0 z-40 bg-black/40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:duration-200 data-[state=open]:duration-200" />
+      <SheetPrimitive.Overlay className="fixed inset-0 z-40 bg-black/55 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:duration-200 data-[state=open]:duration-200" />
       <SheetPrimitive.Content
         className={cn(
-          'fixed z-50 flex h-full w-[min(280px,88vw)] flex-col border-border bg-sidebar text-sidebar-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-250 data-[state=open]:duration-300',
+          'fixed z-50 flex h-full w-[min(var(--sidebar-width),88vw)] flex-col border-border bg-sidebar text-sidebar-foreground shadow-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-250',
           side === 'left'
             ? 'inset-y-0 left-0 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left'
             : 'inset-y-0 right-0 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
@@ -28,7 +28,7 @@ export function SheetContent({
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="absolute top-3 right-3 rounded-md p-1 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground">
+        <SheetPrimitive.Close className="absolute top-2.5 right-2.5 rounded-sm p-1 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground">
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>

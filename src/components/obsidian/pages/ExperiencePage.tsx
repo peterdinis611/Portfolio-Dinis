@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { type Lang, translations } from '@/i18n/translations'
-import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
 import { cn } from '@/lib/utils'
 import {
   BlockBullets,
@@ -18,8 +18,7 @@ import {
   BlockNumberedList,
   BlockQuote,
   BlockToggleGroup,
-} from '../notion-blocks'
-import { PageCover } from '../PageCover'
+} from '../obsidian-blocks'
 
 type ExperienceJob = (typeof translations)[Lang]['experience'][number]
 
@@ -42,7 +41,7 @@ function ExperienceTimeline({
           <Collapsible
             defaultOpen={defaultOpenFirst && index === 0}
             className={cn(
-              'relative rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md',
+              'relative rounded-sm border border-border bg-card/50',
               muted && 'border-border/70 bg-card/80',
             )}
           >
@@ -86,14 +85,14 @@ function ExperienceTimeline({
 export function ExperiencePage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
-  const blocks = notionPageBlocks[lang].experience
+  const blocks = obsidianPageBlocks[lang].experience
   const production = t.experience.filter((job) => job.tier === 'production')
   const early = t.experience.filter((job) => job.tier === 'early')
 
   return (
-    <PageShell cover={<PageCover variant="experience" />}>
-      <MotionSection className="pt-2">
-        <PageTitle icon="💼">{ui.experience}</PageTitle>
+    <PageShell>
+      <MotionSection>
+        <PageTitle fileName="experience.md">{ui.experience}</PageTitle>
         <BlockText>{ui.expIntro}</BlockText>
       </MotionSection>
 
@@ -113,7 +112,7 @@ export function ExperiencePage({ lang }: { lang: Lang }) {
       </MotionSection>
 
       <MotionSection delay={0.14} className="mt-6">
-        <BlockCalloutRich icon="🎯" variant="success" title={ui.expProduction}>
+        <BlockCalloutRich variant="success" title={ui.expProduction}>
           {ui.expIntro}
         </BlockCalloutRich>
         <ExperienceTimeline

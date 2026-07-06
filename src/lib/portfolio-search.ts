@@ -1,11 +1,11 @@
-import { getNotionPages } from '@/components/notion/nav'
-import type { NotionPageId } from '@/components/notion/types'
+import { getObsidianPages } from '@/components/obsidian/nav'
+import type { ObsidianPageId } from '@/components/obsidian/types'
 import { profile, projects } from '@/data/portfolio'
 import { techCategories } from '@/data/technologies'
 import { type Lang, translations } from '@/i18n/translations'
 
 export type PortfolioSearchResult = {
-  page: NotionPageId
+  page: ObsidianPageId
   projectId?: string
   pageLabel: string
   pageIcon: string
@@ -15,7 +15,7 @@ export type PortfolioSearchResult = {
 }
 
 type SearchEntry = {
-  page: NotionPageId
+  page: ObsidianPageId
   projectId?: string
   title: string
   subtitle?: string
@@ -38,7 +38,7 @@ function addEntry(
 
 function buildSearchIndex(lang: Lang): SearchEntry[] {
   const t = translations[lang]
-  const pages = getNotionPages(lang)
+  const pages = getObsidianPages(lang)
   const titleMap = Object.fromEntries(t.techCategories.map((c) => [c.id, c.title])) as Record<
     string,
     string
@@ -184,9 +184,9 @@ export function searchPortfolio(lang: Lang, query: string, limit = 8): Portfolio
   const trimmed = query.trim()
   if (!trimmed) return []
 
-  const pages = getNotionPages(lang)
+  const pages = getObsidianPages(lang)
   const pageMeta = Object.fromEntries(pages.map((page) => [page.id, page])) as Record<
-    NotionPageId,
+    ObsidianPageId,
     (typeof pages)[number]
   >
 

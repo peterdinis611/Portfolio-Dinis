@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Lang } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
-import { hasNotionContent } from '@/lib/notion-recordmaps'
-import { NotionRendererPage } from './NotionRendererPage'
+import { hasSyncedContent } from '@/lib/obsidian-recordmaps'
+import { ObsidianRendererPage } from './ObsidianRendererPage'
 import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
 import { ExperiencePage } from './pages/ExperiencePage'
@@ -11,11 +11,11 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { ProjectDetailPage } from './pages/ProjectDetailPage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { TechPage } from './pages/TechPage'
-import type { NotionPageId } from './types'
+import type { ObsidianPageId } from './types'
 
 const EASE = [0.32, 0.72, 0, 1] as const
 
-type NotionPageViewProps = {
+type ObsidianPageViewProps = {
   lang: Lang
   route: PortfolioRoute
   darkMode: boolean
@@ -60,26 +60,26 @@ function FallbackPage({
   }
 }
 
-export function NotionPageView({ lang, route, darkMode }: NotionPageViewProps) {
+export function ObsidianPageView({ lang, route, darkMode }: ObsidianPageViewProps) {
   const { page, projectId, projectList, attemptedPath } = route
-  const useNotionRenderer =
+  const useSyncedRenderer =
     page !== 'not-found' &&
     page !== 'error' &&
-    hasNotionContent(page) &&
+    hasSyncedContent(page) &&
     !projectId &&
     !projectList
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${attemptedPath ?? ''}-${useNotionRenderer ? 'notion' : 'fallback'}`}
+        key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${attemptedPath ?? ''}-${useSyncedRenderer ? 'synced' : 'fallback'}`}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.28, ease: EASE }}
       >
-        {useNotionRenderer ? (
-          <NotionRendererPage page={page as NotionPageId} darkMode={darkMode} />
+        {useSyncedRenderer ? (
+          <ObsidianRendererPage page={page as ObsidianPageId} darkMode={darkMode} />
         ) : (
           <FallbackPage
             lang={lang}

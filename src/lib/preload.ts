@@ -12,9 +12,9 @@ function loadImage(src: string): Promise<void> {
 const preloadSteps = [
   () => document.fonts.ready,
   () => Promise.all(profilePhotoSources.map(loadImage)),
-  () => import('../components/notion/NotionPortfolio'),
-  () => import('../components/notion/pages/AboutPage'),
-  () => import('../components/notion/pages/TechPage'),
+  () => import('../components/obsidian/ObsidianPortfolio'),
+  () => import('../components/obsidian/pages/AboutPage'),
+  () => import('../components/obsidian/pages/TechPage'),
 ] as const
 
 let preloadPromise: Promise<void> | null = null

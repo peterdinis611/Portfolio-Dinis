@@ -15,12 +15,12 @@ export function TechIconChip({ item, className }: TechIconChipProps) {
   return (
     <li
       className={cn(
-        'inline-flex items-center gap-2.5 rounded-lg border border-border/70 bg-card px-2.5 py-2 text-[13px] font-medium text-foreground shadow-sm transition-colors hover:border-border hover:bg-muted/30',
+        'inline-flex items-center gap-2 rounded-sm border border-border bg-card/40 px-2 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/30',
         className,
       )}
     >
       <span
-        className="flex size-8 shrink-0 items-center justify-center rounded-md shadow-sm ring-1 ring-black/5 dark:ring-white/10"
+        className="flex size-7 shrink-0 items-center justify-center rounded-sm ring-1 ring-border"
         style={{ backgroundColor: icon.brand } as CSSProperties}
       >
         <BrandIcon

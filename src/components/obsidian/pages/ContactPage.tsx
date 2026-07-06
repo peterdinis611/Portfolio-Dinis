@@ -7,7 +7,7 @@ import { MailtoLink } from '@/components/ui/MailtoLink'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
 import { profile, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
-import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
 import {
   BlockCallout,
   BlockDivider,
@@ -27,9 +27,8 @@ import {
   BlockQuote,
   BlockTodoList,
   BlockToggleGroup,
-} from '../notion-blocks'
-import { getNotionPages } from '../nav'
-import { PageCover } from '../PageCover'
+} from '../obsidian-blocks'
+import { getObsidianPages } from '../nav'
 
 function ContactValue({
   label,
@@ -63,13 +62,13 @@ function ContactValue({
 export function ContactPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
-  const blocks = notionPageBlocks[lang].contact
-  const navPages = getNotionPages(lang).filter((page) => page.id !== 'contact')
+  const blocks = obsidianPageBlocks[lang].contact
+  const navPages = getObsidianPages(lang).filter((page) => page.id !== 'contact')
 
   return (
-    <PageShell cover={<PageCover variant="contact" />}>
-      <MotionSection className="pt-2">
-        <PageTitle icon="✉️">{ui.contact}</PageTitle>
+    <PageShell>
+      <MotionSection>
+        <PageTitle fileName="contact.md">{ui.contact}</PageTitle>
       </MotionSection>
 
       <MotionSection delay={0.06}>
@@ -81,9 +80,9 @@ export function ContactPage({ lang }: { lang: Lang }) {
               <BlockText>{ui.contactText}</BlockText>
             </div>,
             <div key="cta" className="flex flex-col items-start justify-center gap-3">
-              <ProfilePhoto className="h-16 w-16 overflow-hidden rounded-full border-2 border-background shadow-md" />
+              <ProfilePhoto className="h-14 w-14 overflow-hidden rounded-full border border-border" />
               <MailtoLink>
-                <Button className="h-10 px-5 shadow-md">{ui.endCta}</Button>
+                <Button className="h-8 px-4">{ui.endCta}</Button>
               </MailtoLink>
             </div>,
           ]}
@@ -92,17 +91,17 @@ export function ContactPage({ lang }: { lang: Lang }) {
 
       <MotionSection delay={0.1} className="mt-6">
         <PropertyTable>
-          <PropertyRow icon="✉️" label={ui.emailLabel}>
+          <PropertyRow label={ui.emailLabel}>
             <ContactValue label={ui.emailLabel} value={<EmailDisplay />} mailto />
           </PropertyRow>
-          <PropertyRow icon="📞" label={ui.phoneLabel}>
+          <PropertyRow label={ui.phoneLabel}>
             <ContactValue
               label={ui.phoneLabel}
               value={profile.phone}
               href={`tel:${profile.phoneHref}`}
             />
           </PropertyRow>
-          <PropertyRow icon="📍" label={ui.locationLabel}>
+          <PropertyRow label={ui.locationLabel}>
             <ContactValue label={ui.locationLabel} value={ui.contactLocation} />
           </PropertyRow>
         </PropertyTable>
@@ -125,10 +124,10 @@ export function ContactPage({ lang }: { lang: Lang }) {
       </MotionSection>
 
       <MotionSection delay={0.22} className="mt-6">
-        <BlockCalloutRich icon="📋" title={blocks.nextStepsTitle} variant="info">
+        <BlockCalloutRich title={blocks.nextStepsTitle} variant="info">
           <BlockTodoList items={blocks.nextSteps} />
         </BlockCalloutRich>
-        <BlockCallout icon="💬" variant="idea">
+        <BlockCallout variant="idea">
           {t.profile.tagline}
         </BlockCallout>
       </MotionSection>
@@ -144,7 +143,7 @@ export function ContactPage({ lang }: { lang: Lang }) {
                   href={s.url}
                   aria-label={s.name}
                   title={s.name}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card transition-colors hover:border-primary/40 hover:bg-primary/5"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-card transition-colors hover:border-primary/50 hover:text-primary"
                 >
                   <BrandIcon slug={s.icon} className="h-4 w-4" label={s.name} />
                 </ExternalLink>

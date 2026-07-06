@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { BackLink, BlockHeading } from '../blocks'
 import { MOTION_EASE, MotionSection, staggerContainer, staggerItem, staggerItemLeft } from '../motion'
-import { BlockDividerDots, BlockPageLink, BlockToggle } from '../notion-blocks'
+import { BlockDividerDots, BlockPageLink, BlockToggle } from '../obsidian-blocks'
 import type { PortfolioError } from '../portfolio-error'
 
 export const pageLinkStagger = {
@@ -14,8 +14,8 @@ export const pageLinkStagger = {
 }
 
 const watermarkToneClass = {
-  'not-found': 'text-sky-600/10 dark:text-sky-300/8',
-  error: 'text-amber-600/10 dark:text-amber-300/8',
+  'not-found': 'text-primary/8',
+  error: 'text-amber-500/10',
 } as const
 
 export function StatusPageRoot({
@@ -46,34 +46,11 @@ export function StatusPageRoot({
   )
 }
 
-export function StatusPageIcon({ icon }: { icon: string }) {
-  return (
-    <motion.div
-      variants={staggerItem}
-      className="mb-4 flex h-[4.875rem] w-[4.875rem] items-center justify-center rounded-xl border border-border/70 bg-muted/25 text-[2.75rem] shadow-sm"
-      aria-hidden
-    >
-      {icon}
-    </motion.div>
-  )
-}
-
-export function StatusPageTitle({ children }: { children: ReactNode }) {
-  return (
-    <motion.h1
-      variants={staggerItem}
-      className="mb-2 max-w-[min(100%,32rem)] text-[clamp(1.75rem,4vw,2.125rem)] font-bold leading-[1.2] tracking-[-0.02em] text-foreground"
-    >
-      {children}
-    </motion.h1>
-  )
-}
-
 export function StatusDetail({ label, value }: { label: string; value: string }) {
   return (
-    <motion.p variants={staggerItem} className="mt-4 text-sm text-muted-foreground">
+    <motion.p variants={staggerItem} className="mt-4 text-[13px] text-muted-foreground">
       <span className="font-medium text-foreground/80">{label}:</span>{' '}
-      <code className="rounded-md bg-muted/80 px-1.5 py-0.5 font-mono text-[13px] text-foreground">
+      <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[12px] text-foreground">
         {value}
       </code>
     </motion.p>
@@ -92,7 +69,7 @@ export function StatusRetryButton({
       type="button"
       variants={staggerItem}
       onClick={onClick}
-      className="inline-flex items-center justify-center rounded-md border border-border bg-background px-3.5 py-1.5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted/60"
+      className="inline-flex items-center justify-center rounded-sm border border-border bg-background px-3 py-1.5 font-mono text-[13px] text-foreground transition-colors hover:bg-muted/60"
       whileTap={{ scale: 0.98 }}
     >
       {label}
@@ -105,15 +82,15 @@ export function createDemoPortfolioError(): PortfolioError {
   error.name = 'ReferenceError'
   error.stack = [
     'ReferenceError: ui is not defined',
-    '    at getProjectNavGroups (src/components/notion/nav.ts:47:14)',
-    '    at NotionSidebar (src/components/notion/NotionSidebar.tsx:31:22)',
+    '    at getProjectNavGroups (src/components/obsidian/nav.ts:47:14)',
+    '    at ObsidianSidebar (src/components/obsidian/ObsidianSidebar.tsx:31:22)',
     '    at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:15486:18)',
     '    at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:19612:20)',
     '    at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:21631:16)',
   ].join('\n')
   error.componentStack = [
-    '\n    at NotionSidebar (src/components/notion/NotionSidebar.tsx:18:3)',
-    '    at NotionPortfolio (src/components/notion/NotionPortfolio.tsx:91:11)',
+    '\n    at ObsidianSidebar (src/components/obsidian/ObsidianSidebar.tsx:18:3)',
+    '    at ObsidianPortfolio (src/components/obsidian/ObsidianPortfolio.tsx:91:11)',
     '    at AppRoot (src/AppRoot.tsx:42:7)',
   ].join('\n')
   return error

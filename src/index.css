@@ -6,11 +6,14 @@
 
 @theme inline {
   --font-sans:
-    "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
-    "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono:
+    ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono",
+    monospace;
+  --radius-sm: 0.2rem;
+  --radius-md: 0.3rem;
+  --radius-lg: 0.4rem;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -35,55 +38,70 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #37352f;
-  --card: #ffffff;
-  --card-foreground: #37352f;
+  --sidebar-width: 228px;
+  --ribbon-height: 36px;
+  --editor-max-width: 62rem;
+
+  --background: #e8e8e8;
+  --foreground: #2b2d31;
+  --editor-surface: #ffffff;
+  --card: #f7f7f7;
+  --card-foreground: #2b2d31;
   --popover: #ffffff;
-  --popover-foreground: #37352f;
-  --primary: #2383e2;
+  --popover-foreground: #2b2d31;
+  --primary: #705dcf;
   --primary-foreground: #ffffff;
-  --secondary: #f7f6f3;
-  --secondary-foreground: #37352f;
-  --muted: #f7f6f3;
-  --muted-foreground: #787774;
-  --accent: #f1f1ef;
-  --accent-foreground: #37352f;
-  --border: rgba(55, 53, 47, 0.09);
-  --input: rgba(55, 53, 47, 0.09);
-  --ring: #2383e2;
-  --sidebar: #fbfbfa;
-  --sidebar-foreground: #37352f;
-  --sidebar-border: rgba(55, 53, 47, 0.09);
-  --sidebar-accent: rgba(55, 53, 47, 0.08);
+  --link: #705dcf;
+  --secondary: #ececec;
+  --secondary-foreground: #2b2d31;
+  --muted: #efefef;
+  --muted-foreground: #5c5f66;
+  --accent: #ebe8f8;
+  --accent-foreground: #534ab7;
+  --border: #d4d4d4;
+  --input: #cfcfcf;
+  --ring: #705dcf;
+  --sidebar: #ececec;
+  --sidebar-foreground: #2b2d31;
+  --sidebar-border: #d4d4d4;
+  --sidebar-accent: #e2e2e2;
+  --sidebar-active: rgba(112, 93, 207, 0.14);
+  --code-bg: #f5f5f5;
+  --code-inline: #ab3e3e;
+  --tab-bar: #e4e4e4;
 }
 
 .dark {
-  --background: #191919;
-  --foreground: rgba(255, 255, 255, 0.9);
-  --card: #202020;
-  --card-foreground: rgba(255, 255, 255, 0.9);
-  --popover: #252525;
-  --popover-foreground: rgba(255, 255, 255, 0.9);
-  --primary: #529cca;
-  --primary-foreground: #191919;
+  --background: #1a1a1a;
+  --foreground: #dcddde;
+  --editor-surface: #1e1e1e;
+  --card: #262626;
+  --card-foreground: #dcddde;
+  --popover: #2a2a2a;
+  --popover-foreground: #dcddde;
+  --primary: #8b77e8;
+  --primary-foreground: #1e1e1e;
+  --link: #a78bfa;
   --secondary: #2a2a2a;
-  --secondary-foreground: rgba(255, 255, 255, 0.9);
+  --secondary-foreground: #dcddde;
   --muted: #2a2a2a;
-  --muted-foreground: rgba(255, 255, 255, 0.55);
-  --accent: #2f2f2f;
-  --accent-foreground: rgba(255, 255, 255, 0.9);
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #529cca;
-  --sidebar: #202020;
-  --sidebar-foreground: rgba(255, 255, 255, 0.9);
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --muted-foreground: #9a9a9a;
+  --accent: #2f2f35;
+  --accent-foreground: #c4b5fd;
+  --border: #3a3a3a;
+  --input: #404040;
+  --ring: #8b77e8;
+  --sidebar: #262626;
+  --sidebar-foreground: #dcddde;
+  --sidebar-border: #333333;
+  --sidebar-accent: #2f2f2f;
+  --sidebar-active: rgba(139, 119, 232, 0.16);
+  --code-bg: #161616;
+  --code-inline: #ff8e8e;
+  --tab-bar: #1c1c1c;
 
-  /* react-notion-x reads --fg-color from :root; keep in sync with .dark */
-  --fg-color: rgba(255, 255, 255, 0.9);
-  --fg-color-2: rgba(255, 255, 255, 0.4);
+  --fg-color: #dcddde;
+  --fg-color-2: #9a9a9a;
   --fg-color-6: #ffffff;
 }
 
@@ -99,15 +117,80 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans text-[14px] leading-[1.65] antialiased;
   }
 
   button {
     @apply cursor-pointer;
   }
+
+  ::selection {
+    background: color-mix(in srgb, var(--link) 24%, transparent);
+  }
+
+  a {
+    color: var(--link);
+  }
 }
 
-/* react-notion-x theme tweaks */
+@layer components {
+  .obsidian-nav-item {
+    @apply relative flex w-full items-center gap-2 rounded-sm px-2 py-1 text-[13px] leading-tight transition-colors hover:bg-sidebar-accent;
+  }
+
+  .obsidian-nav-item[data-active="true"] {
+    background: var(--sidebar-active);
+    color: var(--link);
+    @apply font-medium;
+  }
+
+  .obsidian-nav-item[data-active="true"]::before {
+    content: "";
+    @apply absolute inset-y-0.5 left-0 w-0.5 rounded-full;
+    background: var(--link);
+  }
+
+  .obsidian-ribbon {
+    height: var(--ribbon-height);
+    background: var(--editor-surface);
+    @apply sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-border px-3;
+  }
+
+  .obsidian-editor-pane {
+    background: var(--editor-surface);
+  }
+
+  .obsidian-editor {
+    max-width: var(--editor-max-width);
+    font-feature-settings: "liga" 0;
+    line-height: 1.7;
+  }
+
+  .obsidian-wikilink {
+    @apply font-mono text-[13px] transition-colors;
+    color: var(--link);
+  }
+
+  .obsidian-wikilink:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .obsidian-checkbox {
+    @apply mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] border text-[9px] font-bold leading-none;
+  }
+
+  .obsidian-checkbox[data-checked="true"] {
+    border-color: color-mix(in srgb, var(--link) 70%, var(--border));
+    background: color-mix(in srgb, var(--link) 12%, transparent);
+    color: var(--link);
+  }
+
+  .obsidian-checkbox[data-checked="false"] {
+    @apply border-border bg-transparent text-transparent;
+  }
+}
+
 .notion {
   --notion-font: var(--font-sans);
 }
@@ -116,11 +199,35 @@
   color: var(--foreground);
 }
 
-.notion-app-shell .notion-page-content {
-  max-width: 900px;
+.obsidian-app-shell .notion-page-content {
+  max-width: var(--editor-max-width);
   margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.notion-renderer .notion-page {
+  padding: 0 !important;
+}
+
+.notion-renderer .notion-h,
+.notion-renderer .notion-h1,
+.notion-renderer .notion-h2,
+.notion-renderer .notion-h3 {
+  font-weight: 600 !important;
+}
+
+.obsidian-callout {
+  font-feature-settings: "liga" 0;
+}
+
+.notion-renderer a,
+.notion a {
+  color: var(--link) !important;
+  text-decoration-color: color-mix(in srgb, var(--link) 35%, transparent);
 }
 
 .skip-link {
-  @apply sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground focus:text-sm focus:font-semibold;
+  @apply sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-sm focus:px-3 focus:py-2 focus:text-sm focus:font-semibold;
+  background: var(--link);
+  color: var(--primary-foreground);
 }

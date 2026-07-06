@@ -1,6 +1,6 @@
 import type { Lang } from '@/i18n/translations'
 
-export const notionPageBlocks: Record<
+export const obsidianPageBlocks: Record<
   Lang,
   {
     about: {
@@ -60,15 +60,15 @@ export const notionPageBlocks: Record<
       ],
       workingStyle: [
         {
-          title: '☀️ Cez deň — produkčný vývoj',
+          title: 'Cez deň — produkčný vývoj',
           body: 'React, TypeScript, code review, design systémy a spolupráca s produktom v agile sprintoch.',
         },
         {
-          title: '🌙 Večer — experimenty & učenie',
+          title: 'Večer — experimenty & učenie',
           body: 'Side projekty, nové knižnice, refaktoring a skúšanie nástrojov, ktoré môžem priniesť do tímu.',
         },
         {
-          title: '🤝 Spolupráca',
+          title: 'Spolupráca',
           body: 'Preferujem priamu komunikáciu, krátke iterácie a transparentný postup bez zbytočnej byrokracie.',
         },
       ],
@@ -87,15 +87,15 @@ export const notionPageBlocks: Record<
       quote: 'Stack volím podľa produktu — nie naopak. Dôležitá je udržateľnosť, rýchlosť tímu a kvalita UX.',
       principles: [
         {
-          title: '⚛️ Frontend',
+          title: 'Frontend',
           body: 'Komponenty, prístupnosť, výkon a design systémy — React, Next.js, Tailwind, shadcn/ui.',
         },
         {
-          title: '🛠️ Backend',
+          title: 'Backend',
           body: 'REST API, validácia, testy a databázy — NestJS, PostgreSQL, MongoDB.',
         },
         {
-          title: '☁️ DevOps',
+          title: 'DevOps',
           body: 'Docker, CI/CD, AWS a monitoring pre stabilné produkčné nasadenia.',
         },
       ],
@@ -112,11 +112,11 @@ export const notionPageBlocks: Record<
       ],
       highlightsToggle: [
         {
-          title: '💼 Produkčné skúsenosti',
+          title: 'Produkčné skúsenosti',
           body: 'IBA.CZ, Meditorial, JUMP soft a Navisys — healthcare, enterprise, verejný sektor a R&D.',
         },
         {
-          title: '📈 Merateľný dopad',
+          title: 'Merateľný dopad',
           body: '500+ používateľov, 99,9 % uptime, +25 % rýchlosť vývoja, mentoring 2 juniorov.',
         },
       ],
@@ -124,7 +124,7 @@ export const notionPageBlocks: Record<
     projects: {
       galleryTitle: 'Gallery view',
       databaseTitle: 'Table view',
-      viewNote: 'Prepínaj medzi galériou a tabuľkou — ako v Notion databáze.',
+      viewNote: 'Prepínaj medzi galériou a tabuľkou — dva pohľady na rovnaké poznámky.',
     },
     contact: {
       faqTitle: 'Často kladené otázky',
@@ -185,15 +185,15 @@ export const notionPageBlocks: Record<
       ],
       workingStyle: [
         {
-          title: '☀️ By day — production development',
+          title: 'By day — production development',
           body: 'React, TypeScript, code reviews, design systems, and product collaboration in agile sprints.',
         },
         {
-          title: '🌙 By night — experiments & learning',
+          title: 'By night — experiments & learning',
           body: 'Side projects, new libraries, refactoring, and trying tools I can bring back to the team.',
         },
         {
-          title: '🤝 Collaboration',
+          title: 'Collaboration',
           body: 'I prefer direct communication, short iterations, and transparent progress without unnecessary bureaucracy.',
         },
       ],
@@ -212,15 +212,15 @@ export const notionPageBlocks: Record<
       quote: 'I choose the stack based on the product — not the other way around. Sustainability, team speed, and UX quality matter most.',
       principles: [
         {
-          title: '⚛️ Frontend',
+          title: 'Frontend',
           body: 'Components, accessibility, performance, and design systems — React, Next.js, Tailwind, shadcn/ui.',
         },
         {
-          title: '🛠️ Backend',
+          title: 'Backend',
           body: 'REST APIs, validation, tests, and databases — NestJS, PostgreSQL, MongoDB.',
         },
         {
-          title: '☁️ DevOps',
+          title: 'DevOps',
           body: 'Docker, CI/CD, AWS, and monitoring for stable production deployments.',
         },
       ],
@@ -237,11 +237,11 @@ export const notionPageBlocks: Record<
       ],
       highlightsToggle: [
         {
-          title: '💼 Production experience',
+          title: 'Production experience',
           body: 'IBA.CZ, Meditorial, JUMP soft, and Navisys — healthcare, enterprise, public sector, and R&D.',
         },
         {
-          title: '📈 Measurable impact',
+          title: 'Measurable impact',
           body: '500+ users, 99.9% uptime, +25% dev speed, mentored 2 juniors.',
         },
       ],
@@ -249,7 +249,7 @@ export const notionPageBlocks: Record<
     projects: {
       galleryTitle: 'Gallery view',
       databaseTitle: 'Table view',
-      viewNote: 'Switch between gallery and table — like a Notion database.',
+      viewNote: 'Switch between gallery and table — two views of the same notes.',
     },
     contact: {
       faqTitle: 'Frequently asked questions',

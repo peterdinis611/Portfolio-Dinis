@@ -1,4 +1,4 @@
-export type NotionTagColor =
+export type ObsidianTagColor =
   | 'gray'
   | 'brown'
   | 'orange'
@@ -9,7 +9,7 @@ export type NotionTagColor =
   | 'pink'
   | 'red'
 
-const TAG_COLORS: Record<string, NotionTagColor> = {
+const TAG_COLORS: Record<string, ObsidianTagColor> = {
   React: 'blue',
   TypeScript: 'blue',
   'Next.js': 'gray',
@@ -27,7 +27,7 @@ const TAG_COLORS: Record<string, NotionTagColor> = {
   'Design Systems': 'purple',
 }
 
-export const notionTagClass: Record<NotionTagColor, string> = {
+export const obsidianTagClass: Record<ObsidianTagColor, string> = {
   gray: 'bg-[#e3e2e0]/80 text-[#32302c] dark:bg-white/10 dark:text-white/80',
   brown: 'bg-[#eee0da]/80 text-[#442a1e] dark:bg-[#4a3228]/60 dark:text-[#f0ddd4]',
   orange: 'bg-[#fadec9]/80 text-[#49290e] dark:bg-[#5c3d20]/60 dark:text-[#fadeca]',
@@ -39,6 +39,6 @@ export const notionTagClass: Record<NotionTagColor, string> = {
   red: 'bg-[#ffe2dd]/80 text-[#5c1f1a] dark:bg-[#5c2e28]/60 dark:text-[#ffe2dd]',
 }
 
-export function getNotionTagColor(tag: string): NotionTagColor {
+export function getObsidianTagColor(tag: string): ObsidianTagColor {
   return TAG_COLORS[tag] ?? 'gray'
 }

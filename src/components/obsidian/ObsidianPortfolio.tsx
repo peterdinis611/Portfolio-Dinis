@@ -3,18 +3,21 @@ import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { SettingsContext } from '@/context/AppProviders'
 import {
   parsePortfolioRoute,
+  portfolioRouteEquals,
   type PortfolioRoute,
   setPortfolioHash,
 } from '@/lib/portfolio-route'
 import { ErrorPage } from './pages/ErrorPage'
-import { NotionPageView } from './NotionPageView'
+import { ObsidianPageView } from './ObsidianPageView'
 import { PortfolioErrorBoundary } from './PortfolioErrorBoundary'
 import type { PortfolioError } from './portfolio-error'
-import { NotionSearchDialog } from './NotionSearchDialog'
-import { NotionSidebar } from './NotionSidebar'
-import { NotionTopbar } from './NotionTopbar'
+import { ObsidianSearchDialog } from './ObsidianSearchDialog'
+import { ObsidianSidebar } from './ObsidianSidebar'
+import { ObsidianTopbar } from './ObsidianTopbar'
+import { ObsidianStatusBar } from './ObsidianStatusBar'
+import { ObsidianTabBar } from './ObsidianTabBar'
 
-export function NotionPortfolio() {
+export function ObsidianPortfolio() {
   const settingsActor = SettingsContext.useActorRef()
   const lang = SettingsContext.useSelector((s) => s.context.lang)
   const theme = SettingsContext.useSelector((s) => s.context.theme)
@@ -42,17 +45,20 @@ export function NotionPortfolio() {
   }, [])
 
   useEffect(() => {
+    let currentRoute = parsePortfolioRoute()
+    setRoute(currentRoute)
+
+    if (currentRoute.page !== 'not-found' && currentRoute.page !== 'error') {
+      setPortfolioHash(currentRoute)
+    }
+
     const syncRoute = () => {
       const next = parsePortfolioRoute()
+      if (portfolioRouteEquals(currentRoute, next)) return
+      currentRoute = next
       setRuntimeError(null)
       setErrorResetKey((key) => key + 1)
       setRoute(next)
-      return next
-    }
-
-    const initial = syncRoute()
-    if (initial.page !== 'not-found' && initial.page !== 'error') {
-      setPortfolioHash(initial)
     }
 
     window.addEventListener('hashchange', syncRoute)
@@ -81,22 +87,22 @@ export function NotionPortfolio() {
     <ErrorPage lang={lang} error={runtimeError} onRetry={handleErrorRetry} />
   ) : (
     <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
-      <NotionPageView lang={lang} route={route} darkMode={theme === 'dark'} />
+      <ObsidianPageView lang={lang} route={route} darkMode={theme === 'dark'} />
     </PortfolioErrorBoundary>
   )
 
   return (
-    <div className="notion-app-shell flex h-dvh overflow-hidden bg-background">
+    <div className="obsidian-app-shell flex h-dvh overflow-hidden bg-background">
       <div className="hidden md:flex">
         <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
-          <NotionSidebar lang={lang} route={route} onNavigate={navigate} />
+          <ObsidianSidebar lang={lang} route={route} onNavigate={navigate} />
         </PortfolioErrorBoundary>
       </div>
 
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="p-0 md:hidden">
           <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
-            <NotionSidebar
+            <ObsidianSidebar
               lang={lang}
               route={route}
               onNavigate={navigate}
@@ -106,7 +112,7 @@ export function NotionPortfolio() {
         </SheetContent>
       </Sheet>
 
-      <NotionSearchDialog
+      <ObsidianSearchDialog
         lang={lang}
         open={searchOpen}
         onOpenChange={setSearchOpen}
@@ -114,7 +120,7 @@ export function NotionPortfolio() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <NotionTopbar
+        <ObsidianTopbar
           lang={lang}
           theme={theme}
           route={topbarRoute}
@@ -124,9 +130,13 @@ export function NotionPortfolio() {
           onTheme={() => settingsActor.send({ type: 'TOGGLE_THEME' })}
         />
 
-        <main className="flex-1 overflow-y-auto" id="main-content">
+        <ObsidianTabBar route={topbarRoute} />
+
+        <main className="obsidian-editor-pane flex-1 overflow-y-auto" id="main-content">
           {mainContent}
         </main>
+
+        <ObsidianStatusBar lang={lang} theme={theme} route={topbarRoute} />
       </div>
     </div>
   )

@@ -4,11 +4,11 @@ import {
   projects,
   type ProjectListId,
 } from '@/data/portfolio'
-import type { NotionPageId } from '@/components/notion/types'
+import type { ObsidianPageId } from '@/components/obsidian/types'
 
 export type { ProjectListId } from '@/data/portfolio'
 
-export type PortfolioPageId = NotionPageId | 'not-found' | 'error'
+export type PortfolioPageId = ObsidianPageId | 'not-found' | 'error'
 
 export type PortfolioRoute = {
   page: PortfolioPageId
@@ -28,7 +28,7 @@ export function isProjectListId(value: string): value is ProjectListId {
   return PROJECT_LIST_IDS.has(value as ProjectListId)
 }
 
-export function isNotionPageId(value: string): value is NotionPageId {
+export function isObsidianPageId(value: string): value is ObsidianPageId {
   return ['about', 'tech', 'experience', 'projects', 'contact'].includes(value)
 }
 
@@ -71,7 +71,7 @@ function parseRoutePath(path: string): PortfolioRoute {
     return { page: 'projects' }
   }
 
-  if (isNotionPageId(pagePart)) {
+  if (isObsidianPageId(pagePart)) {
     return { page: pagePart }
   }
 
@@ -109,13 +109,13 @@ export function setPortfolioHash(route: PortfolioRoute) {
 }
 
 /** @deprecated Use parsePortfolioRoute().page */
-export function pageFromHash(): NotionPageId {
+export function pageFromHash(): ObsidianPageId {
   const route = parsePortfolioRoute()
   return route.page === 'not-found' || route.page === 'error' ? 'about' : route.page
 }
 
 /** @deprecated Use setPortfolioHash */
-export function setPageHash(page: NotionPageId) {
+export function setPageHash(page: ObsidianPageId) {
   setPortfolioHash({ page })
 }
 

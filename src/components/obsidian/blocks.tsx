@@ -1,14 +1,15 @@
+import { FileText } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { getNotionTagColor, notionTagClass } from '@/lib/notion-tags'
+import { getObsidianTagColor, obsidianTagClass } from '@/lib/obsidian-tags'
 import { cn } from '@/lib/utils'
 
 export type InfoFactTone = 'rose' | 'yellow' | 'blue' | 'sky'
 
 const infoFactToneClass: Record<InfoFactTone, string> = {
-  rose: 'bg-rose-50/90 dark:bg-rose-950/30',
-  yellow: 'bg-amber-50/90 dark:bg-amber-950/30',
-  blue: 'bg-sky-50/90 dark:bg-sky-950/30',
-  sky: 'bg-blue-50/80 dark:bg-blue-950/25',
+  rose: 'border-l-rose-400/60 bg-card/40',
+  yellow: 'border-l-amber-400/60 bg-card/40',
+  blue: 'border-l-[color-mix(in_srgb,var(--link)_55%,var(--border))] bg-card/40',
+  sky: 'border-l-sky-400/60 bg-card/40',
 }
 
 export function PageShell({
@@ -25,8 +26,7 @@ export function PageShell({
       {cover}
       <article
         className={cn(
-          'mx-auto w-full max-w-[708px] px-5 sm:px-10',
-          cover ? 'pb-10 pt-0 sm:pb-12' : 'py-10 sm:py-12',
+          'obsidian-editor mx-auto w-full px-6 py-7 sm:px-10 sm:py-9 lg:px-12 lg:py-10 xl:px-16',
           className,
         )}
       >
@@ -52,11 +52,11 @@ export function PageHero({
   circular?: boolean
 }) {
   return (
-    <div className="relative z-10 -mt-[4.5rem] mb-6 flex flex-col items-center gap-3 sm:-mt-20 sm:flex-row sm:items-end sm:gap-5">
+    <div className="mb-6 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4">
       <div
         className={cn(
-          'border-4 border-background bg-background shadow-md',
-          circular ? 'rounded-full' : 'rounded-xl',
+          'border-2 border-border bg-background',
+          circular ? 'rounded-full' : 'rounded-sm',
         )}
       >
         {photo}
@@ -81,7 +81,7 @@ export function BioTagPills({ items }: { items: string[] }) {
       {items.map((item) => (
         <li
           key={item}
-          className="rounded-full border border-border/70 bg-muted/40 px-2.5 py-1 text-xs font-medium text-muted-foreground"
+          className="rounded-sm border border-border/70 bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
         >
           {item}
         </li>
@@ -99,7 +99,7 @@ export function SectionAnchorNav({
 }) {
   return (
     <nav
-      className="flex flex-wrap items-center gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2.5"
+      className="flex flex-wrap items-center gap-2 rounded-sm border border-border bg-card/60 px-3 py-2"
       aria-label={label}
     >
       <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -109,7 +109,7 @@ export function SectionAnchorNav({
         <a
           key={item.id}
           href={`#${item.id}`}
-          className="rounded-full border border-border/70 bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+          className="rounded-sm border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-[var(--link)]"
         >
           {item.label}
         </a>
@@ -138,12 +138,9 @@ export function TwoColumnCards({
       {[left, right].map((column) => (
         <section
           key={column.title}
-          className="rounded-lg border border-border/70 bg-card px-4 py-3.5 shadow-sm"
+          className="border border-border bg-card/30 px-3 py-3"
         >
-          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
-            <span aria-hidden>{column.icon}</span>
-            {column.title}
-          </h2>
+          <h2 className="mb-2 text-[13px] font-semibold text-foreground">{column.title}</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">{column.body}</p>
         </section>
       ))}
@@ -162,15 +159,10 @@ export function InfoFactGrid({
         <div
           key={item.label}
           className={cn(
-            'flex gap-3 rounded-lg border border-border/50 px-3.5 py-3 text-sm leading-snug',
+            'border border-l-2 border-border px-3 py-2.5 text-sm leading-snug',
             infoFactToneClass[item.tone],
           )}
         >
-          {item.icon ? (
-            <span className="mt-0.5 text-base leading-none" aria-hidden>
-              {item.icon}
-            </span>
-          ) : null}
           <div className="min-w-0">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {item.label}
@@ -186,29 +178,24 @@ export function InfoFactGrid({
 export function SkillFeatureGrid({
   items,
 }: {
-  items: Array<{ icon: string; title: string; description: string }>
+  items: Array<{ id: string; icon?: string; title: string; description: string }>
 }) {
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className="divide-y divide-border border border-border">
       {items.map((item) => (
-        <li
-          key={item.title}
-          className="rounded-lg border border-border bg-card px-4 py-3.5 shadow-sm transition-colors hover:bg-muted/20"
-        >
-          <div className="mb-2 flex items-center gap-2">
-            <span className="text-xl" aria-hidden>
-              {item.icon}
-            </span>
-            <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+        <li key={item.title} className="px-3 py-2.5 transition-colors hover:bg-muted/30">
+          <div className="mb-1 flex items-center gap-2">
+            <span className="font-mono text-[10px] text-muted-foreground">{item.id}</span>
+            <h3 className="text-[13px] font-semibold text-foreground">{item.title}</h3>
           </div>
-          <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+          <p className="text-[13px] leading-relaxed text-muted-foreground">{item.description}</p>
         </li>
       ))}
     </ul>
   )
 }
 
-export function NotionDatabase({
+export function ObsidianDatabase({
   columns,
   rows,
 }: {
@@ -221,8 +208,8 @@ export function NotionDatabase({
   }>
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-border">
-      <div className="hidden border-b border-border bg-muted/40 px-3 py-2 sm:grid sm:grid-cols-[minmax(0,1.2fr)_minmax(0,0.7fr)_minmax(0,1fr)] sm:gap-3">
+    <div className="overflow-hidden border border-border">
+      <div className="hidden border-b border-border bg-muted/30 px-3 py-1.5 sm:grid sm:grid-cols-[minmax(0,1.2fr)_minmax(0,0.7fr)_minmax(0,1fr)] sm:gap-3">
         {columns.map((column) => (
           <span
             key={column}
@@ -239,12 +226,12 @@ export function NotionDatabase({
               href={row.href}
               className="grid gap-1 px-3 py-3 transition-colors hover:bg-muted/30 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,0.7fr)_minmax(0,1fr)] sm:items-center sm:gap-3"
             >
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                <span aria-hidden>{row.icon}</span>
+              <span className="flex items-center gap-2 text-[13px] font-medium text-foreground">
+                <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                 {row.cells[0]}
               </span>
-              <span className="text-xs text-muted-foreground sm:text-sm">{row.cells[1]}</span>
-              <span className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+              <span className="font-mono text-[11px] text-muted-foreground sm:text-xs">{row.cells[1]}</span>
+              <span className="text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
                 {row.cells[2]}
               </span>
             </a>
@@ -281,9 +268,9 @@ export function BackLink({ href, children }: { href: string; children: ReactNode
   return (
     <a
       href={href}
-      className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+      className="mb-4 inline-flex items-center gap-1 font-mono text-[13px] text-primary transition-colors hover:underline"
     >
-      ← {children}
+      ← [[{children}]]
     </a>
   )
 }
@@ -294,9 +281,9 @@ export function StatGrid({ items }: { items: Array<{ value: string; label: strin
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-lg border border-border/70 bg-card px-3 py-3 text-center shadow-sm transition-transform hover:-translate-y-0.5"
+          className="rounded-sm border border-border/80 bg-muted/30 px-3 py-2.5 text-center"
         >
-          <p className="text-xl font-bold tracking-tight text-primary">{item.value}</p>
+          <p className="text-lg font-semibold tracking-tight text-foreground">{item.value}</p>
           <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">{item.label}</p>
         </div>
       ))}
@@ -310,15 +297,10 @@ export function PageNavPills({
   items: Array<{ href: string; icon: string; label: string }>
 }) {
   return (
-    <nav className="flex flex-wrap gap-2" aria-label="Quick navigation">
+    <nav className="flex flex-wrap gap-x-3 gap-y-1.5" aria-label="Quick navigation">
       {items.map((item) => (
-        <a
-          key={item.href}
-          href={item.href}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground shadow-sm transition-colors hover:border-primary/40 hover:bg-primary/5"
-        >
-          <span aria-hidden>{item.icon}</span>
-          {item.label}
+        <a key={item.href} href={item.href} className="obsidian-wikilink">
+          [[{item.label}]]
         </a>
       ))}
     </nav>
@@ -339,43 +321,51 @@ export function AboutCtaPanel({
   footer?: ReactNode
 }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-border bg-gradient-to-br from-card via-card to-muted/25 shadow-sm">
-      <div className="grid gap-4 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6 sm:p-6">
+    <section className="border border-border bg-card/20">
+      <div className="grid gap-5 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-8">
         <div>
-          <h2 className="mb-1.5 flex items-center gap-2 text-base font-semibold text-foreground">
-            <span aria-hidden>✉️</span>
-            {title}
-          </h2>
-          <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+          <h2 className="mb-2 text-sm font-semibold text-foreground">{title}</h2>
+          <p className="text-[14px] leading-relaxed text-muted-foreground">{body}</p>
           {tagline ? (
-            <p className="mt-3 text-sm italic leading-relaxed text-foreground/80">{tagline}</p>
+            <p className="mt-3 border-l-2 border-[color-mix(in_srgb,var(--link)_30%,var(--border))] pl-3 text-[13px] italic leading-relaxed text-foreground/85">
+              {tagline}
+            </p>
           ) : null}
         </div>
-        <div className="shrink-0">{action}</div>
+        <div className="shrink-0 sm:pt-1">{action}</div>
       </div>
       {footer ? (
-        <div className="border-t border-border/70 bg-muted/15 px-5 py-4 sm:px-6">{footer}</div>
+        <div className="border-t border-border bg-muted/15 px-5 py-4">{footer}</div>
       ) : null}
     </section>
   )
 }
 
-export function PageTitle({ icon, children }: { icon: string; children: ReactNode }) {
+export function PageTitle({
+  children,
+  fileName,
+}: {
+  children: ReactNode
+  fileName?: string
+  /** @deprecated Obsidian layout uses fileName instead of emoji icons */
+  icon?: string
+}) {
   return (
-    <header className="mb-6">
-      <h1 className="flex items-center gap-2.5 text-[2.125rem] font-bold leading-[1.2] tracking-[-0.02em] text-foreground">
-        <span className="text-[2.25rem] leading-none" aria-hidden>
-          {icon}
-        </span>
+    <header className="obsidian-note-header mb-6">
+      {fileName ? (
+        <p className="mb-1.5 font-mono text-[11px] text-muted-foreground">{fileName}</p>
+      ) : null}
+      <h1 className="text-[1.5rem] font-semibold leading-tight tracking-[-0.02em] text-foreground">
         {children}
       </h1>
+      <div className="mt-4 h-px bg-border" aria-hidden />
     </header>
   )
 }
 
 export function BlockText({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <p className={cn('text-[15px] leading-[1.65] text-foreground/90', className)}>{children}</p>
+    <p className={cn('text-[14px] leading-[1.7] text-foreground/90', className)}>{children}</p>
   )
 }
 
@@ -397,13 +387,12 @@ export function BlockDivider() {
 }
 
 const calloutVariants = {
-  default: 'border-l-[3px] border-l-muted-foreground/30 bg-muted/60',
-  idea: 'border-l-[3px] border-l-amber-400 bg-amber-50/80 dark:bg-amber-950/25 dark:border-l-amber-500',
-  info: 'border-l-[3px] border-l-sky-400 bg-sky-50/80 dark:bg-sky-950/25 dark:border-l-sky-500',
+  default: 'border-l-primary/50 bg-muted/40',
+  idea: 'border-l-amber-400/70 bg-amber-950/15',
+  info: 'border-l-primary/60 bg-accent/30',
 } as const
 
 export function BlockCallout({
-  icon = '💡',
   variant = 'idea',
   children,
 }: {
@@ -411,12 +400,13 @@ export function BlockCallout({
   variant?: keyof typeof calloutVariants
   children: ReactNode
 }) {
+  const label = variant === 'info' ? 'info' : variant === 'idea' ? 'hint' : 'note'
   return (
-    <div className={cn('my-4 flex gap-3 rounded-r-md px-4 py-3', calloutVariants[variant])}>
-      <span className="mt-0.5 shrink-0 text-base leading-none" aria-hidden>
-        {icon}
-      </span>
-      <div className="text-[15px] leading-[1.6] text-foreground/90">{children}</div>
+    <div className={cn('obsidian-callout my-4 border border-l-2 px-3 py-2.5', calloutVariants[variant])}>
+      <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-primary">
+        [!{label}]
+      </p>
+      <div className="mt-1 text-[14px] leading-[1.65] text-foreground/90">{children}</div>
     </div>
   )
 }
@@ -433,11 +423,8 @@ export function BlockBullets({ items }: { items: readonly string[] }) {
 
 export function PropertyTable({ children }: { children: ReactNode }) {
   return (
-    <section
-      className="rounded-lg border border-border/70 bg-muted/25 px-3 py-2"
-      aria-label="Page properties"
-    >
-      <dl className="divide-y divide-border/50">{children}</dl>
+    <section className="border border-border bg-card/40 px-3 py-1" aria-label="Page properties">
+      <dl className="divide-y divide-border">{children}</dl>
     </section>
   )
 }
@@ -473,13 +460,13 @@ export function TagList({ tags }: { tags: string[] }) {
   return (
     <ul className="flex flex-wrap gap-1.5">
       {tags.map((tag) => {
-        const color = getNotionTagColor(tag)
+        const color = getObsidianTagColor(tag)
         return (
           <li
             key={tag}
             className={cn(
-              'rounded-[4px] px-2 py-0.5 text-[13px] font-medium leading-5 transition-transform hover:scale-[1.03]',
-              notionTagClass[color],
+              'rounded-sm border border-border bg-muted/50 px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground',
+              obsidianTagClass[color],
             )}
           >
             {tag}

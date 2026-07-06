@@ -6,14 +6,13 @@ import {
 } from '@/data/portfolio'
 import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang, translations } from '@/i18n/translations'
-import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
 import { cn } from '@/lib/utils'
-import { BlockText, NotionDatabase, PageShell, PageTitle } from '../blocks'
+import { BlockText, ObsidianDatabase, PageShell, PageTitle } from '../blocks'
 import { MotionSection } from '../motion'
-import { BlockGallery, BlockH3, BlockHighlight } from '../notion-blocks'
+import { BlockGallery, BlockH3, BlockHighlight } from '../obsidian-blocks'
 import { getProjectListLabel } from '../nav'
-import { PageCover } from '../PageCover'
 
 type ViewMode = 'gallery' | 'table'
 
@@ -76,7 +75,7 @@ function ProjectCollection({
       {view === 'gallery' ? (
         <BlockGallery items={galleryItems} />
       ) : (
-        <NotionDatabase
+        <ObsidianDatabase
           columns={[csUi.dbName, csUi.dbType, csUi.dbStack]}
           rows={rows}
         />
@@ -88,13 +87,13 @@ function ProjectCollection({
 export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
   const ui = translations[lang].ui
   const csUi = caseStudyUi[lang]
-  const blocks = notionPageBlocks[lang].projects
+  const blocks = obsidianPageBlocks[lang].projects
   const [view, setView] = useState<ViewMode>('gallery')
 
   const companyItems = getProjectsForList('companies-projects')
   const personalItems = getProjectsForList('my-projects')
   const pageTitle = projectList ? getProjectListLabel(lang, projectList) : ui.projects
-  const pageIcon = projectList === 'my-projects' ? '🛠️' : projectList ? '💼' : '🚀'
+  const pageFileName = projectList ? `projects/${projectList}.md` : 'projects.md'
   const pageIntro = projectList
     ? projectList === 'companies-projects'
       ? ui.companiesProjectsIntro
@@ -102,15 +101,15 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
     : ui.projectsIntro
 
   return (
-    <PageShell cover={<PageCover variant="projects" />}>
-      <MotionSection className="pt-2">
-        <PageTitle icon={pageIcon}>{pageTitle}</PageTitle>
+    <PageShell>
+      <MotionSection>
+        <PageTitle fileName={pageFileName}>{pageTitle}</PageTitle>
         <BlockText>{pageIntro}</BlockText>
         <BlockHighlight tone="gray">{blocks.viewNote}</BlockHighlight>
       </MotionSection>
 
       <MotionSection delay={0.08} className="mt-4">
-        <div className="inline-flex rounded-md border border-border bg-muted/40 p-0.5 text-xs">
+        <div className="inline-flex rounded-sm border border-border bg-muted/40 p-0.5 font-mono text-xs">
           {(['gallery', 'table'] as const).map((mode) => (
             <button
               key={mode}

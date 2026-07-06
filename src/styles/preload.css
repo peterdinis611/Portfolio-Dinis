@@ -1,25 +1,25 @@
 [data-theme="light"] {
-  --preload-bg: #ffffff;
-  --preload-text: #37352f;
-  --preload-muted: #787774;
-  --preload-bar: rgba(55, 53, 47, 0.1);
-  --preload-accent: #2383e2;
+  --preload-bg: #e8e8e8;
+  --preload-text: #2b2d31;
+  --preload-muted: #5c5f66;
+  --preload-bar: #d4d4d4;
+  --preload-accent: #705dcf;
   --preload-panel: #ffffff;
-  --preload-panel-border: rgba(55, 53, 47, 0.09);
-  --preload-ring: rgba(35, 131, 226, 0.18);
-  --preload-dot: rgba(55, 53, 47, 0.04);
+  --preload-panel-border: #d4d4d4;
+  --preload-ring: rgba(112, 93, 207, 0.22);
+  --preload-dot: rgba(43, 45, 49, 0.04);
 }
 
 [data-theme="dark"] {
-  --preload-bg: #191919;
-  --preload-text: rgba(255, 255, 255, 0.92);
-  --preload-muted: rgba(255, 255, 255, 0.52);
-  --preload-bar: rgba(255, 255, 255, 0.1);
-  --preload-accent: #529cca;
-  --preload-panel: #202020;
-  --preload-panel-border: rgba(255, 255, 255, 0.08);
-  --preload-ring: rgba(82, 156, 202, 0.22);
-  --preload-dot: rgba(255, 255, 255, 0.035);
+  --preload-bg: #1a1a1a;
+  --preload-text: #dcddde;
+  --preload-muted: #9a9a9a;
+  --preload-bar: #3a3a3a;
+  --preload-accent: #a78bfa;
+  --preload-panel: #1e1e1e;
+  --preload-panel-border: #333333;
+  --preload-ring: rgba(167, 139, 250, 0.22);
+  --preload-dot: rgba(255, 255, 255, 0.03);
 }
 
 .preload {
@@ -31,14 +31,7 @@
   padding: 2rem 1.5rem;
   background: var(--preload-bg);
   color: var(--preload-text);
-  font-family:
-    ui-sans-serif,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
 }
 
 .preload-backdrop {
@@ -59,18 +52,14 @@
   align-items: center;
   gap: 0;
   border: 1px solid var(--preload-panel-border);
-  border-radius: 1.25rem;
+  border-radius: 0.35rem;
   background: var(--preload-panel);
   padding: 2.75rem 2rem 2.25rem;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 16px 48px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] .preload-panel {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.2),
-    0 20px 56px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
 .preload-avatar-ring {
@@ -81,7 +70,7 @@
   margin-bottom: 1.35rem;
   border-radius: 999px;
   border: 3px solid var(--preload-ring);
-  background: var(--preload-bg);
+  background: var(--preload-panel);
   box-shadow: 0 0 0 6px color-mix(in srgb, var(--preload-ring) 35%, transparent);
 }
 
