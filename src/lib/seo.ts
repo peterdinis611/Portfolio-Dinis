@@ -1,5 +1,5 @@
 import { parsePortfolioRoute, getProjectName, type PortfolioRoute } from '@/lib/portfolio-route'
-import type { ObsidianPageId } from '@/components/obsidian/types'
+import type { NotionPageId } from '@/components/notion/types'
 import { profile, projects, socials, type ProjectListId } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
 import { caseStudyContent } from '@/i18n/portfolio-template'
@@ -7,7 +7,7 @@ import { decodeEmail } from './email'
 
 const SITE_NAME = 'Peter Dinis — Portfolio'
 const JSON_LD_ID = 'portfolio-jsonld'
-const DEFAULT_PAGE: ObsidianPageId = 'about'
+const DEFAULT_PAGE: NotionPageId = 'about'
 
 type PageSeo = {
   title: string
@@ -38,7 +38,7 @@ export const seoCopy: Record<Lang, SiteSeo> = {
   },
 }
 
-const pageSeoCopy: Record<Lang, Record<ObsidianPageId, PageSeo>> = {
+const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
   sk: {
     about: {
       title: 'O mne | Peter Dinis — Medior Full-Stack Developer',
@@ -182,7 +182,7 @@ function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
   return pageSeoCopy[lang][route.page]
 }
 
-function pageUrl(siteUrl: string, page: ObsidianPageId): string {
+function pageUrl(siteUrl: string, page: NotionPageId): string {
   const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
   if (!base) return ''
   return page === DEFAULT_PAGE ? base : `${base}/#${page}`
@@ -417,7 +417,7 @@ export function initSeo() {
   applySeo(getStoredLang(), route)
 }
 
-export const obsidianPagesForSitemap: ObsidianPageId[] = [
+export const notionPagesForSitemap: NotionPageId[] = [
   'about',
   'tech',
   'experience',

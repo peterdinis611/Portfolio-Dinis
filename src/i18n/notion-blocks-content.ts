@@ -1,6 +1,6 @@
 import type { Lang } from '@/i18n/translations'
 
-export const obsidianPageBlocks: Record<
+export const notionPageBlocks: Record<
   Lang,
   {
     about: {
@@ -22,6 +22,7 @@ export const obsidianPageBlocks: Record<
     }
     experience: {
       quote: string
+      tocTitle: string
       processTitle: string
       processSteps: string[]
       highlightsToggle: Array<{ title: string; body: string }>
@@ -103,6 +104,7 @@ export const obsidianPageBlocks: Record<
     experience: {
       quote:
         'Každá rola ma posunula bližšie k tomu, aby som vedel dodávať celé produkty — nie len jednotlivé tasky.',
+      tocTitle: 'Na tejto stránke',
       processTitle: 'Môj pracovný proces',
       processSteps: [
         'Discovery — pochopenie problému, stakeholderov a obmedzení',
@@ -228,6 +230,7 @@ export const obsidianPageBlocks: Record<
     experience: {
       quote:
         'Every role moved me closer to delivering whole products — not just isolated tasks.',
+      tocTitle: 'On this page',
       processTitle: 'My work process',
       processSteps: [
         'Discovery — understand the problem, stakeholders, and constraints',

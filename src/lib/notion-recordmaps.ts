@@ -1,28 +1,28 @@
 import type { ExtendedRecordMap } from 'notion-types'
-import type { ObsidianPageId } from '@/components/obsidian/types'
+import type { NotionPageId } from '@/components/notion/types'
 
 const recordMapModules = import.meta.glob<{ default: ExtendedRecordMap }>(
-  '../../data/obsidian/recordmaps/*.json',
+  '../../data/notion/recordmaps/*.json',
   { eager: true },
 )
 
-function fileKey(page: ObsidianPageId): string {
-  return `../../data/obsidian/recordmaps/${page}.json`
+function fileKey(page: NotionPageId): string {
+  return `../../data/notion/recordmaps/${page}.json`
 }
 
-export function getRecordMap(page: ObsidianPageId): ExtendedRecordMap | null {
+export function getRecordMap(page: NotionPageId): ExtendedRecordMap | null {
   const mod = recordMapModules[fileKey(page)]
   return mod?.default ?? null
 }
 
-export function hasSyncedContent(page: ObsidianPageId): boolean {
+export function hasSyncedContent(page: NotionPageId): boolean {
   return getRecordMap(page) !== null
 }
 
-export function listSyncedPages(): ObsidianPageId[] {
+export function listSyncedPages(): NotionPageId[] {
   return Object.keys(recordMapModules)
     .map((path) => path.match(/\/([^.]+)\.json$/)?.[1])
-    .filter((id): id is ObsidianPageId =>
+    .filter((id): id is NotionPageId =>
       ['about', 'tech', 'experience', 'projects', 'contact'].includes(id ?? ''),
     )
 }

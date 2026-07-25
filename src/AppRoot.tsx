@@ -2,8 +2,8 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { PreloadScreen } from './components/PreloadScreen'
 import { preloadApp } from './lib/preload'
 
-const LazyObsidianPortfolio = lazy(() =>
-  import('./components/obsidian/ObsidianPortfolio').then((m) => ({ default: m.ObsidianPortfolio })),
+const LazyNotionPortfolio = lazy(() =>
+  import('./components/notion/NotionPortfolio').then((m) => ({ default: m.NotionPortfolio })),
 )
 
 export function AppRoot() {
@@ -32,7 +32,7 @@ export function AppRoot() {
 
   return (
     <Suspense fallback={<PreloadScreen progress={0.92} />}>
-      <LazyObsidianPortfolio />
+      <LazyNotionPortfolio />
     </Suspense>
   )
 }

@@ -1,7 +1,7 @@
 import { PROJECT_CATEGORY_BY_LIST, projects } from '@/data/portfolio'
 import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang } from '@/i18n/translations'
-import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
+import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
 import { getAdjacentProjects, projectHref, projectListHref } from '@/lib/portfolio-route'
 import {
@@ -21,12 +21,11 @@ import {
   BlockCalloutRich,
   BlockBookmark,
   BlockCode,
-  BlockHighlight,
   BlockPageLink,
   BlockQuote,
   BlockTableOfContents,
   BlockToggle,
-} from '../obsidian-blocks'
+} from '../notion-blocks'
 
 const codeSnippets: Record<string, string> = {
   udzs: `// Feature module + typed API layer
@@ -86,7 +85,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   const project = projects.find((item) => item.id === projectId)
   const study = caseStudyContent[lang][projectId]
   const csUi = caseStudyUi[lang]
-  const blocks = obsidianPageBlocks[lang].projectDetail
+  const blocks = notionPageBlocks[lang].projectDetail
 
   if (!project || !study) {
     return (
@@ -117,8 +116,16 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
     <PageShell>
       <MotionSection>
         <BackLink href={backHref}>{csUi.backToProjects}</BackLink>
-        <PageTitle fileName={`projects/${projectId}.md`}>{project.name}</PageTitle>
-        <BlockHighlight tone="pink">{study.type}</BlockHighlight>
+        <PageTitle
+          icon={projectMeta[projectId]?.icon ?? '📄'}
+          meta={
+            <span className="inline-flex rounded-[3px] bg-[rgba(105,64,165,0.16)] px-1.5 py-0.5 text-[12px] font-medium text-[#6940a5] dark:text-[#9a6dd7]">
+              {study.type}
+            </span>
+          }
+        >
+          {project.name}
+        </PageTitle>
       </MotionSection>
 
       <MotionSection delay={0.06}>

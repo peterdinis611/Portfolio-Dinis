@@ -16,7 +16,7 @@
     "check:fix": "biome check --write .",
     "check:staged": "biome check --staged --write --no-errors-on-unmatched",
     "biome:ci": "biome ci .",
-    "obsidian:sync": "node scripts/sync-obsidian.mjs",
+    "notion:sync": "node scripts/sync-notion.mjs",
     "seo:generate": "node scripts/generate-seo.mjs",
     "verify": "tsc -b && biome ci ."
   },

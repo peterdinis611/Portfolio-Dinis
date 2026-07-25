@@ -7,7 +7,7 @@ import { MailtoLink } from '@/components/ui/MailtoLink'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
 import { profile, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
-import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
+import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import {
   BlockCallout,
   BlockDivider,
@@ -24,11 +24,10 @@ import {
   BlockCalloutRich,
   BlockColumns,
   BlockPageLink,
-  BlockQuote,
   BlockTodoList,
   BlockToggleGroup,
-} from '../obsidian-blocks'
-import { getObsidianPages } from '../nav'
+} from '../notion-blocks'
+import { getNotionPages } from '../nav'
 
 function ContactValue({
   label,
@@ -62,13 +61,15 @@ function ContactValue({
 export function ContactPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
-  const blocks = obsidianPageBlocks[lang].contact
-  const navPages = getObsidianPages(lang).filter((page) => page.id !== 'contact')
+  const blocks = notionPageBlocks[lang].contact
+  const navPages = getNotionPages(lang).filter((page) => page.id !== 'contact')
 
   return (
     <PageShell>
       <MotionSection>
-        <PageTitle fileName="contact.md">{ui.contact}</PageTitle>
+        <PageTitle icon="✉️" description={ui.contactLead}>
+          {ui.contact}
+        </PageTitle>
       </MotionSection>
 
       <MotionSection delay={0.06}>
@@ -76,7 +77,6 @@ export function ContactPage({ lang }: { lang: Lang }) {
           cols={2}
           children={[
             <div key="lead">
-              <BlockQuote>{ui.contactLead}</BlockQuote>
               <BlockText>{ui.contactText}</BlockText>
             </div>,
             <div key="cta" className="flex flex-col items-start justify-center gap-3">

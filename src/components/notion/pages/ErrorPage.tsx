@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { type Lang, translations } from '@/i18n/translations'
 import { BlockText, PageShell, PageTitle } from '../blocks'
-import { BlockCalloutRich, BlockQuote } from '../obsidian-blocks'
+import { BlockCalloutRich, BlockQuote } from '../notion-blocks'
 import type { PortfolioError } from '../portfolio-error'
-import { getObsidianPages } from '../nav'
+import { getNotionPages } from '../nav'
 import {
   AnimatedExploreLinks,
   createDemoPortfolioError,
@@ -24,7 +24,7 @@ type ErrorPageProps = {
 
 export function ErrorPage({ lang, error, demo = false, onRetry }: ErrorPageProps) {
   const ui = translations[lang].ui
-  const pages = getObsidianPages(lang)
+  const pages = getNotionPages(lang)
   const resolvedError = error ?? (demo ? createDemoPortfolioError() : undefined)
   const detail = resolvedError?.message ?? (demo ? ui.notionErrorDemoDetail : undefined)
 
@@ -36,7 +36,7 @@ export function ErrorPage({ lang, error, demo = false, onRetry }: ErrorPageProps
         </motion.div>
 
         <motion.div variants={staggerItem}>
-          <PageTitle fileName="error.md">{ui.notionErrorHeading}</PageTitle>
+          <PageTitle icon="🧭">{ui.notionErrorHeading}</PageTitle>
         </motion.div>
 
         <motion.div variants={staggerItem}>

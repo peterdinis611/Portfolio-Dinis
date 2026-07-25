@@ -1,15 +1,15 @@
-import { TechIconChip } from '@/components/obsidian/TechIconChip'
+import { TechIconChip } from '@/components/notion/TechIconChip'
 import { techCategories } from '@/data/technologies'
 import { type Lang, translations } from '@/i18n/translations'
-import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
+import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { BlockHeading, BlockText, PageShell, PageTitle } from '../blocks'
 import { MotionItem, MotionSection } from '../motion'
-import { BlockQuote, BlockTableOfContents, BlockToggleGroup } from '../obsidian-blocks'
+import { BlockQuote, BlockTableOfContents, BlockToggleGroup } from '../notion-blocks'
 
 export function TechPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
   const ui = t.ui
-  const blocks = obsidianPageBlocks[lang].tech
+  const blocks = notionPageBlocks[lang].tech
   const titleMap = Object.fromEntries(t.techCategories.map((c) => [c.id, c.title])) as Record<
     string,
     string
@@ -18,8 +18,9 @@ export function TechPage({ lang }: { lang: Lang }) {
   return (
     <PageShell>
       <MotionSection>
-        <PageTitle fileName="tech.md">{ui.tech}</PageTitle>
-        <BlockText>{ui.techIntro}</BlockText>
+        <PageTitle icon="⚡" description={ui.techIntro}>
+          {ui.tech}
+        </PageTitle>
       </MotionSection>
 
       <MotionSection delay={0.06}>

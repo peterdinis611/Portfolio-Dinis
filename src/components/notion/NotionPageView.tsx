@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Lang } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
-import { hasSyncedContent } from '@/lib/obsidian-recordmaps'
-import { ObsidianRendererPage } from './ObsidianRendererPage'
+import { hasSyncedContent } from '@/lib/notion-recordmaps'
+import { NotionRendererPage } from './NotionRendererPage'
 import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
 import { ExperiencePage } from './pages/ExperiencePage'
@@ -11,11 +11,11 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { ProjectDetailPage } from './pages/ProjectDetailPage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { TechPage } from './pages/TechPage'
-import type { ObsidianPageId } from './types'
+import type { NotionPageId } from './types'
 
 const EASE = [0.32, 0.72, 0, 1] as const
 
-type ObsidianPageViewProps = {
+type NotionPageViewProps = {
   lang: Lang
   route: PortfolioRoute
   darkMode: boolean
@@ -60,7 +60,7 @@ function FallbackPage({
   }
 }
 
-export function ObsidianPageView({ lang, route, darkMode }: ObsidianPageViewProps) {
+export function NotionPageView({ lang, route, darkMode }: NotionPageViewProps) {
   const { page, projectId, projectList, attemptedPath } = route
   const useSyncedRenderer =
     page !== 'not-found' &&
@@ -79,7 +79,7 @@ export function ObsidianPageView({ lang, route, darkMode }: ObsidianPageViewProp
         transition={{ duration: 0.28, ease: EASE }}
       >
         {useSyncedRenderer ? (
-          <ObsidianRendererPage page={page as ObsidianPageId} darkMode={darkMode} />
+          <NotionRendererPage page={page as NotionPageId} darkMode={darkMode} />
         ) : (
           <FallbackPage
             lang={lang}

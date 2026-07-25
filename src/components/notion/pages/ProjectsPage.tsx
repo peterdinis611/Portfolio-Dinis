@@ -6,12 +6,12 @@ import {
 } from '@/data/portfolio'
 import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang, translations } from '@/i18n/translations'
-import { obsidianPageBlocks } from '@/i18n/obsidian-blocks-content'
+import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
 import { cn } from '@/lib/utils'
-import { BlockText, ObsidianDatabase, PageShell, PageTitle } from '../blocks'
+import { NotionDatabase, PageShell, PageTitle } from '../blocks'
 import { MotionSection } from '../motion'
-import { BlockGallery, BlockH3, BlockHighlight } from '../obsidian-blocks'
+import { BlockGallery, BlockH3, BlockHighlight } from '../notion-blocks'
 import { getProjectListLabel } from '../nav'
 
 type ViewMode = 'gallery' | 'table'
@@ -75,7 +75,7 @@ function ProjectCollection({
       {view === 'gallery' ? (
         <BlockGallery items={galleryItems} />
       ) : (
-        <ObsidianDatabase
+        <NotionDatabase
           columns={[csUi.dbName, csUi.dbType, csUi.dbStack]}
           rows={rows}
         />
@@ -87,13 +87,13 @@ function ProjectCollection({
 export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
   const ui = translations[lang].ui
   const csUi = caseStudyUi[lang]
-  const blocks = obsidianPageBlocks[lang].projects
+  const blocks = notionPageBlocks[lang].projects
   const [view, setView] = useState<ViewMode>('gallery')
 
   const companyItems = getProjectsForList('companies-projects')
   const personalItems = getProjectsForList('my-projects')
   const pageTitle = projectList ? getProjectListLabel(lang, projectList) : ui.projects
-  const pageFileName = projectList ? `projects/${projectList}.md` : 'projects.md'
+  const pageIcon = projectList === 'companies-projects' ? '💼' : projectList === 'my-projects' ? '🛠️' : '🚀'
   const pageIntro = projectList
     ? projectList === 'companies-projects'
       ? ui.companiesProjectsIntro
@@ -103,20 +103,23 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
   return (
     <PageShell>
       <MotionSection>
-        <PageTitle fileName={pageFileName}>{pageTitle}</PageTitle>
-        <BlockText>{pageIntro}</BlockText>
-        <BlockHighlight tone="gray">{blocks.viewNote}</BlockHighlight>
+        <PageTitle icon={pageIcon} description={pageIntro}>
+          {pageTitle}
+        </PageTitle>
+        <p className="mt-2">
+          <BlockHighlight tone="gray">{blocks.viewNote}</BlockHighlight>
+        </p>
       </MotionSection>
 
       <MotionSection delay={0.08} className="mt-4">
-        <div className="inline-flex rounded-sm border border-border bg-muted/40 p-0.5 font-mono text-xs">
+        <div className="inline-flex rounded-[6px] bg-[rgba(55,53,47,0.06)] p-0.5 text-[13px] dark:bg-[rgba(255,255,255,0.06)]">
           {(['gallery', 'table'] as const).map((mode) => (
             <button
               key={mode}
               type="button"
               onClick={() => setView(mode)}
               className={cn(
-                'rounded px-3 py-1.5 font-medium transition-colors',
+                'rounded-[4px] px-3 py-1 font-medium transition-colors',
                 view === mode
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground',

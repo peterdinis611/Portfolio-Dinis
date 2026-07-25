@@ -2,7 +2,7 @@ import { FileText } from 'lucide-react'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { routeToVaultFile } from '@/lib/vault-path'
 
-export function ObsidianTabBar({ route }: { route: PortfolioRoute }) {
+export function NotionTabBar({ route }: { route: PortfolioRoute }) {
   const file = routeToVaultFile(route)
 
   return (

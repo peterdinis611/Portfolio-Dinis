@@ -5,13 +5,13 @@ import {
   projectHref,
   type PortfolioRoute,
 } from '../../lib/portfolio-route'
-import type { ObsidianPageDef } from './types'
+import type { NotionPageDef } from './types'
 
 export type { PortfolioRoute, ProjectListId } from '../../lib/portfolio-route'
 export {
   getAdjacentProjects,
   getProjectName,
-  isObsidianPageId,
+  isNotionPageId,
   isProjectId,
   isProjectListId,
   pageFromHash,
@@ -22,7 +22,7 @@ export {
   setPortfolioHash,
 } from '../../lib/portfolio-route'
 
-export function getObsidianPages(lang: Lang): ObsidianPageDef[] {
+export function getNotionPages(lang: Lang): NotionPageDef[] {
   const ui = translations[lang].ui
   return [
     { id: 'about', icon: '👋', label: ui.about },

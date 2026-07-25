@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import { type Lang, translations } from '@/i18n/translations'
 import { BlockText, PageShell, PageTitle } from '../blocks'
-import { BlockCalloutRich, BlockQuote } from '../obsidian-blocks'
-import { getObsidianPages } from '../nav'
+import { BlockCalloutRich, BlockQuote } from '../notion-blocks'
+import { getNotionPages } from '../nav'
 import {
   AnimatedExploreLinks,
   staggerContainer,
@@ -19,7 +19,7 @@ export function NotFoundPage({
   attemptedPath?: string
 }) {
   const ui = translations[lang].ui
-  const pages = getObsidianPages(lang)
+  const pages = getNotionPages(lang)
 
   return (
     <PageShell>
@@ -29,7 +29,7 @@ export function NotFoundPage({
         </motion.div>
 
         <motion.div variants={staggerItem}>
-          <PageTitle fileName="404.md">{ui.notionNotFoundHeading}</PageTitle>
+          <PageTitle icon="🔎">{ui.notionNotFoundHeading}</PageTitle>
         </motion.div>
 
         <motion.div variants={staggerItem}>

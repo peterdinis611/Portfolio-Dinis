@@ -8,8 +8,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          'border border-[color-mix(in_srgb,var(--link)_35%,var(--border))] bg-[color-mix(in_srgb,var(--link)_10%,var(--background))] text-[var(--link)] hover:bg-[color-mix(in_srgb,var(--link)_16%,var(--background))]',
+        default: 'bg-primary text-primary-foreground hover:opacity-90',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         outline: 'border border-border bg-background hover:bg-accent',

@@ -8,31 +8,54 @@ import {
   setPortfolioHash,
 } from '@/lib/portfolio-route'
 import { ErrorPage } from './pages/ErrorPage'
-import { ObsidianPageView } from './ObsidianPageView'
+import { NotionPageView } from './NotionPageView'
 import { PortfolioErrorBoundary } from './PortfolioErrorBoundary'
 import type { PortfolioError } from './portfolio-error'
-import { ObsidianSearchDialog } from './ObsidianSearchDialog'
-import { ObsidianSidebar } from './ObsidianSidebar'
-import { ObsidianTopbar } from './ObsidianTopbar'
-import { ObsidianStatusBar } from './ObsidianStatusBar'
-import { ObsidianTabBar } from './ObsidianTabBar'
+import { NotionSearchDialog } from './NotionSearchDialog'
+import { NotionSidebar } from './NotionSidebar'
+import { NotionTopbar } from './NotionTopbar'
+import { cn } from '@/lib/utils'
 
-export function ObsidianPortfolio() {
+const SIDEBAR_COLLAPSED_KEY = 'portfolio-sidebar-collapsed'
+
+function readSidebarCollapsed() {
+  try {
+    return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function NotionPortfolio() {
   const settingsActor = SettingsContext.useActorRef()
   const lang = SettingsContext.useSelector((s) => s.context.lang)
   const theme = SettingsContext.useSelector((s) => s.context.theme)
 
   const [route, setRoute] = useState<PortfolioRoute>(() => parsePortfolioRoute())
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(readSidebarCollapsed)
   const [searchOpen, setSearchOpen] = useState(false)
   const [runtimeError, setRuntimeError] = useState<PortfolioError | null>(null)
   const [errorResetKey, setErrorResetKey] = useState(0)
+
+  const persistCollapsed = useCallback((collapsed: boolean) => {
+    setSidebarCollapsed(collapsed)
+    try {
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, collapsed ? '1' : '0')
+    } catch {
+      /* ignore */
+    }
+  }, [])
 
   const navigate = useCallback((next: PortfolioRoute) => {
     setRuntimeError(null)
     setRoute(next)
     setPortfolioHash(next)
-    setSidebarOpen(false)
+    setMobileSidebarOpen(false)
+    requestAnimationFrame(() => {
+      const pane = document.getElementById('main-content')
+      if (pane) pane.scrollTop = 0
+    })
   }, [])
 
   const handleRuntimeError = useCallback((error: PortfolioError) => {
@@ -59,6 +82,10 @@ export function ObsidianPortfolio() {
       setRuntimeError(null)
       setErrorResetKey((key) => key + 1)
       setRoute(next)
+      requestAnimationFrame(() => {
+        const pane = document.getElementById('main-content')
+        if (pane) pane.scrollTop = 0
+      })
     }
 
     window.addEventListener('hashchange', syncRoute)
@@ -74,12 +101,22 @@ export function ObsidianPortfolio() {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault()
         setSearchOpen((open) => !open)
+        return
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key === '\\') {
+        event.preventDefault()
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          persistCollapsed(!sidebarCollapsed)
+        } else {
+          setMobileSidebarOpen((open) => !open)
+        }
       }
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
+  }, [persistCollapsed, sidebarCollapsed])
 
   const topbarRoute: PortfolioRoute = runtimeError ? { page: 'error' } : route
 
@@ -87,32 +124,57 @@ export function ObsidianPortfolio() {
     <ErrorPage lang={lang} error={runtimeError} onRetry={handleErrorRetry} />
   ) : (
     <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
-      <ObsidianPageView lang={lang} route={route} darkMode={theme === 'dark'} />
+      <NotionPageView
+        key={`${lang}-${route.page}-${route.projectId ?? ''}-${route.projectList ?? ''}-${route.attemptedPath ?? ''}`}
+        lang={lang}
+        route={route}
+        darkMode={theme === 'dark'}
+      />
     </PortfolioErrorBoundary>
   )
 
   return (
-    <div className="obsidian-app-shell flex h-dvh overflow-hidden bg-background">
-      <div className="hidden md:flex">
+    <div className="notion-app-shell flex h-dvh overflow-hidden bg-background">
+      <div
+        className={cn(
+          'notion-sidebar-shell hidden overflow-hidden border-r border-sidebar-border md:block',
+          sidebarCollapsed && 'border-transparent',
+        )}
+        data-collapsed={sidebarCollapsed ? 'true' : 'false'}
+        aria-hidden={sidebarCollapsed}
+      >
         <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
-          <ObsidianSidebar lang={lang} route={route} onNavigate={navigate} />
+          <NotionSidebar
+            lang={lang}
+            route={route}
+            onNavigate={navigate}
+            onOpenSearch={() => setSearchOpen(true)}
+            onCollapse={() => persistCollapsed(true)}
+          />
         </PortfolioErrorBoundary>
       </div>
 
-      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent side="left" className="p-0 md:hidden">
+      <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
+        <SheetContent
+          side="left"
+          className="w-[min(100%,280px)] border-r border-sidebar-border bg-sidebar p-0 md:hidden"
+        >
           <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
-            <ObsidianSidebar
+            <NotionSidebar
               lang={lang}
               route={route}
               onNavigate={navigate}
+              onOpenSearch={() => {
+                setMobileSidebarOpen(false)
+                setSearchOpen(true)
+              }}
               className="w-full border-0"
             />
           </PortfolioErrorBoundary>
         </SheetContent>
       </Sheet>
 
-      <ObsidianSearchDialog
+      <NotionSearchDialog
         lang={lang}
         open={searchOpen}
         onOpenChange={setSearchOpen}
@@ -120,23 +182,21 @@ export function ObsidianPortfolio() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <ObsidianTopbar
+        <NotionTopbar
           lang={lang}
           theme={theme}
           route={topbarRoute}
-          onMenu={() => setSidebarOpen(true)}
+          sidebarCollapsed={sidebarCollapsed}
+          onMenu={() => setMobileSidebarOpen(true)}
+          onOpenSidebar={() => persistCollapsed(false)}
           onOpenSearch={() => setSearchOpen(true)}
           onLang={(l) => settingsActor.send({ type: 'SET_LANG', lang: l })}
           onTheme={() => settingsActor.send({ type: 'TOGGLE_THEME' })}
         />
 
-        <ObsidianTabBar route={topbarRoute} />
-
-        <main className="obsidian-editor-pane flex-1 overflow-y-auto" id="main-content">
+        <main className="notion-page-pane flex-1 overflow-y-auto scroll-smooth" id="main-content">
           {mainContent}
         </main>
-
-        <ObsidianStatusBar lang={lang} theme={theme} route={topbarRoute} />
       </div>
     </div>
   )

@@ -2,13 +2,13 @@ import { type Lang, type Theme, translations } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { routeToVaultFile } from '@/lib/vault-path'
 
-type ObsidianStatusBarProps = {
+type NotionStatusBarProps = {
   lang: Lang
   theme: Theme
   route: PortfolioRoute
 }
 
-export function ObsidianStatusBar({ lang, theme, route }: ObsidianStatusBarProps) {
+export function NotionStatusBar({ lang, theme, route }: NotionStatusBarProps) {
   const ui = translations[lang].ui
   const file = routeToVaultFile(route)
 

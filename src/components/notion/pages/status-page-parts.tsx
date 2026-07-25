@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { BackLink, BlockHeading } from '../blocks'
 import { MOTION_EASE, MotionSection, staggerContainer, staggerItem, staggerItemLeft } from '../motion'
-import { BlockDividerDots, BlockPageLink, BlockToggle } from '../obsidian-blocks'
+import { BlockDividerDots, BlockPageLink, BlockToggle } from '../notion-blocks'
 import type { PortfolioError } from '../portfolio-error'
 
 export const pageLinkStagger = {
@@ -82,15 +82,15 @@ export function createDemoPortfolioError(): PortfolioError {
   error.name = 'ReferenceError'
   error.stack = [
     'ReferenceError: ui is not defined',
-    '    at getProjectNavGroups (src/components/obsidian/nav.ts:47:14)',
-    '    at ObsidianSidebar (src/components/obsidian/ObsidianSidebar.tsx:31:22)',
+    '    at getProjectNavGroups (src/components/notion/nav.ts:47:14)',
+    '    at NotionSidebar (src/components/notion/NotionSidebar.tsx:31:22)',
     '    at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:15486:18)',
     '    at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:19612:20)',
     '    at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:21631:16)',
   ].join('\n')
   error.componentStack = [
-    '\n    at ObsidianSidebar (src/components/obsidian/ObsidianSidebar.tsx:18:3)',
-    '    at ObsidianPortfolio (src/components/obsidian/ObsidianPortfolio.tsx:91:11)',
+    '\n    at NotionSidebar (src/components/notion/NotionSidebar.tsx:18:3)',
+    '    at NotionPortfolio (src/components/notion/NotionPortfolio.tsx:91:11)',
     '    at AppRoot (src/AppRoot.tsx:42:7)',
   ].join('\n')
   return error

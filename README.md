@@ -1,6 +1,6 @@
-# Peter Dinis — Obsidian Portfolio
+# Peter Dinis — Notion Portfolio
 
-Interactive portfolio with an Obsidian-like layout: vault sidebar, markdown-style pages, hash URLs, SK/EN language toggle, and light/dark theme. Content is authored in React; optional sync from Notion pages via [react-notion-x](https://github.com/NotionX/react-notion-x).
+Interactive portfolio with a Notion-like layout: sidebar, document pages, hash URLs, SK/EN language toggle, and light/dark theme. Content is authored in React; optional sync from Notion pages via [react-notion-x](https://github.com/NotionX/react-notion-x).
 
 ## Stack
 
@@ -55,7 +55,7 @@ Language and theme preferences are stored in `localStorage` (`portfolio-lang`, `
 
 ## Vault sync (optional)
 
-By default, pages are rendered from React components in `src/components/obsidian/pages/`. To render content from synced Notion pages instead, sync record maps at build time:
+By default, pages are rendered from React components in `src/components/notion/pages/`. To render content from synced Notion pages instead, sync record maps at build time:
 
 ```bash
 # Set page IDs (and optional auth for private workspaces)
@@ -67,21 +67,21 @@ export NOTION_PAGE_TECH="your-page-id"
 export NOTION_TOKEN_V2="your-notion-token"
 export NOTION_ACTIVE_USER="your-active-user-id"
 
-npm run obsidian:sync
+npm run notion:sync
 ```
 
-Synced JSON files are written to `src/data/obsidian/recordmaps/`. When a file exists for a page, the app uses the synced renderer instead of the fallback React page.
+Synced JSON files are written to `src/data/notion/recordmaps/`. When a file exists for a page, the app uses the synced renderer instead of the fallback React page.
 
 ## Project structure
 
 ```
 src/
-├── components/obsidian/   # Shell, pages, synced renderer
+├── components/notion/   # Shell, pages, synced renderer
 ├── components/ui/         # shadcn/ui primitives
 ├── context/               # XState providers
-├── data/                  # portfolio.ts, technologies.ts, obsidian/recordmaps/
+├── data/                  # portfolio.ts, technologies.ts, notion/recordmaps/
 ├── i18n/translations.ts   # SK / EN copy
-├── lib/                   # utils, SEO, obsidian record map loader
+├── lib/                   # utils, SEO, notion record map loader
 ├── machines/              # settingsMachine
 └── index.css              # Tailwind + theme tokens
 ```
@@ -93,8 +93,8 @@ src/
 | Profile, projects, socials | `src/data/portfolio.ts` |
 | Tech stack | `src/data/technologies.ts` |
 | All UI copy (SK / EN) | `src/i18n/translations.ts` |
-| Page components | `src/components/obsidian/pages/` |
-| Sidebar / nav | `src/components/obsidian/nav.ts` |
+| Page components | `src/components/notion/pages/` |
+| Sidebar / nav | `src/components/notion/nav.ts` |
 
 ## Scripts
 
@@ -103,7 +103,7 @@ src/
 | `npm run dev` | Start Vite dev server |
 | `npm run build` | Typecheck + production build |
 | `npm run preview` | Preview production build |
-| `npm run obsidian:sync` | Fetch Notion pages → JSON record maps |
+| `npm run notion:sync` | Fetch Notion pages → JSON record maps |
 | `npm run verify` | `tsc` + Biome CI |
 
 ## SEO

@@ -1,9 +1,9 @@
 import type { ExtendedRecordMap } from 'notion-types'
 import { lazy, Suspense, useMemo } from 'react'
 import { NotionRenderer } from 'react-notion-x'
-import { getRecordMap } from '@/lib/obsidian-recordmaps'
+import { getRecordMap } from '@/lib/notion-recordmaps'
 import { cn } from '@/lib/utils'
-import type { ObsidianPageId } from './types'
+import type { NotionPageId } from './types'
 
 const Code = lazy(() =>
   import('react-notion-x/third-party/code').then((m) => ({ default: m.Code })),
@@ -19,13 +19,13 @@ const Modal = lazy(() =>
 )
 const Pdf = lazy(() => import('react-notion-x/third-party/pdf').then((m) => ({ default: m.Pdf })))
 
-type ObsidianRendererPageProps = {
-  page: ObsidianPageId
+type NotionRendererPageProps = {
+  page: NotionPageId
   darkMode: boolean
   recordMap?: ExtendedRecordMap | null
 }
 
-export function ObsidianRendererPage({ page, darkMode, recordMap }: ObsidianRendererPageProps) {
+export function NotionRendererPage({ page, darkMode, recordMap }: NotionRendererPageProps) {
   const map = useMemo(() => recordMap ?? getRecordMap(page), [page, recordMap])
 
   if (!map) return null

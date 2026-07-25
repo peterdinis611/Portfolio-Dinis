@@ -16,7 +16,7 @@ const contentAnimationClass =
 export function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
     <DialogPrimitive.Overlay
-      className={cn('fixed inset-0 z-50 bg-black/55', overlayAnimationClass, className)}
+      className={cn('fixed inset-0 z-50 bg-black/40', overlayAnimationClass, className)}
       {...props}
     />
   )
@@ -32,7 +32,7 @@ export function DialogContent({
       <DialogOverlay />
       <DialogPrimitive.Content
         className={cn(
-          'fixed top-[12vh] left-1/2 z-50 w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-lg outline-none',
+          'fixed top-[12vh] left-1/2 z-50 w-[min(36rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[10px] border border-[rgba(55,53,47,0.12)] bg-popover text-popover-foreground shadow-[0_14px_45px_-12px_rgba(15,15,15,0.28)] outline-none dark:border-[rgba(255,255,255,0.12)]',
           contentAnimationClass,
           className,
         )}

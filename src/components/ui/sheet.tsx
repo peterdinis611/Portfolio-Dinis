@@ -16,7 +16,7 @@ export function SheetContent({
 }) {
   return (
     <SheetPrimitive.Portal>
-      <SheetPrimitive.Overlay className="fixed inset-0 z-40 bg-black/55 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:duration-200 data-[state=open]:duration-200" />
+      <SheetPrimitive.Overlay className="fixed inset-0 z-40 bg-black/35 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:duration-200 data-[state=open]:duration-200" />
       <SheetPrimitive.Content
         className={cn(
           'fixed z-50 flex h-full w-[min(var(--sidebar-width),88vw)] flex-col border-border bg-sidebar text-sidebar-foreground shadow-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-250',
