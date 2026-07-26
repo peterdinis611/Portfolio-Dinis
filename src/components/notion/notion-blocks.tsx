@@ -85,8 +85,13 @@ export function BlockH3({
 
 export function BlockQuote({ children }: { children: ReactNode }) {
   return (
-    <blockquote className="notion-block my-1 border-l-[3px] border-[rgba(55,53,47,0.2)] py-0.5 pl-[14px] text-[1.05em] leading-[1.6] text-[rgba(55,53,47,0.75)] dark:border-[rgba(255,255,255,0.2)] dark:text-[rgba(255,255,255,0.7)]">
-      {children}
+    <blockquote className="notion-block my-2 flex gap-2.5 rounded-[4px] bg-[rgba(241,241,239,0.9)] px-3.5 py-3 dark:bg-[rgba(255,255,255,0.055)]">
+      <span className="mt-0.5 shrink-0 text-[18px] leading-none" aria-hidden>
+        💬
+      </span>
+      <p className="m-0 text-[15px] leading-[1.6] text-[rgba(55,53,47,0.8)] dark:text-[rgba(255,255,255,0.75)]">
+        {children}
+      </p>
     </blockquote>
   )
 }
@@ -297,14 +302,14 @@ export function BlockTableOfContents({
   items: Array<{ id: string; label: string }>
 }) {
   return (
-    <nav className="notion-block my-3 py-1" aria-label={title}>
-      <p className="mb-1 px-1 text-[12px] font-medium text-muted-foreground">{title}</p>
-      <ul className="space-y-0.5">
+    <nav className="notion-block my-2 py-0.5" aria-label={title}>
+      <p className="mb-1 text-[12px] font-medium text-muted-foreground">{title}</p>
+      <ul className="space-y-px border-l border-[rgba(55,53,47,0.12)] pl-3 dark:border-[rgba(255,255,255,0.12)]">
         {items.map((item) => (
           <li key={item.id}>
             <a
               href={`#${item.id}`}
-              className="block rounded-[4px] px-1 py-0.5 text-[14px] text-muted-foreground transition-colors hover:bg-[rgba(55,53,47,0.06)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.055)]"
+              className="-ml-px block border-l-2 border-transparent py-1 pl-3 text-[14px] leading-snug text-muted-foreground transition-colors hover:text-foreground"
             >
               {item.label}
             </a>

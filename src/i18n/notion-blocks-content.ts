@@ -7,10 +7,11 @@ export const notionPageBlocks: Record<
       bioHighlight: string
       quote: string
       approachTitle: string
+      approachIntro: string
       approachTodos: Array<{ text: string; done: boolean }>
       workingStyle: Array<{ title: string; body: string }>
       tocTitle: string
-      tocItems: Array<{ id: string; label: string }>
+      tocItems: Array<{ id: string; label: string; icon?: string }>
       basicInfoTitle: string
       currentlyTitle: string
       currentlyText: string
@@ -53,6 +54,7 @@ export const notionPageBlocks: Record<
       quote:
         'Dobrý produkt nie je len kód — je to jasné UX, spoľahlivá architektúra a tímová spolupráca, ktorá doručí hodnotu používateľom.',
       approachTitle: 'Ako pracujem',
+      approachIntro: 'Krátky prehľad toho, ako pristupujem k práci a spolupráci.',
       approachTodos: [
         { text: 'Porozumiem produktu a kontextu tímu', done: true },
         { text: 'Navrhnem riešenie a rozdelím prácu na iterácie', done: true },
@@ -75,9 +77,9 @@ export const notionPageBlocks: Record<
       ],
       tocTitle: 'Na tejto stránke',
       tocItems: [
-        { id: 'about-facts', label: 'Základné info' },
-        { id: 'about-skills', label: 'Schopnosti' },
-        { id: 'about-approach', label: 'Ako pracujem' },
+        { id: 'about-facts', label: 'Základné info', icon: '📋' },
+        { id: 'about-skills', label: 'Schopnosti', icon: '✨' },
+        { id: 'about-approach', label: 'Ako pracujem', icon: '🧭' },
       ],
       basicInfoTitle: 'Základné info',
       currentlyTitle: 'Momentálne',
@@ -179,6 +181,7 @@ export const notionPageBlocks: Record<
       quote:
         'A great product is not just code — it is clear UX, reliable architecture, and teamwork that delivers value to users.',
       approachTitle: 'How I work',
+      approachIntro: 'A short look at how I approach work and collaboration.',
       approachTodos: [
         { text: 'Understand the product and team context', done: true },
         { text: 'Design the solution and split work into iterations', done: true },
@@ -201,9 +204,9 @@ export const notionPageBlocks: Record<
       ],
       tocTitle: 'On this page',
       tocItems: [
-        { id: 'about-facts', label: 'Basic info' },
-        { id: 'about-skills', label: 'Skills' },
-        { id: 'about-approach', label: 'How I work' },
+        { id: 'about-facts', label: 'Basic info', icon: '📋' },
+        { id: 'about-skills', label: 'Skills', icon: '✨' },
+        { id: 'about-approach', label: 'How I work', icon: '🧭' },
       ],
       basicInfoTitle: 'Basic info',
       currentlyTitle: 'Currently',

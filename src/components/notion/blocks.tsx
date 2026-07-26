@@ -83,28 +83,32 @@ export function PageHero({
   )
 }
 
-export function BioTagPills({ items }: { items: string[] }) {
-  const tones = [
-    'bg-[rgba(35,131,226,0.14)] text-[#0b6e99] dark:text-[#6cb5f9]',
-    'bg-[rgba(15,123,108,0.14)] text-[#0f7b6c] dark:text-[#4dab9a]',
-    'bg-[rgba(105,64,165,0.14)] text-[#6940a5] dark:text-[#9a6dd7]',
-    'bg-[rgba(233,168,0,0.18)] text-[#9a6700] dark:text-[#ffdc49]',
-    'bg-[rgba(226,85,161,0.14)] text-[#ad1a72] dark:text-[#e255a1]',
-  ]
-
+export function BioTagPills({
+  items,
+  className,
+}: {
+  items: string[]
+  className?: string
+}) {
   return (
-    <ul className="mb-4 flex flex-wrap gap-1.5">
-      {items.map((item, index) => (
-        <li
-          key={item}
-          className={cn(
-            'rounded-[3px] px-1.5 py-0.5 text-[13px] font-medium',
-            tones[index % tones.length],
-          )}
-        >
-          {item}
-        </li>
-      ))}
+    <ul className={cn('flex flex-wrap gap-1.5', className)}>
+      {items.map((item) => {
+        const meta = getNotionTagMeta(item)
+        return (
+          <li
+            key={item}
+            className={cn(
+              'inline-flex items-center gap-1 rounded-[3px] px-1.5 py-0.5 text-[13px] font-medium',
+              notionTagClass[meta.color],
+            )}
+          >
+            {meta.icon ? (
+              <BrandIcon slug={meta.icon} size={12} className="opacity-95" label={item} />
+            ) : null}
+            <span>{item}</span>
+          </li>
+        )
+      })}
     </ul>
   )
 }
@@ -112,26 +116,91 @@ export function BioTagPills({ items }: { items: string[] }) {
 export function SectionAnchorNav({
   label,
   items,
+  activeId,
 }: {
   label: string
-  items: Array<{ id: string; label: string }>
+  items: Array<{ id: string; label: string; icon?: string }>
+  activeId?: string
 }) {
   return (
-    <nav className="notion-block my-2 py-1" aria-label={label}>
-      <p className="mb-1 px-1 text-[12px] font-medium text-muted-foreground">{label}</p>
-      <ul className="space-y-0.5">
-        {items.map((item) => (
-          <li key={item.id}>
-            <a
-              href={`#${item.id}`}
-              className="block rounded-[4px] px-1 py-1 text-[14px] text-muted-foreground transition-colors hover:bg-[rgba(55,53,47,0.06)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.055)]"
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
+    <nav className="notion-block my-2 py-0.5" aria-label={label}>
+      <p className="mb-1 text-[12px] font-medium text-muted-foreground">{label}</p>
+      <ul className="space-y-px border-l border-[rgba(55,53,47,0.12)] pl-3 dark:border-[rgba(255,255,255,0.12)]">
+        {items.map((item) => {
+          const active = activeId === item.id
+          return (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                aria-current={active ? 'location' : undefined}
+                className={cn(
+                  '-ml-px block border-l-2 py-1 pl-3 text-[14px] leading-snug transition-colors',
+                  active
+                    ? 'border-[var(--link)] font-medium text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {item.label}
+              </a>
+            </li>
+          )
+        })}
       </ul>
     </nav>
+  )
+}
+
+export function SectionTabs({
+  label,
+  items,
+  value,
+  onChange,
+}: {
+  label?: string
+  items: Array<{ id: string; label: string; icon?: string }>
+  value: string
+  onChange: (id: string) => void
+}) {
+  return (
+    <div className="my-2">
+      {label ? (
+        <p className="mb-2 text-[12px] font-medium text-muted-foreground">{label}</p>
+      ) : null}
+      <div
+        role="tablist"
+        aria-label={label}
+        className="flex flex-wrap gap-1 rounded-[6px] bg-[rgba(55,53,47,0.06)] p-1 dark:bg-[rgba(255,255,255,0.06)]"
+      >
+        {items.map((item) => {
+          const active = value === item.id
+          return (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              id={`tab-${item.id}`}
+              aria-selected={active}
+              aria-controls={`panel-${item.id}`}
+              tabIndex={active ? 0 : -1}
+              onClick={() => onChange(item.id)}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-[4px] px-3 py-1.5 text-[13px] font-medium transition-colors',
+                active
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {item.icon ? (
+                <span className="text-[14px] leading-none" aria-hidden>
+                  {item.icon}
+                </span>
+              ) : null}
+              <span>{item.label}</span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -221,21 +290,19 @@ export function SkillFeatureGrid({
   items: Array<{ id: string; icon?: string; title: string; description: string }>
 }) {
   return (
-    <ul className="my-1">
+    <ul className="my-2 grid gap-2 sm:grid-cols-2">
       {items.map((item) => (
         <li
           key={item.title}
-          className="notion-block flex gap-2.5 rounded-[4px] px-1 py-2 transition-colors hover:bg-[rgba(55,53,47,0.04)] dark:hover:bg-[rgba(255,255,255,0.04)]"
+          className="rounded-[4px] bg-[rgba(241,241,239,0.9)] px-3.5 py-3 transition-colors hover:bg-[rgba(55,53,47,0.06)] dark:bg-[rgba(255,255,255,0.055)] dark:hover:bg-[rgba(255,255,255,0.08)]"
         >
-          <span className="mt-0.5 shrink-0 text-[18px]" aria-hidden>
-            {item.icon ?? '•'}
-          </span>
-          <div className="min-w-0">
-            <h3 className="text-[16px] font-medium text-foreground">{item.title}</h3>
-            <p className="mt-0.5 text-[14px] leading-relaxed text-muted-foreground">
-              {item.description}
-            </p>
+          <div className="mb-1 flex items-center gap-2">
+            <span className="text-[16px] leading-none" aria-hidden>
+              {item.icon ?? '•'}
+            </span>
+            <h3 className="text-[15px] font-semibold text-foreground">{item.title}</h3>
           </div>
+          <p className="text-[14px] leading-relaxed text-muted-foreground">{item.description}</p>
         </li>
       ))}
     </ul>
@@ -385,24 +452,24 @@ export function StatGrid({ items }: { items: Array<{ value: string; label: strin
   ]
 
   return (
-    <div className="my-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <div className="my-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
       {items.map((item, index) => (
         <div
           key={item.label}
           className={cn(
-            'rounded-[4px] px-3 py-2.5 text-center',
+            'rounded-[4px] px-3 py-3 text-center',
             surfaces[index % surfaces.length],
           )}
         >
           <p
             className={cn(
-              'text-[22px] font-semibold tracking-tight leading-none',
+              'text-[24px] font-bold tracking-[-0.02em] leading-none',
               valueColors[index % valueColors.length],
             )}
           >
             {item.value}
           </p>
-          <p className="mt-1 text-[12px] leading-snug text-muted-foreground">{item.label}</p>
+          <p className="mt-1.5 text-[12px] leading-snug text-muted-foreground">{item.label}</p>
         </div>
       ))}
     </div>

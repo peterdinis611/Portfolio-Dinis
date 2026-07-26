@@ -17,6 +17,9 @@ export type NotionTagMeta = {
 
 /** Longest needles first so "react native" wins over "react". */
 const TAG_META: Array<{ match: string; color: NotionTagColor; icon?: string }> = [
+  { match: 'design systems', color: 'yellow', icon: 'figma' },
+  { match: 'design systémy', color: 'yellow', icon: 'figma' },
+  { match: 'design system', color: 'yellow', icon: 'figma' },
   { match: 'react native', color: 'blue', icon: 'react' },
   { match: 'tanstack query', color: 'red', icon: 'reactquery' },
   { match: 'tanstack start', color: 'red', icon: 'reactquery' },

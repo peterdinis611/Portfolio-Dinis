@@ -148,7 +148,7 @@ export function NotionSidebar({
                         type="button"
                         className={cn(
                           'notion-nav-item min-w-0 flex-1 !py-[4px] text-[13px]',
-                          !groupActive && 'text-muted-foreground',
+                          !groupActive && 'text-sidebar-foreground/80',
                         )}
                         {...navActive(Boolean(groupActive))}
                         onClick={() =>
@@ -168,7 +168,7 @@ export function NotionSidebar({
                           <li key={project.id}>
                             <button
                               type="button"
-                              className="notion-nav-item !py-[4px] text-[13px] text-muted-foreground"
+                              className="notion-nav-item !py-[4px] text-[13px] text-sidebar-foreground/85"
                               {...navActive(route.projectId === project.id)}
                               onClick={() =>
                                 onNavigate({ page: 'projects', projectId: project.id })

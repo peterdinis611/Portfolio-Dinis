@@ -14,6 +14,7 @@ import type { PortfolioError } from './portfolio-error'
 import { NotionSearchDialog } from './NotionSearchDialog'
 import { NotionSidebar } from './NotionSidebar'
 import { NotionTopbar } from './NotionTopbar'
+import { ScrollToTop } from './ScrollToTop'
 import { cn } from '@/lib/utils'
 
 const SIDEBAR_COLLAPSED_KEY = 'portfolio-sidebar-collapsed'
@@ -197,6 +198,7 @@ export function NotionPortfolio() {
         <main className="notion-page-pane flex-1 overflow-y-auto scroll-smooth" id="main-content">
           {mainContent}
         </main>
+        <ScrollToTop lang={lang} />
       </div>
     </div>
   )
