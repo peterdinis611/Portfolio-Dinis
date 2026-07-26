@@ -4,7 +4,6 @@ import {
   type Project,
   type ProjectListId,
 } from '@/data/portfolio'
-import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang, translations } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
@@ -13,6 +12,8 @@ import { NotionDatabase, PageShell, PageTitle } from '../blocks'
 import { MotionSection } from '../motion'
 import { BlockGallery, BlockH3, BlockHighlight } from '../notion-blocks'
 import { getProjectListLabel } from '../nav'
+import { ProjectIcon } from '../ProjectIcon'
+import { ProjectPreviewDialog } from '../ProjectPreviewDialog'
 
 type ViewMode = 'gallery' | 'table'
 
@@ -23,12 +24,11 @@ type ProjectsPageProps = {
 
 function buildRows(lang: Lang, items: Project[]) {
   return items.map((project) => {
-    const meta = projectMeta[project.id] ?? { icon: '📄' }
     const study = caseStudyContent[lang][project.id]
     return {
       id: project.id,
       href: `#projects/${project.id}`,
-      icon: meta.icon,
+      icon: <ProjectIcon projectId={project.id} size="sm" />,
       cells: [project.name, study.type, project.tech] as [string, string, string],
     }
   })
@@ -37,11 +37,10 @@ function buildRows(lang: Lang, items: Project[]) {
 function buildGalleryItems(lang: Lang, items: Project[]) {
   return items.map((project) => {
     const study = caseStudyContent[lang][project.id]
-    const meta = projectMeta[project.id] ?? { icon: '📄' }
     return {
       id: project.id,
       href: `#projects/${project.id}`,
-      icon: meta.icon,
+      icon: <ProjectIcon projectId={project.id} size="md" />,
       title: project.name,
       subtitle: study.type,
       tags: project.tech.split(' · ').map((tag) => tag.trim()),
@@ -55,6 +54,7 @@ function ProjectCollection({
   items,
   view,
   csUi,
+  onProjectSelect,
   delay = 0,
 }: {
   lang: Lang
@@ -62,6 +62,7 @@ function ProjectCollection({
   items: Project[]
   view: ViewMode
   csUi: (typeof caseStudyUi)[Lang]
+  onProjectSelect: (id: string) => void
   delay?: number
 }) {
   if (items.length === 0) return null
@@ -73,11 +74,12 @@ function ProjectCollection({
     <MotionSection delay={delay} className="mt-6 first:mt-0">
       <BlockH3>{title}</BlockH3>
       {view === 'gallery' ? (
-        <BlockGallery items={galleryItems} />
+        <BlockGallery items={galleryItems} onItemSelect={onProjectSelect} />
       ) : (
         <NotionDatabase
           columns={[csUi.dbName, csUi.dbType, csUi.dbStack]}
           rows={rows}
+          onRowSelect={onProjectSelect}
         />
       )}
     </MotionSection>
@@ -89,6 +91,13 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
   const csUi = caseStudyUi[lang]
   const blocks = notionPageBlocks[lang].projects
   const [view, setView] = useState<ViewMode>('gallery')
+  const [previewId, setPreviewId] = useState<string | null>(null)
+  const [previewOpen, setPreviewOpen] = useState(false)
+
+  const openPreview = (id: string) => {
+    setPreviewId(id)
+    setPreviewOpen(true)
+  }
 
   const companyItems = getProjectsForList('companies-projects')
   const personalItems = getProjectsForList('my-projects')
@@ -139,6 +148,7 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
             items={getProjectsForList(projectList)}
             view={view}
             csUi={csUi}
+            onProjectSelect={openPreview}
           />
         ) : (
           <>
@@ -148,6 +158,7 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
               items={companyItems}
               view={view}
               csUi={csUi}
+              onProjectSelect={openPreview}
               delay={0}
             />
             <ProjectCollection
@@ -156,11 +167,22 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
               items={personalItems}
               view={view}
               csUi={csUi}
+              onProjectSelect={openPreview}
               delay={0.06}
             />
           </>
         )}
       </MotionSection>
+
+      <ProjectPreviewDialog
+        lang={lang}
+        projectId={previewId}
+        open={previewOpen}
+        onOpenChange={(open) => {
+          setPreviewOpen(open)
+          if (!open) setPreviewId(null)
+        }}
+      />
     </PageShell>
   )
 }

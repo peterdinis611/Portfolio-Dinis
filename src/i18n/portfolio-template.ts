@@ -482,6 +482,8 @@ export const caseStudyUi: Record<
     sourceCode: string
     liveDemo: string
     linksTitle: string
+    openCaseStudy: string
+    closePreview: string
     dbName: string
     dbType: string
     dbStack: string
@@ -498,11 +500,13 @@ export const caseStudyUi: Record<
     solution: 'Riešenie',
     mainFeatures: 'Hlavné funkcie',
     backToProjects: 'Späť na projekty',
-    previousProject: 'Predchádzajúci projekt',
-    nextProject: 'Ďalší projekt',
+    previousProject: 'Predošlý',
+    nextProject: 'Ďalší',
     sourceCode: 'Zdrojový kód na GitHub',
     liveDemo: 'Live demo',
     linksTitle: 'Odkazy',
+    openCaseStudy: 'Otvoriť case study',
+    closePreview: 'Zavrieť',
     dbName: 'Názov',
     dbType: 'Typ',
     dbStack: 'Stack',
@@ -518,11 +522,13 @@ export const caseStudyUi: Record<
     solution: 'Solution',
     mainFeatures: 'Main Features',
     backToProjects: 'Back to projects',
-    previousProject: 'Previous project',
-    nextProject: 'Next project',
+    previousProject: 'Previous',
+    nextProject: 'Next',
     sourceCode: 'Source code on GitHub',
     liveDemo: 'Live demo',
     linksTitle: 'Links',
+    openCaseStudy: 'Open case study',
+    closePreview: 'Close',
     dbName: 'Name',
     dbType: 'Type',
     dbStack: 'Stack',

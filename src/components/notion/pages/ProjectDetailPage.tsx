@@ -1,9 +1,10 @@
-import { PROJECT_CATEGORY_BY_LIST, projects } from '@/data/portfolio'
-import { projectMeta } from '@/data/portfolio-meta'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { PROJECT_CATEGORY_BY_LIST, projects, type Project } from '@/data/portfolio'
 import { type Lang } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
 import { getAdjacentProjects, projectHref, projectListHref } from '@/lib/portfolio-route'
+import { cn } from '@/lib/utils'
 import {
   BackLink,
   BlockBullets,
@@ -21,11 +22,72 @@ import {
   BlockCalloutRich,
   BlockBookmark,
   BlockCode,
-  BlockPageLink,
   BlockQuote,
   BlockTableOfContents,
   BlockToggle,
 } from '../notion-blocks'
+import { ProjectIcon } from '../ProjectIcon'
+
+function RelatedProjectCard({ project }: { project: Project }) {
+  const techPreview = project.tech.split(' · ').slice(0, 3).join(' · ')
+
+  return (
+    <a
+      href={projectHref(project.id)}
+      className="group flex min-w-0 items-start gap-3 rounded-[8px] px-2.5 py-2.5 transition-colors hover:bg-[rgba(55,53,47,0.06)] dark:hover:bg-[rgba(255,255,255,0.055)]"
+    >
+      <ProjectIcon projectId={project.id} size="md" className="mt-0.5" />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[14px] font-medium text-foreground group-hover:text-[var(--link)]">
+          {project.name}
+        </span>
+        <span className="mt-0.5 block truncate text-[12px] text-muted-foreground">{techPreview}</span>
+      </span>
+    </a>
+  )
+}
+
+function AdjacentProjectLink({
+  project,
+  label,
+  direction,
+}: {
+  project: Project
+  label: string
+  direction: 'prev' | 'next'
+}) {
+  const isNext = direction === 'next'
+
+  return (
+    <a
+      href={projectHref(project.id)}
+      className={cn(
+        'group flex w-full min-w-0 items-center gap-3 rounded-[10px] border border-[rgba(55,53,47,0.1)] px-4 py-3.5 transition-colors hover:border-[rgba(55,53,47,0.18)] hover:bg-[rgba(55,53,47,0.04)] dark:border-[rgba(255,255,255,0.1)] dark:hover:border-[rgba(255,255,255,0.16)] dark:hover:bg-[rgba(255,255,255,0.045)]',
+        isNext && 'flex-row-reverse text-right',
+      )}
+    >
+      <span
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgba(55,53,47,0.06)] text-muted-foreground transition-colors group-hover:bg-[rgba(55,53,47,0.1)] group-hover:text-foreground dark:bg-[rgba(255,255,255,0.06)] dark:group-hover:bg-[rgba(255,255,255,0.1)]"
+        aria-hidden
+      >
+        {isNext ? <ArrowRight className="h-4 w-4" strokeWidth={2} /> : <ArrowLeft className="h-4 w-4" strokeWidth={2} />}
+      </span>
+      <span className="min-w-0 flex-1 overflow-hidden">
+        <span className="block text-[12px] text-muted-foreground">{label}</span>
+        <span
+          className={cn(
+            'mt-1 flex min-w-0 items-center gap-2 text-[15px] font-medium text-foreground',
+            isNext && 'justify-end',
+          )}
+        >
+          {!isNext ? <ProjectIcon projectId={project.id} size="xs" /> : null}
+          <span className="truncate">{project.name}</span>
+          {isNext ? <ProjectIcon projectId={project.id} size="xs" /> : null}
+        </span>
+      </span>
+    </a>
+  )
+}
 
 const codeSnippets: Record<string, string> = {
   udzs: `// Feature module + typed API layer
@@ -117,7 +179,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
       <MotionSection>
         <BackLink href={backHref}>{csUi.backToProjects}</BackLink>
         <PageTitle
-          icon={projectMeta[projectId]?.icon ?? '📄'}
+          icon={<ProjectIcon projectId={projectId} size="lg" />}
           meta={
             <span className="inline-flex rounded-[3px] bg-[rgba(105,64,165,0.16)] px-1.5 py-0.5 text-[12px] font-medium text-[#6940a5] dark:text-[#9a6dd7]">
               {study.type}
@@ -198,54 +260,35 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
         </BlockToggle>
       </MotionSection>
 
-      <MotionSection delay={0.16} className="mt-8">
-        <BlockDivider />
-        <BlockText className="mb-2 font-semibold text-foreground">{blocks.relatedTitle}</BlockText>
-        <div className="flex flex-col gap-0.5">
-          {relatedProjects.map((item) => (
-            <BlockPageLink
-              key={item.id}
-              href={projectHref(item.id)}
-              icon={projectMeta[item.id]?.icon ?? '📄'}
-              label={item.name}
-            />
-          ))}
-        </div>
-      </MotionSection>
+      {(relatedProjects.length > 0 || prev || next) && (
+        <MotionSection delay={0.16} className="mt-10">
+          <BlockDivider />
+          {relatedProjects.length > 0 ? (
+            <div className="mb-8">
+              <h2 className="mb-3 text-[15px] font-semibold text-foreground">{blocks.relatedTitle}</h2>
+              <div className="grid grid-cols-1 gap-0.5 sm:grid-cols-2">
+                {relatedProjects.map((item) => (
+                  <RelatedProjectCard key={item.id} project={item} />
+                ))}
+              </div>
+            </div>
+          ) : null}
 
-      {(prev || next) && (
-        <MotionSection delay={0.18} className="mt-2">
-          <nav
-            className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-stretch sm:justify-between"
-            aria-label={blocks.relatedTitle}
-          >
-            {prev ? (
-              <a
-                href={projectHref(prev.id)}
-                className="group flex flex-1 flex-col border border-border px-3 py-2 transition-colors hover:bg-muted/40 sm:max-w-[48%]"
-              >
-                <span className="font-mono text-[10px] text-muted-foreground">{csUi.previousProject}</span>
-                <span className="mt-1 font-mono text-[12px] text-primary group-hover:underline">
-                  {prev.id}.md
-                </span>
-                <span className="text-[12px] text-foreground">{prev.name}</span>
-              </a>
-            ) : (
-              <span className="hidden flex-1 sm:block" aria-hidden />
-            )}
-            {next ? (
-              <a
-                href={projectHref(next.id)}
-                className="group flex flex-1 flex-col border border-border px-3 py-2 text-right transition-colors hover:bg-muted/40 sm:max-w-[48%]"
-              >
-                <span className="font-mono text-[10px] text-muted-foreground">{csUi.nextProject}</span>
-                <span className="mt-1 font-mono text-[12px] text-primary group-hover:underline">
-                  {next.id}.md
-                </span>
-                <span className="text-[12px] text-foreground">{next.name}</span>
-              </a>
-            ) : null}
-          </nav>
+          {(prev || next) && (
+            <nav
+              className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+              aria-label={csUi.nextProject}
+            >
+              {prev ? (
+                <AdjacentProjectLink project={prev} label={csUi.previousProject} direction="prev" />
+              ) : (
+                <span className="hidden sm:block" aria-hidden />
+              )}
+              {next ? (
+                <AdjacentProjectLink project={next} label={csUi.nextProject} direction="next" />
+              ) : null}
+            </nav>
+          )}
         </MotionSection>
       )}
     </PageShell>

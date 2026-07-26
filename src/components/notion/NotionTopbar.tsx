@@ -6,7 +6,7 @@ import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { routeToVaultLabel } from '@/lib/vault-path'
 import { cn } from '@/lib/utils'
 import { getNotionPages } from './nav'
-import { projectMeta } from '@/data/portfolio-meta'
+import { ProjectIcon } from './ProjectIcon'
 
 type NotionTopbarProps = {
   lang: Lang
@@ -33,9 +33,7 @@ export function NotionTopbar({
 }: NotionTopbarProps) {
   const ui = translations[lang].ui
   const pageLabel = routeToVaultLabel(route, lang)
-  const pageIcon = route.projectId
-    ? (projectMeta[route.projectId]?.icon ?? '📄')
-    : (getNotionPages(lang).find((page) => page.id === route.page)?.icon ?? '📄')
+  const pageEmoji = getNotionPages(lang).find((page) => page.id === route.page)?.icon ?? '📄'
 
   return (
     <header className="notion-topbar">
@@ -79,10 +77,14 @@ export function NotionTopbar({
           >
             /
           </span>
-          <span className="inline-flex min-w-0 items-center gap-1 truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground">
-            <span className="shrink-0 text-[14px] leading-none" aria-hidden>
-              {pageIcon}
-            </span>
+          <span className="inline-flex min-w-0 items-center gap-1.5 truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground">
+            {route.projectId ? (
+              <ProjectIcon projectId={route.projectId} size="xs" />
+            ) : (
+              <span className="shrink-0 text-[14px] leading-none" aria-hidden>
+                {pageEmoji}
+              </span>
+            )}
             <span className="truncate">{pageLabel}</span>
           </span>
         </nav>

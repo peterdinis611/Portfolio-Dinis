@@ -345,27 +345,26 @@ export function BlockColumns({
 
 export function BlockGallery({
   items,
+  onItemSelect,
 }: {
   items: Array<{
     id: string
     href: string
-    icon: string
+    icon: ReactNode
     title: string
     subtitle: string
     tags: string[]
   }>
+  onItemSelect?: (id: string) => void
 }) {
   return (
     <ul className="my-2 grid gap-2 sm:grid-cols-2">
-      {items.map((item) => (
-        <li key={item.id}>
-          <a
-            href={item.href}
-            className="notion-block group flex h-full flex-col rounded-[8px] border border-[rgba(55,53,47,0.1)] p-3 transition-colors hover:bg-[rgba(55,53,47,0.04)] dark:border-[rgba(255,255,255,0.1)] dark:hover:bg-[rgba(255,255,255,0.04)]"
-          >
-            <span className="mb-2 text-[28px] leading-none" aria-hidden>
-              {item.icon}
-            </span>
+      {items.map((item) => {
+        const className =
+          'notion-block group flex h-full w-full flex-col rounded-[8px] border border-[rgba(55,53,47,0.1)] p-3 text-left transition-colors hover:bg-[rgba(55,53,47,0.04)] dark:border-[rgba(255,255,255,0.1)] dark:hover:bg-[rgba(255,255,255,0.04)]'
+        const body = (
+          <>
+            <span className="mb-2.5">{item.icon}</span>
             <span className="mb-0.5 truncate text-[15px] font-medium text-foreground group-hover:text-[var(--link)]">
               {item.title}
             </span>
@@ -384,9 +383,23 @@ export function BlockGallery({
                 ))}
               </span>
             ) : null}
-          </a>
-        </li>
-      ))}
+          </>
+        )
+
+        return (
+          <li key={item.id}>
+            {onItemSelect ? (
+              <button type="button" className={className} onClick={() => onItemSelect(item.id)}>
+                {body}
+              </button>
+            ) : (
+              <a href={item.href} className={className}>
+                {body}
+              </a>
+            )}
+          </li>
+        )
+      })}
     </ul>
   )
 }

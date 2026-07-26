@@ -37,7 +37,7 @@
 }
 
 :root {
-  --sidebar-width: 240px;
+  --sidebar-width: 260px;
   --topbar-height: 45px;
   --editor-max-width: 42rem;
 
@@ -155,7 +155,7 @@
   }
 
   .notion-nav-item {
-    @apply relative flex w-full items-center gap-1.5 rounded-[4px] px-2 py-[5px] text-[14px] leading-[1.2] text-sidebar-foreground transition-colors hover:bg-sidebar-accent;
+    @apply relative flex w-full items-center gap-2 rounded-[6px] px-2.5 py-[7px] text-[14px] leading-[1.25] text-sidebar-foreground transition-colors hover:bg-sidebar-accent;
   }
 
   .notion-nav-item[data-active="true"] {

@@ -312,14 +312,16 @@ export function SkillFeatureGrid({
 export function NotionDatabase({
   columns,
   rows,
+  onRowSelect,
 }: {
   columns: string[]
   rows: Array<{
     id: string
     href: string
-    icon: string
+    icon: ReactNode
     cells: [string, string, string]
   }>
+  onRowSelect?: (id: string) => void
 }) {
   return (
     <div className="my-2 overflow-hidden rounded-[4px] border border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)]">
@@ -334,26 +336,37 @@ export function NotionDatabase({
         ))}
       </div>
       <ul>
-        {rows.map((row) => (
-          <li
-            key={row.id}
-            className="border-b border-[rgba(55,53,47,0.06)] last:border-b-0 dark:border-[rgba(255,255,255,0.06)]"
-          >
-            <a
-              href={row.href}
-              className="grid gap-1 px-3 py-2.5 transition-colors hover:bg-[rgba(55,53,47,0.04)] dark:hover:bg-[rgba(255,255,255,0.04)] sm:grid-cols-[minmax(0,1.3fr)_minmax(0,0.8fr)_minmax(0,1.2fr)] sm:items-center sm:gap-3"
-            >
-              <span className="flex min-w-0 items-center gap-2 text-[14px] font-medium text-foreground">
-                <span className="shrink-0 text-[16px]" aria-hidden>
-                  {row.icon}
-                </span>
+        {rows.map((row) => {
+          const className =
+            'grid w-full gap-1 px-3 py-2.5 text-left transition-colors hover:bg-[rgba(55,53,47,0.04)] dark:hover:bg-[rgba(255,255,255,0.04)] sm:grid-cols-[minmax(0,1.3fr)_minmax(0,0.8fr)_minmax(0,1.2fr)] sm:items-center sm:gap-3'
+          const body = (
+            <>
+              <span className="flex min-w-0 items-center gap-2.5 text-[14px] font-medium text-foreground">
+                <span className="shrink-0">{row.icon}</span>
                 <span className="truncate">{row.cells[0]}</span>
               </span>
               <span className="truncate text-[13px] text-muted-foreground">{row.cells[1]}</span>
               <span className="truncate text-[13px] text-muted-foreground">{row.cells[2]}</span>
-            </a>
-          </li>
-        ))}
+            </>
+          )
+
+          return (
+            <li
+              key={row.id}
+              className="border-b border-[rgba(55,53,47,0.06)] last:border-b-0 dark:border-[rgba(255,255,255,0.06)]"
+            >
+              {onRowSelect ? (
+                <button type="button" className={className} onClick={() => onRowSelect(row.id)}>
+                  {body}
+                </button>
+              ) : (
+                <a href={row.href} className={className}>
+                  {body}
+                </a>
+              )}
+            </li>
+          )
+        })}
       </ul>
     </div>
   )
@@ -408,21 +421,14 @@ export function PageTitle({
 }: {
   children: ReactNode
   fileName?: string
-  icon?: string
+  icon?: ReactNode
   description?: ReactNode
   meta?: ReactNode
 }) {
   return (
     <header className="mb-5">
       {icon ? (
-        <button
-          type="button"
-          tabIndex={-1}
-          className="-ml-1.5 mb-1.5 flex h-[78px] w-[78px] items-center justify-center rounded-[4px] text-[78px] leading-none transition-colors hover:bg-[rgba(55,53,47,0.06)] dark:hover:bg-[rgba(255,255,255,0.055)]"
-          aria-hidden
-        >
-          {icon}
-        </button>
+        <div className="-ml-1 mb-2 inline-flex">{icon}</div>
       ) : null}
       <h1 className="text-[40px] font-bold leading-[1.2] tracking-[-0.01em] text-foreground">
         {children}

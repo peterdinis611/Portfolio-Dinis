@@ -10,6 +10,7 @@ import {
   isProjectListActive,
   isProjectsOverviewActive,
 } from './nav'
+import { ProjectIcon } from './ProjectIcon'
 import type { NotionPageId } from './types'
 
 type NotionSidebarProps = {
@@ -90,10 +91,10 @@ export function NotionSidebar({
     if (item.id === 'projects') {
       return (
         <>
-          <div className="group/row flex items-center gap-0.5">
+          <div className="group/row flex items-center gap-1">
             <button
               type="button"
-              className="flex h-[28px] w-[18px] shrink-0 items-center justify-center rounded-[4px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent hover:text-foreground group-hover/row:opacity-100 focus-visible:opacity-100"
+              className="flex h-8 w-5 shrink-0 items-center justify-center rounded-[4px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent hover:text-foreground group-hover/row:opacity-100 focus-visible:opacity-100"
               onClick={() => toggle('projects')}
               aria-expanded={projectsOpen}
               aria-label={projectsOpen ? 'Collapse' : 'Expand'}
@@ -119,7 +120,7 @@ export function NotionSidebar({
           </div>
 
           {projectsOpen ? (
-            <ul className="mt-px space-y-px pl-[18px]">
+            <ul className="mt-1 space-y-0.5 pl-5">
               {projectGroups.map((group) => {
                 const groupOpen = expanded.has(group.id)
                 const groupActive =
@@ -129,11 +130,11 @@ export function NotionSidebar({
                   !isProjectsOverviewActive(route)
 
                 return (
-                  <li key={group.id}>
-                    <div className="group/row flex items-center gap-0.5">
+                  <li key={group.id} className="space-y-0.5">
+                    <div className="group/row flex items-center gap-1">
                       <button
                         type="button"
-                        className="flex h-[26px] w-[18px] shrink-0 items-center justify-center rounded-[4px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent group-hover/row:opacity-100 focus-visible:opacity-100"
+                        className="flex h-7 w-5 shrink-0 items-center justify-center rounded-[4px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent group-hover/row:opacity-100 focus-visible:opacity-100"
                         onClick={() => toggle(group.id)}
                         aria-expanded={groupOpen}
                       >
@@ -147,7 +148,7 @@ export function NotionSidebar({
                       <button
                         type="button"
                         className={cn(
-                          'notion-nav-item min-w-0 flex-1 !py-[4px] text-[13px]',
+                          'notion-nav-item min-w-0 flex-1 text-[13px]',
                           !groupActive && 'text-sidebar-foreground/80',
                         )}
                         {...navActive(Boolean(groupActive))}
@@ -163,20 +164,18 @@ export function NotionSidebar({
                     </div>
 
                     {groupOpen ? (
-                      <ul className="mt-px space-y-px pl-[18px]">
+                      <ul className="mt-0.5 space-y-0.5 pl-5">
                         {group.items.map((project) => (
                           <li key={project.id}>
                             <button
                               type="button"
-                              className="notion-nav-item !py-[4px] text-[13px] text-sidebar-foreground/85"
+                              className="notion-nav-item text-[13px] text-sidebar-foreground/85"
                               {...navActive(route.projectId === project.id)}
                               onClick={() =>
                                 onNavigate({ page: 'projects', projectId: project.id })
                               }
                             >
-                              <span className="text-[14px] leading-none" aria-hidden>
-                                {project.icon}
-                              </span>
+                              <ProjectIcon projectId={project.id} size="xs" />
                               <span className="truncate">{project.name}</span>
                             </button>
                           </li>
@@ -193,8 +192,8 @@ export function NotionSidebar({
     }
 
     return (
-      <div className="flex items-center gap-0.5">
-        <span className="w-[18px] shrink-0" aria-hidden />
+      <div className="flex items-center gap-1">
+        <span className="w-5 shrink-0" aria-hidden />
         <button
           type="button"
           className="notion-nav-item min-w-0 flex-1"
@@ -218,13 +217,13 @@ export function NotionSidebar({
       )}
       aria-label={ui.notionSidebar}
     >
-      <div className="group/workspace flex items-center gap-0.5 px-2 pb-1 pt-2.5">
+      <div className="group/workspace flex items-center gap-1 px-2.5 pb-1.5 pt-3">
         <button
           type="button"
-          className="flex min-w-0 flex-1 items-center gap-2 rounded-[4px] px-1.5 py-1 text-left transition-colors hover:bg-sidebar-accent"
+          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent"
           onClick={() => onNavigate({ page: 'about' })}
         >
-          <span className="flex h-[18px] w-[18px] items-center justify-center rounded-[3px] bg-[rgba(35,131,226,0.85)] text-[10px] font-bold leading-none text-white">
+          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-[rgba(35,131,226,0.85)] text-[10px] font-bold leading-none text-white">
             P
           </span>
           <span className="min-w-0 flex-1 truncate text-[14px] font-medium tracking-[-0.01em]">
@@ -236,7 +235,7 @@ export function NotionSidebar({
           <button
             type="button"
             onClick={onCollapse}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[4px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent hover:text-foreground group-hover/workspace:opacity-100 focus-visible:opacity-100"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent hover:text-foreground group-hover/workspace:opacity-100 focus-visible:opacity-100"
             aria-label={ui.notionCloseSidebar}
             title={`${ui.notionCloseSidebar} (⌘\\)`}
           >
@@ -245,12 +244,12 @@ export function NotionSidebar({
         ) : null}
       </div>
 
-      <div className="px-2 pb-2">
+      <div className="px-2.5 pb-2.5">
         {onOpenSearch ? (
           <button
             type="button"
             onClick={onOpenSearch}
-            className="flex h-8 w-full items-center gap-2 rounded-[4px] px-2 text-left text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+            className="flex h-9 w-full items-center gap-2.5 rounded-[6px] px-2.5 text-left text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
           >
             <Search className="h-3.5 w-3.5 shrink-0 opacity-70" strokeWidth={1.75} />
             <span className="min-w-0 flex-1 truncate text-[13px]">{ui.notionQuickFind}</span>
@@ -261,11 +260,11 @@ export function NotionSidebar({
         ) : null}
       </div>
 
-      <ScrollArea className="min-h-0 flex-1 px-2">
-        <p className="mb-1 px-2 pt-1 text-[11px] font-medium text-muted-foreground/70">
+      <ScrollArea className="min-h-0 flex-1 px-2.5">
+        <p className="mb-2 px-2.5 pt-1.5 text-[11px] font-medium tracking-wide text-muted-foreground/70 uppercase">
           {ui.notionPages}
         </p>
-        <ul className="space-y-px pb-2">
+        <ul className="space-y-0.5 pb-3">
           {mainPages.map((item) => (
             <li key={item.id}>{renderPageButton(item)}</li>
           ))}
@@ -273,7 +272,7 @@ export function NotionSidebar({
       </ScrollArea>
 
       {contactPage ? (
-        <div className="border-t border-[rgba(55,53,47,0.06)] px-2 py-2 dark:border-[rgba(255,255,255,0.06)]">
+        <div className="border-t border-[rgba(55,53,47,0.06)] px-2.5 py-2.5 dark:border-[rgba(255,255,255,0.06)]">
           {renderPageButton(contactPage)}
         </div>
       ) : null}
