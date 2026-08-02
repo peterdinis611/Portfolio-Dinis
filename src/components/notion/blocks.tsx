@@ -34,7 +34,8 @@ export function PageShell({
       {cover}
       <article
         className={cn(
-          'notion-page mx-auto w-full px-6 pb-24 pt-10 sm:px-12 sm:pt-12 md:px-[96px] md:pt-14',
+          'notion-page mx-auto w-full px-6 pb-24 sm:px-12 md:px-[96px]',
+          cover ? 'pt-3 sm:pt-4' : 'pt-10 sm:pt-12 md:pt-14',
           className,
         )}
       >
@@ -458,7 +459,14 @@ export function StatGrid({ items }: { items: Array<{ value: string; label: strin
   ]
 
   return (
-    <div className="my-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <div
+      className={cn(
+        'my-3 grid gap-2',
+        items.length <= 2 && 'grid-cols-2',
+        items.length === 3 && 'grid-cols-1 sm:grid-cols-3',
+        items.length >= 4 && 'grid-cols-2 sm:grid-cols-4',
+      )}
+    >
       {items.map((item, index) => (
         <div
           key={item.label}

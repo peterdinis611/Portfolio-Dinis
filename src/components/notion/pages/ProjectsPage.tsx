@@ -12,6 +12,7 @@ import { NotionDatabase, PageShell, PageTitle } from '../blocks'
 import { MotionSection } from '../motion'
 import { BlockGallery, BlockH3, BlockHighlight } from '../notion-blocks'
 import { getProjectListLabel } from '../nav'
+import { PageCover } from '../PageCover'
 import { ProjectIcon } from '../ProjectIcon'
 import { ProjectPreviewDialog } from '../ProjectPreviewDialog'
 
@@ -110,7 +111,7 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
     : ui.projectsIntro
 
   return (
-    <PageShell>
+    <PageShell cover={<PageCover variant="projects" />}>
       <MotionSection>
         <PageTitle icon={pageIcon} description={pageIntro}>
           {pageTitle}

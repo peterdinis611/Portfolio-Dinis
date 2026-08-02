@@ -28,6 +28,7 @@ import {
   BlockToggleGroup,
 } from '../notion-blocks'
 import { getNotionPages } from '../nav'
+import { PageCover } from '../PageCover'
 
 const statLabelKey = {
   years: 'statYears',
@@ -51,7 +52,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
   }))
 
   return (
-    <PageShell>
+    <PageShell cover={<PageCover variant="about" />}>
       <MotionSection>
         <PageTitle icon="👋" description={template.aboutShort}>
           {profile.name}

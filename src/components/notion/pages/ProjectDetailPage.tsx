@@ -26,7 +26,9 @@ import {
   BlockTableOfContents,
   BlockToggle,
 } from '../notion-blocks'
+import { PageCover } from '../PageCover'
 import { ProjectIcon } from '../ProjectIcon'
+import { ProjectShowcaseBlocks } from '../ProjectShowcaseBlocks'
 
 function RelatedProjectCard({ project }: { project: Project }) {
   const techPreview = project.tech.split(' · ').slice(0, 3).join(' · ')
@@ -168,14 +170,32 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   const code = codeSnippets[projectId]
 
   const tocItems = [
+    { id: 'cs-impact', label: csUi.impactTitle },
     { id: 'cs-overview', label: csUi.overview },
     { id: 'cs-problem', label: csUi.problem },
     { id: 'cs-solution', label: csUi.solution },
     { id: 'cs-features', label: csUi.mainFeatures },
   ]
 
+  const showcaseLabels = {
+    impactTitle: csUi.impactTitle,
+    mediaTitle: csUi.mediaTitle,
+    mediaTitleAnonymized: csUi.mediaTitleAnonymized,
+    anonymizedNote: csUi.anonymizedNote,
+    roleOutcomeTitle: csUi.roleOutcomeTitle,
+    architectureTitle: csUi.architectureTitle,
+    beforeAfterTitle: csUi.beforeAfterTitle,
+    beforeLabel: csUi.beforeLabel,
+    afterLabel: csUi.afterLabel,
+    demoTitle: csUi.demoTitle,
+    openLiveDemo: csUi.openLiveDemo,
+    viewSource: csUi.viewSource,
+    tryLive: csUi.tryLive,
+    hideLive: csUi.hideLive,
+  }
+
   return (
-    <PageShell>
+    <PageShell cover={<PageCover projectId={projectId} />}>
       <MotionSection>
         <BackLink href={backHref}>{csUi.backToProjects}</BackLink>
         <PageTitle
@@ -207,9 +227,18 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
         </PropertyTable>
       </MotionSection>
 
-      <MotionSection delay={0.1}>
+      <MotionSection delay={0.08}>
         <BlockTableOfContents title={blocks.tocTitle} items={tocItems} />
         <BlockQuote>{study.overview}</BlockQuote>
+      </MotionSection>
+
+      <MotionSection delay={0.1} id="cs-impact" className="scroll-mt-24">
+        <ProjectShowcaseBlocks
+          projectId={projectId}
+          lang={lang}
+          projectName={project.name}
+          labels={showcaseLabels}
+        />
       </MotionSection>
 
       {(project.githubUrl || project.liveUrl) && (

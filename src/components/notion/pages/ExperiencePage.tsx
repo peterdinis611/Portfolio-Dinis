@@ -14,6 +14,7 @@ import {
 } from '../blocks'
 import { MotionSection } from '../motion'
 import { BlockQuote, BlockToggleGroup } from '../notion-blocks'
+import { PageCover } from '../PageCover'
 
 type ExperienceJob = (typeof translations)[Lang]['experience'][number]
 
@@ -112,7 +113,7 @@ export function ExperiencePage({ lang }: { lang: Lang }) {
   ]
 
   return (
-    <PageShell>
+    <PageShell cover={<PageCover variant="experience" />}>
       <MotionSection>
         <PageTitle icon="💼" description={ui.expIntro}>
           {ui.experience}

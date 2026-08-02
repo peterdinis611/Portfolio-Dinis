@@ -5,6 +5,7 @@ import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { BlockHeading, BlockText, PageShell, PageTitle } from '../blocks'
 import { MotionItem, MotionSection } from '../motion'
 import { BlockQuote, BlockTableOfContents, BlockToggleGroup } from '../notion-blocks'
+import { PageCover } from '../PageCover'
 
 export function TechPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
@@ -16,7 +17,7 @@ export function TechPage({ lang }: { lang: Lang }) {
   >
 
   return (
-    <PageShell>
+    <PageShell cover={<PageCover variant="tech" />}>
       <MotionSection>
         <PageTitle icon="⚡" description={ui.techIntro}>
           {ui.tech}

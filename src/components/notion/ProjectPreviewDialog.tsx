@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { TagList } from './blocks'
 import { ProjectIcon } from './ProjectIcon'
+import { ProjectShowcaseBlocks } from './ProjectShowcaseBlocks'
 
 type ProjectPreviewDialogProps = {
   lang: Lang
@@ -35,12 +36,9 @@ export function ProjectPreviewDialog({
   const hasContent = Boolean(project && study)
 
   return (
-    <Dialog
-      open={open && hasContent}
-      onOpenChange={onOpenChange}
-    >
+    <Dialog open={open && hasContent} onOpenChange={onOpenChange}>
       {project && study ? (
-        <DialogContent className="flex max-h-[min(80vh,40rem)] flex-col p-0">
+        <DialogContent className="flex max-h-[min(86vh,44rem)] flex-col p-0">
           <div className="flex items-start justify-between gap-3 border-b border-[rgba(55,53,47,0.09)] px-5 py-4 dark:border-[rgba(255,255,255,0.09)]">
             <div className="min-w-0 flex-1">
               <div className="mb-2 flex items-center gap-2.5">
@@ -67,6 +65,31 @@ export function ProjectPreviewDialog({
 
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
             <p className="text-[14px] leading-relaxed text-foreground/90">{study.overview}</p>
+
+            <div className="mt-5">
+              <ProjectShowcaseBlocks
+                projectId={project.id}
+                lang={lang}
+                projectName={project.name}
+                compact
+                labels={{
+                  impactTitle: csUi.impactTitle,
+                  mediaTitle: csUi.mediaTitle,
+                  mediaTitleAnonymized: csUi.mediaTitleAnonymized,
+                  anonymizedNote: csUi.anonymizedNote,
+                  roleOutcomeTitle: csUi.roleOutcomeTitle,
+                  architectureTitle: csUi.architectureTitle,
+                  beforeAfterTitle: csUi.beforeAfterTitle,
+                  beforeLabel: csUi.beforeLabel,
+                  afterLabel: csUi.afterLabel,
+                  demoTitle: csUi.demoTitle,
+                  openLiveDemo: csUi.openLiveDemo,
+                  viewSource: csUi.viewSource,
+                  tryLive: csUi.tryLive,
+                  hideLive: csUi.hideLive,
+                }}
+              />
+            </div>
 
             <div className="mt-5">
               <p className="mb-2 text-[12px] font-medium text-muted-foreground">{csUi.toolsUsed}</p>

@@ -28,6 +28,7 @@ import {
   BlockToggleGroup,
 } from '../notion-blocks'
 import { getNotionPages } from '../nav'
+import { PageCover } from '../PageCover'
 
 function ContactValue({
   label,
@@ -65,7 +66,7 @@ export function ContactPage({ lang }: { lang: Lang }) {
   const navPages = getNotionPages(lang).filter((page) => page.id !== 'contact')
 
   return (
-    <PageShell>
+    <PageShell cover={<PageCover variant="contact" />}>
       <MotionSection>
         <PageTitle icon="✉️" description={ui.contactLead}>
           {ui.contact}

@@ -484,6 +484,20 @@ export const caseStudyUi: Record<
     linksTitle: string
     openCaseStudy: string
     closePreview: string
+    impactTitle: string
+    mediaTitle: string
+    mediaTitleAnonymized: string
+    anonymizedNote: string
+    roleOutcomeTitle: string
+    architectureTitle: string
+    beforeAfterTitle: string
+    beforeLabel: string
+    afterLabel: string
+    demoTitle: string
+    openLiveDemo: string
+    viewSource: string
+    tryLive: string
+    hideLive: string
     dbName: string
     dbType: string
     dbStack: string
@@ -507,6 +521,21 @@ export const caseStudyUi: Record<
     linksTitle: 'Odkazy',
     openCaseStudy: 'Otvoriť case study',
     closePreview: 'Zavrieť',
+    impactTitle: 'Dopad v číslach',
+    mediaTitle: 'Produktový preview',
+    mediaTitleAnonymized: 'UI concept (anonymized)',
+    anonymizedNote:
+      'Kvôli NDA nie sú zobrazené reálne screenshoty klienta — len anonymizovaný UI concept a architektonický dôkaz.',
+    roleOutcomeTitle: 'Rola → výsledok',
+    architectureTitle: 'Architektúra (bez brandingu)',
+    beforeAfterTitle: 'Pred → po',
+    beforeLabel: 'Pred',
+    afterLabel: 'Po',
+    demoTitle: 'Demo',
+    openLiveDemo: 'Otvoriť live demo',
+    viewSource: 'Zobraziť zdroj',
+    tryLive: 'Vyskúšať v stránke',
+    hideLive: 'Skryť live preview',
     dbName: 'Názov',
     dbType: 'Typ',
     dbStack: 'Stack',
@@ -529,6 +558,21 @@ export const caseStudyUi: Record<
     linksTitle: 'Links',
     openCaseStudy: 'Open case study',
     closePreview: 'Close',
+    impactTitle: 'Impact in numbers',
+    mediaTitle: 'Product preview',
+    mediaTitleAnonymized: 'UI concept (anonymized)',
+    anonymizedNote:
+      'Due to NDA, real client screenshots are not shown — only an anonymized UI concept and architectural proof.',
+    roleOutcomeTitle: 'Role → outcome',
+    architectureTitle: 'Architecture (unbranded)',
+    beforeAfterTitle: 'Before → after',
+    beforeLabel: 'Before',
+    afterLabel: 'After',
+    demoTitle: 'Demo',
+    openLiveDemo: 'Open live demo',
+    viewSource: 'View source',
+    tryLive: 'Try in page',
+    hideLive: 'Hide live preview',
     dbName: 'Name',
     dbType: 'Type',
     dbStack: 'Stack',
