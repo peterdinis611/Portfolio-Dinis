@@ -1,6 +1,6 @@
-export type ProjectCategory = 'company' | 'personal'
+export type ProjectCategory = 'personal'
 
-export type ProjectListId = 'companies-projects' | 'my-projects'
+export type ProjectListId = 'my-projects'
 
 export type Project = {
   id: string
@@ -18,12 +18,10 @@ export type SocialLink = {
 }
 
 export const PROJECT_LIST_BY_CATEGORY: Record<ProjectListId, ProjectCategory> = {
-  'companies-projects': 'company',
   'my-projects': 'personal',
 }
 
 export const PROJECT_CATEGORY_BY_LIST: Record<ProjectCategory, ProjectListId> = {
-  company: 'companies-projects',
   personal: 'my-projects',
 }
 
@@ -50,36 +48,6 @@ export const profile = {
 }
 
 export const projects: Project[] = [
-  {
-    id: 'udzs',
-    name: 'ÚDZS Platform',
-    tech: 'React · TypeScript · Java · PostgreSQL · Docker',
-    category: 'company',
-  },
-  {
-    id: 'eforms',
-    name: 'EForms',
-    tech: 'React · TypeScript · TanStack Query · PostgreSQL',
-    category: 'company',
-  },
-  {
-    id: 'prolekare',
-    name: 'prolekare.cz',
-    tech: 'React · Next.js · TypeScript · Tailwind · AWS S3',
-    category: 'company',
-  },
-  {
-    id: 'licenses',
-    name: 'Enterprise License System',
-    tech: 'NestJS · PostgreSQL · Vue.js · AWS',
-    category: 'company',
-  },
-  {
-    id: 'iba-rd',
-    name: 'IBA R&D Applications',
-    tech: 'React · Fluent UI · SharePoint · Figma',
-    category: 'company',
-  },
   {
     id: 'docu-nest',
     name: 'Docu-Nest',
@@ -119,8 +87,7 @@ export const projects: Project[] = [
   },
 ]
 
-export const companyProjects = projects.filter((project) => project.category === 'company')
-export const personalProjects = projects.filter((project) => project.category === 'personal')
+export const personalProjects = projects
 
 export function getProjectsForList(listId?: ProjectListId): Project[] {
   if (!listId) return projects

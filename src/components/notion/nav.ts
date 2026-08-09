@@ -1,4 +1,4 @@
-import { getProjectsForList, projects, type ProjectListId } from '@/data/portfolio'
+import { projects, type ProjectListId } from '@/data/portfolio'
 import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang, translations } from '../../i18n/translations'
 import {
@@ -35,39 +35,9 @@ export function getNotionPages(lang: Lang): NotionPageDef[] {
 
 export function getProjectListLabel(lang: Lang, listId: ProjectListId): string {
   const ui = translations[lang].ui
-  return listId === 'companies-projects' ? ui.companiesProjects : ui.myProjects
+  return listId === 'my-projects' ? ui.myProjects : ui.projects
 }
 
-export function getProjectNavGroups(lang: Lang) {
-  const ui = translations[lang].ui
-
-  return [
-    {
-      id: 'companies-projects' as const,
-      label: ui.companiesProjects,
-      icon: '💼',
-      items: getProjectsForList('companies-projects').map((project) => ({
-        id: project.id,
-        name: project.name,
-        icon: projectMeta[project.id]?.icon ?? '📄',
-        href: projectHref(project.id),
-      })),
-    },
-    {
-      id: 'my-projects' as const,
-      label: ui.myProjects,
-      icon: '🛠️',
-      items: getProjectsForList('my-projects').map((project) => ({
-        id: project.id,
-        name: project.name,
-        icon: projectMeta[project.id]?.icon ?? '📄',
-        href: projectHref(project.id),
-      })),
-    },
-  ]
-}
-
-/** @deprecated Use getProjectNavGroups */
 export function getProjectNavItems() {
   return projects.map((project) => ({
     id: project.id,
@@ -75,6 +45,19 @@ export function getProjectNavItems() {
     icon: projectMeta[project.id]?.icon ?? '📄',
     href: projectHref(project.id),
   }))
+}
+
+/** @deprecated Prefer getProjectNavItems — groups removed with company projects */
+export function getProjectNavGroups(lang: Lang) {
+  const ui = translations[lang].ui
+  return [
+    {
+      id: 'my-projects' as const,
+      label: ui.myProjects,
+      icon: '🛠️',
+      items: getProjectNavItems(),
+    },
+  ]
 }
 
 export function isProjectsOverviewActive(route: PortfolioRoute): boolean {

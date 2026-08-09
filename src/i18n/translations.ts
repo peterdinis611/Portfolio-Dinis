@@ -146,29 +146,29 @@ export const translations = {
     ],
     projects: [
       {
-        id: 'udzs',
+        id: 'docu-nest',
         description:
-          'Verejný sektor — platforma pre 500+ aktívnych používateľov s 99,9 % uptime. Full-stack dodávka, Docker a produkčný monitoring.',
+          'AI-powered notebook platforma — knižnica dokumentov, analytika a workspace s Clerk auth a Drizzle ORM.',
       },
       {
-        id: 'eforms',
+        id: 'scribe-notes',
         description:
-          'Firemná platforma na spracovanie formulárov — 1 000+ denných odoslaní. React frontend, optimalizácia workflow a integrácia s backendom.',
+          'macOS desktopová aplikácia na písanie — TipTap editor, stromová štruktúra a lokálne SQLite úložisko.',
       },
       {
-        id: 'prolekare',
+        id: 'boom-scope',
         description:
-          'Zdravotnícka platforma prolekare.cz — interné business aplikácie, znovupoužiteľné UI komponenty a AWS S3 pre assety.',
+          'Design workspace — projekty, notes, canvas, AI design systém a Pomodoro na Convex backende.',
       },
       {
-        id: 'licenses',
+        id: 'pulse-apiclient',
         description:
-          'Enterprise licenčný systém — 50+ REST endpointov, role-based prístup a AWS deploy pre škálovateľnosť.',
+          'Desktop API klient v štýle Postman — HTTP requesty, kolekcie a história v Tauri + Rust.',
       },
       {
-        id: 'iba-rd',
+        id: 'spst-kniznica',
         description:
-          'R&D aplikácie pre IBA.CZ — design systém vo Figma, Fluent UI komponenty a SharePoint integrácie.',
+          'Študentská digitálna knižnica — katalóg, výpožičky, admin panel a notifikácie.',
       },
     ],
     ui: {
@@ -225,10 +225,7 @@ export const translations = {
       expProjects: 'Projekty',
       projects: 'Projekty',
       projectsIntro:
-        'Prehľad produkčných a osobných projektov — od firemných platforiem po open-source side projekty.',
-      companiesProjects: 'Firemné projekty',
-      companiesProjectsIntro:
-        'Produkčné platformy a produkty z firemných rolí — verejný sektor, zdravotníctvo, enterprise a R&D.',
+        'Osobné a open-source projekty — desktop aplikácie, full-stack nástroje a študentské produkty.',
       myProjects: 'Moje projekty',
       myProjectsIntro:
         'Osobné a open-source projekty z GitHubu — desktop aplikácie, full-stack nástroje a študentské produkty.',
@@ -446,29 +443,29 @@ export const translations = {
     ],
     projects: [
       {
-        id: 'udzs',
+        id: 'docu-nest',
         description:
-          'Public sector platform for 500+ active users with 99.9% uptime. Full-stack delivery, Docker, and production monitoring.',
+          'AI-powered notebook platform — document library, analytics, and workspace with Clerk auth and Drizzle ORM.',
       },
       {
-        id: 'eforms',
+        id: 'scribe-notes',
         description:
-          'Enterprise form processing platform — 1,000+ daily submissions. React frontend, workflow optimization, and backend integration.',
+          'macOS desktop writing app — TipTap editor, tree structure, and local SQLite storage.',
       },
       {
-        id: 'prolekare',
+        id: 'boom-scope',
         description:
-          'Healthcare platform prolekare.cz — internal business apps, reusable UI components, and AWS S3 for assets.',
+          'Design workspace — projects, notes, canvas, AI design system, and Pomodoro on a Convex backend.',
       },
       {
-        id: 'licenses',
+        id: 'pulse-apiclient',
         description:
-          'Enterprise license management — 50+ REST endpoints, role-based access, and AWS deployment for scale.',
+          'Postman-style desktop API client — HTTP requests, collections, and history in Tauri + Rust.',
       },
       {
-        id: 'iba-rd',
+        id: 'spst-kniznica',
         description:
-          'R&D applications for IBA.CZ — Figma design system, Fluent UI components, and SharePoint integrations.',
+          'Student digital library — catalog, loans, admin panel, and notifications.',
       },
     ],
     ui: {
@@ -525,10 +522,7 @@ export const translations = {
       expProjects: 'Projects',
       projects: 'Projects',
       projectsIntro:
-        'Overview of production and personal projects — from company platforms to open-source side projects.',
-      companiesProjects: 'Company projects',
-      companiesProjectsIntro:
-        'Production platforms from company roles — public sector, healthcare, enterprise, and R&D.',
+        'Personal and open-source projects — desktop apps, full-stack tools, and student products.',
       myProjects: 'My projects',
       myProjectsIntro:
         'Personal and open-source GitHub projects — desktop apps, full-stack tools, and student products.',

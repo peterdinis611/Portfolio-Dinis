@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import {
   getProjectsForList,
+  projects,
   type Project,
   type ProjectListId,
 } from '@/data/portfolio'
@@ -10,11 +11,10 @@ import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
 import { cn } from '@/lib/utils'
 import { NotionDatabase, PageShell, PageTitle } from '../blocks'
 import { MotionSection } from '../motion'
-import { BlockGallery, BlockH3, BlockHighlight } from '../notion-blocks'
+import { BlockGallery } from '../notion-blocks'
 import { getProjectListLabel } from '../nav'
 import { PageCover } from '../PageCover'
 import { ProjectIcon } from '../ProjectIcon'
-import { ProjectPreviewDialog } from '../ProjectPreviewDialog'
 
 type ViewMode = 'gallery' | 'table'
 
@@ -43,48 +43,10 @@ function buildGalleryItems(lang: Lang, items: Project[]) {
       href: `#projects/${project.id}`,
       icon: <ProjectIcon projectId={project.id} size="md" />,
       title: project.name,
-      subtitle: study.type,
-      tags: project.tech.split(' · ').map((tag) => tag.trim()),
+      subtitle: study.overview,
+      tags: [study.type, ...project.tech.split(' · ').slice(0, 3).map((tag) => tag.trim())],
     }
   })
-}
-
-function ProjectCollection({
-  lang,
-  title,
-  items,
-  view,
-  csUi,
-  onProjectSelect,
-  delay = 0,
-}: {
-  lang: Lang
-  title: string
-  items: Project[]
-  view: ViewMode
-  csUi: (typeof caseStudyUi)[Lang]
-  onProjectSelect: (id: string) => void
-  delay?: number
-}) {
-  if (items.length === 0) return null
-
-  const rows = buildRows(lang, items)
-  const galleryItems = buildGalleryItems(lang, items)
-
-  return (
-    <MotionSection delay={delay} className="mt-6 first:mt-0">
-      <BlockH3>{title}</BlockH3>
-      {view === 'gallery' ? (
-        <BlockGallery items={galleryItems} onItemSelect={onProjectSelect} />
-      ) : (
-        <NotionDatabase
-          columns={[csUi.dbName, csUi.dbType, csUi.dbStack]}
-          rows={rows}
-          onRowSelect={onProjectSelect}
-        />
-      )}
-    </MotionSection>
-  )
 }
 
 export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
@@ -92,37 +54,22 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
   const csUi = caseStudyUi[lang]
   const blocks = notionPageBlocks[lang].projects
   const [view, setView] = useState<ViewMode>('gallery')
-  const [previewId, setPreviewId] = useState<string | null>(null)
-  const [previewOpen, setPreviewOpen] = useState(false)
 
-  const openPreview = (id: string) => {
-    setPreviewId(id)
-    setPreviewOpen(true)
-  }
-
-  const companyItems = getProjectsForList('companies-projects')
-  const personalItems = getProjectsForList('my-projects')
+  const items = projectList ? getProjectsForList(projectList) : projects
   const pageTitle = projectList ? getProjectListLabel(lang, projectList) : ui.projects
-  const pageIcon = projectList === 'companies-projects' ? '💼' : projectList === 'my-projects' ? '🛠️' : '🚀'
-  const pageIntro = projectList
-    ? projectList === 'companies-projects'
-      ? ui.companiesProjectsIntro
-      : ui.myProjectsIntro
-    : ui.projectsIntro
+  const pageIntro = projectList ? ui.myProjectsIntro : ui.projectsIntro
 
   return (
     <PageShell cover={<PageCover variant="projects" />}>
       <MotionSection>
-        <PageTitle icon={pageIcon} description={pageIntro}>
+        <PageTitle icon="🚀" description={pageIntro}>
           {pageTitle}
         </PageTitle>
-        <p className="mt-2">
-          <BlockHighlight tone="gray">{blocks.viewNote}</BlockHighlight>
-        </p>
-      </MotionSection>
-
-      <MotionSection delay={0.08} className="mt-4">
-        <div className="inline-flex rounded-[6px] bg-[rgba(55,53,47,0.06)] p-0.5 text-[13px] dark:bg-[rgba(255,255,255,0.06)]">
+        <div
+          className="inline-flex rounded-[6px] bg-[rgba(55,53,47,0.06)] p-0.5 text-[13px] dark:bg-[rgba(255,255,255,0.06)]"
+          role="group"
+          aria-label={blocks.galleryTitle}
+        >
           {(['gallery', 'table'] as const).map((mode) => (
             <button
               key={mode}
@@ -141,49 +88,16 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
         </div>
       </MotionSection>
 
-      <MotionSection delay={0.12} className="mt-5">
-        {projectList ? (
-          <ProjectCollection
-            lang={lang}
-            title={blocks.databaseTitle}
-            items={getProjectsForList(projectList)}
-            view={view}
-            csUi={csUi}
-            onProjectSelect={openPreview}
-          />
+      <MotionSection delay={0.08} className="mt-6">
+        {view === 'gallery' ? (
+          <BlockGallery items={buildGalleryItems(lang, items)} />
         ) : (
-          <>
-            <ProjectCollection
-              lang={lang}
-              title={ui.companiesProjects}
-              items={companyItems}
-              view={view}
-              csUi={csUi}
-              onProjectSelect={openPreview}
-              delay={0}
-            />
-            <ProjectCollection
-              lang={lang}
-              title={ui.myProjects}
-              items={personalItems}
-              view={view}
-              csUi={csUi}
-              onProjectSelect={openPreview}
-              delay={0.06}
-            />
-          </>
+          <NotionDatabase
+            columns={[csUi.dbName, csUi.dbType, csUi.dbStack]}
+            rows={buildRows(lang, items)}
+          />
         )}
       </MotionSection>
-
-      <ProjectPreviewDialog
-        lang={lang}
-        projectId={previewId}
-        open={previewOpen}
-        onOpenChange={(open) => {
-          setPreviewOpen(open)
-          if (!open) setPreviewId(null)
-        }}
-      />
     </PageShell>
   )
 }

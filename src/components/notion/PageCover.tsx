@@ -1,5 +1,6 @@
 import {
   getProjectCover,
+  type PageCoverImage,
   type PageCoverVariant,
   pageCoverImages,
 } from '@/data/page-covers'
@@ -7,28 +8,48 @@ import { cn } from '@/lib/utils'
 
 export type { PageCoverVariant }
 
-function CoverImage({
-  src,
-  objectPosition,
+function CoverPicture({
+  cover,
+  mode,
   eager,
   className,
 }: {
-  src: string
-  objectPosition?: string
+  cover: PageCoverImage
+  mode: 'light' | 'dark' | 'single'
   eager?: boolean
   className?: string
 }) {
+  const jpg = mode === 'dark' ? (cover.srcDark ?? cover.src) : cover.src
+  const webp =
+    mode === 'dark' ? (cover.srcDarkWebp ?? cover.srcWebp) : cover.srcWebp
+  const objectPosition =
+    mode === 'dark'
+      ? (cover.objectPositionDark ?? cover.objectPosition)
+      : cover.objectPosition
+
   return (
-    <img
-      src={src}
-      alt=""
-      className={cn('h-full w-full scale-[1.02] object-cover', className)}
-      style={objectPosition ? { objectPosition } : undefined}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchPriority={eager ? 'high' : 'auto'}
-      decoding="async"
-      draggable={false}
-    />
+    <picture className={cn('absolute inset-0 block', className)}>
+      {webp ? (
+        <source
+          srcSet={webp}
+          type="image/webp"
+          sizes="(max-width: 768px) 100vw, min(100vw, 1100px)"
+        />
+      ) : null}
+      <img
+        src={jpg}
+        alt=""
+        className="h-full w-full scale-[1.02] object-cover"
+        style={objectPosition ? { objectPosition } : undefined}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'auto'}
+        decoding="async"
+        draggable={false}
+        width={1280}
+        height={854}
+        sizes="(max-width: 768px) 100vw, min(100vw, 1100px)"
+      />
+    </picture>
   )
 }
 
@@ -45,6 +66,7 @@ export function PageCover({
     ? (getProjectCover(projectId) ?? pageCoverImages.projects)
     : pageCoverImages[variant ?? 'about']
   const eager = Boolean(projectId) || variant === 'about' || variant === 'projects'
+  const hasDark = Boolean(cover.srcDark)
 
   return (
     <div
@@ -53,28 +75,18 @@ export function PageCover({
         className,
       )}
     >
-      {cover.srcDark ? (
+      {hasDark ? (
         <>
-          <CoverImage
-            src={cover.src}
-            objectPosition={cover.objectPosition}
-            eager={eager}
-            className="dark:hidden"
-          />
-          <CoverImage
-            src={cover.srcDark}
-            objectPosition={cover.objectPositionDark ?? cover.objectPosition}
-            eager={eager}
-            className="hidden dark:block"
-          />
+          <CoverPicture cover={cover} mode="light" eager={eager} className="dark:hidden" />
+          <CoverPicture cover={cover} mode="dark" eager={eager} className="hidden dark:block" />
         </>
       ) : (
-        <CoverImage src={cover.src} objectPosition={cover.objectPosition} eager={eager} />
+        <CoverPicture cover={cover} mode="single" eager={eager} />
       )}
       <div
         className={cn(
           'absolute inset-0',
-          cover.srcDark
+          hasDark
             ? 'bg-black/[0.08] dark:bg-black/15'
             : projectId || variant === 'projects' || variant === 'tech'
               ? 'bg-black/[0.08] dark:bg-black/25'

@@ -134,11 +134,6 @@ function getStoredLang(): Lang {
 
 const projectListSeoCopy: Record<Lang, Record<ProjectListId, PageSeo>> = {
   sk: {
-    'companies-projects': {
-      title: 'Firemné projekty | Peter Dinis — Medior Full-Stack Developer',
-      description:
-        'Produkčné projekty z firemných rolí — ÚDZS, EForms, prolekare.cz, enterprise licenčný systém a IBA R&D.',
-    },
     'my-projects': {
       title: 'Moje projekty | Peter Dinis — Medior Full-Stack Developer',
       description:
@@ -146,11 +141,6 @@ const projectListSeoCopy: Record<Lang, Record<ProjectListId, PageSeo>> = {
     },
   },
   en: {
-    'companies-projects': {
-      title: 'Company projects | Peter Dinis — Medior Full-Stack Developer',
-      description:
-        'Production projects from company roles — ÚDZS, EForms, prolekare.cz, enterprise license system, and IBA R&D.',
-    },
     'my-projects': {
       title: 'My projects | Peter Dinis — Medior Full-Stack Developer',
       description:

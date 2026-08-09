@@ -1,15 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "react-notion-x/styles.css";
+@import "@fontsource-variable/inter/index.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Notion default = NotionInter; closest public match is Inter */
   --font-sans:
-    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji";
+    "Inter Variable", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+    "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
   --font-mono:
-    ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
@@ -118,6 +120,9 @@
   body {
     @apply bg-background text-foreground font-sans text-[16px] leading-[1.5] antialiased;
     letter-spacing: 0;
+    font-feature-settings: "lnum" 1, "tnum" 0, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   button {

@@ -1,9 +1,9 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { PROJECT_CATEGORY_BY_LIST, projects, type Project } from '@/data/portfolio'
+import { projects, type Project } from '@/data/portfolio'
 import { type Lang } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
-import { getAdjacentProjects, projectHref, projectListHref } from '@/lib/portfolio-route'
+import { getAdjacentProjects, projectHref } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
 import {
   BackLink,
@@ -19,35 +19,14 @@ import {
 } from '../blocks'
 import { MotionSection } from '../motion'
 import {
-  BlockCalloutRich,
   BlockBookmark,
   BlockCode,
   BlockQuote,
   BlockTableOfContents,
-  BlockToggle,
 } from '../notion-blocks'
 import { PageCover } from '../PageCover'
 import { ProjectIcon } from '../ProjectIcon'
 import { ProjectShowcaseBlocks } from '../ProjectShowcaseBlocks'
-
-function RelatedProjectCard({ project }: { project: Project }) {
-  const techPreview = project.tech.split(' · ').slice(0, 3).join(' · ')
-
-  return (
-    <a
-      href={projectHref(project.id)}
-      className="group flex min-w-0 items-start gap-3 rounded-[8px] px-2.5 py-2.5 transition-colors hover:bg-[rgba(55,53,47,0.06)] dark:hover:bg-[rgba(255,255,255,0.055)]"
-    >
-      <ProjectIcon projectId={project.id} size="md" className="mt-0.5" />
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-[14px] font-medium text-foreground group-hover:text-[var(--link)]">
-          {project.name}
-        </span>
-        <span className="mt-0.5 block truncate text-[12px] text-muted-foreground">{techPreview}</span>
-      </span>
-    </a>
-  )
-}
 
 function AdjacentProjectLink({
   project,
@@ -92,28 +71,6 @@ function AdjacentProjectLink({
 }
 
 const codeSnippets: Record<string, string> = {
-  udzs: `// Feature module + typed API layer
-export async function getDashboard(userId: string) {
-  return api.get<DashboardDto>(\`/udzs/dashboard/\${userId}\`)
-}`,
-  eforms: `// Form submission with validation
-const onSubmit = handleSubmit(async (values) => {
-  await api.post('/eforms/submit', values)
-  queryClient.invalidateQueries({ queryKey: ['submissions'] })
-})`,
-  prolekare: `// Shared UI component
-export function AssetUploader({ onUpload }: AssetUploaderProps) {
-  return <Dropzone onDrop={(files) => onUpload(files[0])} />
-}`,
-  licenses: `// NestJS license endpoint
-@Get(':id')
-findOne(@Param('id') id: string, @Req() req: AuthRequest) {
-  return this.licenseService.findForRole(id, req.user.role)
-}`,
-  'iba-rd': `// Fluent UI design token usage
-<FluentProvider theme={teamsTheme}>
-  <Button appearance="primary">{label}</Button>
-</FluentProvider>`,
   'docu-nest': `// Notebook route with typed queries
 export async function getNotebook(notebookId: string) {
   return db.query.notebooks.findFirst({
@@ -160,18 +117,12 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
     )
   }
 
-  const relatedProjects = projects.filter(
-    (item) => item.id !== projectId && item.category === project.category,
-  )
   const { prev, next } = getAdjacentProjects(projectId)
-  const backHref = projectListHref(PROJECT_CATEGORY_BY_LIST[project.category])
-
   const tools = project.tech.split(' · ').map((tag) => tag.trim())
   const code = codeSnippets[projectId]
 
   const tocItems = [
-    { id: 'cs-impact', label: csUi.impactTitle },
-    { id: 'cs-overview', label: csUi.overview },
+    { id: 'cs-preview', label: csUi.mediaTitle },
     { id: 'cs-problem', label: csUi.problem },
     { id: 'cs-solution', label: csUi.solution },
     { id: 'cs-features', label: csUi.mainFeatures },
@@ -197,7 +148,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   return (
     <PageShell cover={<PageCover projectId={projectId} />}>
       <MotionSection>
-        <BackLink href={backHref}>{csUi.backToProjects}</BackLink>
+        <BackLink href="#projects">{csUi.backToProjects}</BackLink>
         <PageTitle
           icon={<ProjectIcon projectId={projectId} size="lg" />}
           meta={
@@ -210,29 +161,51 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
         </PageTitle>
       </MotionSection>
 
-      <MotionSection delay={0.06}>
+      <MotionSection delay={0.05}>
         <PropertyTable>
           <PropertyRow label={csUi.myRole}>
             <TagList tags={study.roles} />
           </PropertyRow>
           <PropertyRow label={csUi.date}>{study.date}</PropertyRow>
-          <PropertyRow label={csUi.projectType}>
-            <span className="inline-flex rounded-[4px] bg-muted px-2 py-0.5 text-xs font-medium uppercase tracking-wide">
-              {study.type}
-            </span>
-          </PropertyRow>
           <PropertyRow label={csUi.toolsUsed}>
             <TagList tags={tools} />
           </PropertyRow>
         </PropertyTable>
       </MotionSection>
 
+      {(project.githubUrl || project.liveUrl) && (
+        <MotionSection delay={0.07} className="mt-1">
+          <div className="flex flex-col gap-1.5 sm:flex-row sm:flex-wrap">
+            {project.liveUrl ? (
+              <div className="min-w-0 flex-1">
+                <BlockBookmark
+                  href={project.liveUrl}
+                  title={csUi.liveDemo}
+                  description={project.name}
+                  external
+                />
+              </div>
+            ) : null}
+            {project.githubUrl ? (
+              <div className="min-w-0 flex-1">
+                <BlockBookmark
+                  href={project.githubUrl}
+                  title={csUi.sourceCode}
+                  description={project.name}
+                  external
+                />
+              </div>
+            ) : null}
+          </div>
+        </MotionSection>
+      )}
+
       <MotionSection delay={0.08}>
-        <BlockTableOfContents title={blocks.tocTitle} items={tocItems} />
         <BlockQuote>{study.overview}</BlockQuote>
+        <BlockTableOfContents title={blocks.tocTitle} items={tocItems} />
       </MotionSection>
 
-      <MotionSection delay={0.1} id="cs-impact" className="scroll-mt-24">
+      <MotionSection delay={0.1} id="cs-preview" className="scroll-mt-24">
         <ProjectShowcaseBlocks
           projectId={projectId}
           lang={lang}
@@ -241,33 +214,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
         />
       </MotionSection>
 
-      {(project.githubUrl || project.liveUrl) && (
-        <MotionSection delay={0.11}>
-          <BlockText className="mb-2 font-semibold text-foreground">{csUi.linksTitle}</BlockText>
-          {project.githubUrl ? (
-            <BlockBookmark
-              href={project.githubUrl}
-              title={csUi.sourceCode}
-              description={project.name}
-              external
-            />
-          ) : null}
-          {project.liveUrl ? (
-            <BlockBookmark
-              href={project.liveUrl}
-              title={csUi.liveDemo}
-              description={project.name}
-              external
-            />
-          ) : null}
-        </MotionSection>
-      )}
-
       <MotionSection delay={0.12}>
-        <CaseStudySection id="cs-overview" title={csUi.overview}>
-          <BlockText>{study.overview}</BlockText>
-        </CaseStudySection>
-
         <CaseStudySection id="cs-problem" title={csUi.problem}>
           <BlockText>{study.problem}</BlockText>
         </CaseStudySection>
@@ -280,44 +227,24 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
         <CaseStudySection id="cs-features" title={csUi.mainFeatures}>
           <BlockBullets items={study.features} />
         </CaseStudySection>
-
-        <BlockToggle title={blocks.techNotesTitle} defaultOpen={false}>
-          <BlockText>{blocks.techNotesBody}</BlockText>
-          <BlockCalloutRich variant="warning" title={csUi.toolsUsed}>
-            <TagList tags={tools} />
-          </BlockCalloutRich>
-        </BlockToggle>
       </MotionSection>
 
-      {(relatedProjects.length > 0 || prev || next) && (
-        <MotionSection delay={0.16} className="mt-10">
+      {(prev || next) && (
+        <MotionSection delay={0.14} className="mt-10">
           <BlockDivider />
-          {relatedProjects.length > 0 ? (
-            <div className="mb-8">
-              <h2 className="mb-3 text-[15px] font-semibold text-foreground">{blocks.relatedTitle}</h2>
-              <div className="grid grid-cols-1 gap-0.5 sm:grid-cols-2">
-                {relatedProjects.map((item) => (
-                  <RelatedProjectCard key={item.id} project={item} />
-                ))}
-              </div>
-            </div>
-          ) : null}
-
-          {(prev || next) && (
-            <nav
-              className="grid grid-cols-1 gap-3 sm:grid-cols-2"
-              aria-label={csUi.nextProject}
-            >
-              {prev ? (
-                <AdjacentProjectLink project={prev} label={csUi.previousProject} direction="prev" />
-              ) : (
-                <span className="hidden sm:block" aria-hidden />
-              )}
-              {next ? (
-                <AdjacentProjectLink project={next} label={csUi.nextProject} direction="next" />
-              ) : null}
-            </nav>
-          )}
+          <nav
+            className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2"
+            aria-label={csUi.nextProject}
+          >
+            {prev ? (
+              <AdjacentProjectLink project={prev} label={csUi.previousProject} direction="prev" />
+            ) : (
+              <span className="hidden sm:block" aria-hidden />
+            )}
+            {next ? (
+              <AdjacentProjectLink project={next} label={csUi.nextProject} direction="next" />
+            ) : null}
+          </nav>
         </MotionSection>
       )}
     </PageShell>

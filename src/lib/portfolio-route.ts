@@ -18,7 +18,7 @@ export type PortfolioRoute = {
 }
 
 const PROJECT_IDS = new Set(projects.map((project) => project.id))
-const PROJECT_LIST_IDS = new Set<ProjectListId>(['companies-projects', 'my-projects'])
+const PROJECT_LIST_IDS = new Set<ProjectListId>(['my-projects'])
 
 export function isProjectId(value: string): boolean {
   return PROJECT_IDS.has(value)

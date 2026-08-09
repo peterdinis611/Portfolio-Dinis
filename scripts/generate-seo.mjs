@@ -5,7 +5,7 @@ import { resolveSiteUrl } from './resolve-site-url.mjs'
 
 const pages = ['', 'about', 'tech', 'experience', 'projects', 'contact']
 
-const projectLists = ['companies-projects', 'my-projects']
+const projectLists = ['my-projects']
 
 const portfolioSource = readFileSync(resolve(process.cwd(), 'src/data/portfolio.ts'), 'utf8')
 const projects = [...portfolioSource.matchAll(/^\s*id:\s*'([^']+)'/gm)].map(([, id]) => id)

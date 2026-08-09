@@ -373,10 +373,15 @@ export function BlockGallery({
             </span>
             {item.tags.length > 0 ? (
               <span className="mt-2 flex flex-wrap gap-1">
-                {item.tags.slice(0, 3).map((tag) => (
+                {item.tags.slice(0, 4).map((tag, index) => (
                   <span
                     key={tag}
-                    className="rounded-[3px] bg-[rgba(135,131,120,0.15)] px-1.5 py-0.5 text-[11px] text-muted-foreground"
+                    className={cn(
+                      'rounded-[3px] px-1.5 py-0.5 text-[11px]',
+                      index === 0
+                        ? 'bg-[rgba(105,64,165,0.14)] font-medium text-[#6940a5] dark:text-[#9a6dd7]'
+                        : 'bg-[rgba(135,131,120,0.15)] text-muted-foreground',
+                    )}
                   >
                     {tag}
                   </span>

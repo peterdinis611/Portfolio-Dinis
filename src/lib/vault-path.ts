@@ -21,7 +21,6 @@ export function routeToVaultLabel(route: PortfolioRoute, lang: 'sk' | 'en'): str
     contact: { sk: 'Kontakt', en: 'Contact' },
     'not-found': { sk: '404', en: '404' },
     error: { sk: 'Chyba', en: 'Error' },
-    'companies-projects': { sk: 'Firemné projekty', en: 'Company projects' },
     'my-projects': { sk: 'Moje projekty', en: 'My projects' },
   }
   if (route.projectList) return labels[route.projectList]?.[lang] ?? route.projectList

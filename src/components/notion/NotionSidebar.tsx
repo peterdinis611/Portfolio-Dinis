@@ -6,8 +6,7 @@ import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
 import {
   getNotionPages,
-  getProjectNavGroups,
-  isProjectListActive,
+  getProjectNavItems,
   isProjectsOverviewActive,
 } from './nav'
 import { ProjectIcon } from './ProjectIcon'
@@ -38,39 +37,19 @@ export function NotionSidebar({
   const pages = getNotionPages(lang)
   const mainPages = pages.filter((page) => page.id !== 'contact')
   const contactPage = pages.find((page) => page.id === 'contact')
-  const projectGroups = useMemo(() => getProjectNavGroups(lang), [lang])
-  const [expanded, setExpanded] = useState<Set<string>>(
-    () => new Set(['projects', 'companies-projects', 'my-projects']),
-  )
+  const projectItems = useMemo(() => getProjectNavItems(), [])
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set(['projects']))
 
   useEffect(() => {
     if (route.page !== 'projects' && !route.projectId && !route.projectList) return
 
     setExpanded((prev) => {
+      if (prev.has('projects')) return prev
       const next = new Set(prev)
-      let changed = false
-
-      if (!next.has('projects')) {
-        next.add('projects')
-        changed = true
-      }
-      if (route.projectList && !next.has(route.projectList)) {
-        next.add(route.projectList)
-        changed = true
-      }
-      if (route.projectId) {
-        const group = projectGroups.find((g) =>
-          g.items.some((item) => item.id === route.projectId),
-        )
-        if (group && !next.has(group.id)) {
-          next.add(group.id)
-          changed = true
-        }
-      }
-
-      return changed ? next : prev
+      next.add('projects')
+      return next
     })
-  }, [route.page, route.projectId, route.projectList, projectGroups])
+  }, [route.page, route.projectId, route.projectList])
 
   const toggle = (id: string) => {
     setExpanded((prev) => {
@@ -121,70 +100,19 @@ export function NotionSidebar({
 
           {projectsOpen ? (
             <ul className="mt-1 space-y-0.5 pl-5">
-              {projectGroups.map((group) => {
-                const groupOpen = expanded.has(group.id)
-                const groupActive =
-                  (isProjectListActive(route, group.id) ||
-                    (route.projectId &&
-                      group.items.some((project) => project.id === route.projectId))) &&
-                  !isProjectsOverviewActive(route)
-
-                return (
-                  <li key={group.id} className="space-y-0.5">
-                    <div className="group/row flex items-center gap-1">
-                      <button
-                        type="button"
-                        className="flex h-7 w-5 shrink-0 items-center justify-center rounded-[4px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent group-hover/row:opacity-100 focus-visible:opacity-100"
-                        onClick={() => toggle(group.id)}
-                        aria-expanded={groupOpen}
-                      >
-                        <ChevronRight
-                          className={cn(
-                            'h-3 w-3 transition-transform duration-150',
-                            groupOpen && 'rotate-90',
-                          )}
-                        />
-                      </button>
-                      <button
-                        type="button"
-                        className={cn(
-                          'notion-nav-item min-w-0 flex-1 text-[13px]',
-                          !groupActive && 'text-sidebar-foreground/80',
-                        )}
-                        {...navActive(Boolean(groupActive))}
-                        onClick={() =>
-                          onNavigate({ page: 'projects', projectList: group.id })
-                        }
-                      >
-                        <span className="text-[14px] leading-none" aria-hidden>
-                          {group.icon}
-                        </span>
-                        <span className="truncate">{group.label}</span>
-                      </button>
-                    </div>
-
-                    {groupOpen ? (
-                      <ul className="mt-0.5 space-y-0.5 pl-5">
-                        {group.items.map((project) => (
-                          <li key={project.id}>
-                            <button
-                              type="button"
-                              className="notion-nav-item text-[13px] text-sidebar-foreground/85"
-                              {...navActive(route.projectId === project.id)}
-                              onClick={() =>
-                                onNavigate({ page: 'projects', projectId: project.id })
-                              }
-                            >
-                              <ProjectIcon projectId={project.id} size="xs" />
-                              <span className="truncate">{project.name}</span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </li>
-                )
-              })}
+              {projectItems.map((project) => (
+                <li key={project.id}>
+                  <button
+                    type="button"
+                    className="notion-nav-item text-[13px] text-sidebar-foreground/85"
+                    {...navActive(route.projectId === project.id)}
+                    onClick={() => onNavigate({ page: 'projects', projectId: project.id })}
+                  >
+                    <ProjectIcon projectId={project.id} size="xs" />
+                    <span className="truncate">{project.name}</span>
+                  </button>
+                </li>
+              ))}
             </ul>
           ) : null}
         </>

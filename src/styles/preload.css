@@ -31,7 +31,7 @@
   padding: 2rem 1.5rem;
   background: var(--preload-bg);
   color: var(--preload-text);
-  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  font-family: var(--font-sans, "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif);
 }
 
 .preload-backdrop {
