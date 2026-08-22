@@ -111,7 +111,8 @@ export function setPortfolioHash(route: PortfolioRoute) {
 /** @deprecated Use parsePortfolioRoute().page */
 export function pageFromHash(): NotionPageId {
   const route = parsePortfolioRoute()
-  return route.page === 'not-found' || route.page === 'error' ? 'about' : route.page
+  if (route.page === 'not-found' || route.page === 'error') return 'about'
+  return route.page
 }
 
 /** @deprecated Use setPortfolioHash */
