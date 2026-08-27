@@ -1,4 +1,4 @@
-import { SettingsContext } from '@/context/AppProviders'
+import type { Theme } from '@/i18n/translations'
 import { brandIconColor, getBrandIcon } from '@/lib/brand-icons'
 import { cn } from '@/lib/utils'
 
@@ -9,10 +9,27 @@ type BrandIconProps = {
   className?: string
   label?: string
   fallback?: string
+  /** Optional override — defaults to document theme (`html.dark` / `data-theme`). */
+  theme?: Theme
 }
 
-export function BrandIcon({ slug, color, size, className, label, fallback }: BrandIconProps) {
-  const theme = SettingsContext.useSelector((s) => s.context.theme)
+function readDocumentTheme(): Theme {
+  if (typeof document === 'undefined') return 'light'
+  if (document.documentElement.classList.contains('dark')) return 'dark'
+  if (document.documentElement.dataset.theme === 'dark') return 'dark'
+  return 'light'
+}
+
+export function BrandIcon({
+  slug,
+  color,
+  size,
+  className,
+  label,
+  fallback,
+  theme: themeProp,
+}: BrandIconProps) {
+  const theme = themeProp ?? readDocumentTheme()
   const icon = getBrandIcon(slug)
 
   if (!icon) {

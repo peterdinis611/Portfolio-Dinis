@@ -97,5 +97,5 @@ export function getProjectsForList(listId?: ProjectListId): Project[] {
 
 export const socials: SocialLink[] = [
   { name: 'GitHub', icon: 'github', url: 'https://github.com/peterdinis' },
-  { name: 'LinkedIn', icon: 'linkedin', url: 'https://linkedin.com/in/peterdinis' },
+  { name: 'LinkedIn', icon: 'linkedin', url: 'https://www.linkedin.com/in/peter-dinis-58520b214/' },
 ]

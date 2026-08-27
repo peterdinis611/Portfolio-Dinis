@@ -154,7 +154,7 @@ export const notionPageBlocks: Record<
           external: true,
         },
         {
-          href: 'https://linkedin.com/in/peterdinis',
+          href: 'https://www.linkedin.com/in/peter-dinis-58520b214/',
           title: 'LinkedIn — Peter Dinis',
           description: 'Profesný profil a skúsenosti.',
           external: true,
@@ -281,7 +281,7 @@ export const notionPageBlocks: Record<
           external: true,
         },
         {
-          href: 'https://linkedin.com/in/peterdinis',
+          href: 'https://www.linkedin.com/in/peter-dinis-58520b214/',
           title: 'LinkedIn — Peter Dinis',
           description: 'Professional profile and experience.',
           external: true,

@@ -18,7 +18,9 @@
     "biome:ci": "biome ci .",
     "notion:sync": "node scripts/sync-notion.mjs",
     "seo:generate": "node scripts/generate-seo.mjs",
-    "verify": "tsc -b && biome ci ."
+    "verify": "tsc -b && biome ci .",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
@@ -47,10 +49,14 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
+    "@storybook/addon-a11y": "^10.5.10",
+    "@storybook/addon-docs": "^10.5.10",
+    "@storybook/react-vite": "^10.5.10",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
+    "storybook": "^10.5.10",
     "typescript": "~6.0.3",
     "vite": "^8.2.1"
   }
