@@ -14,24 +14,11 @@ const toneSurface: Record<ProjectIconTone, string> = {
   gray: 'from-[#ebe9e6] to-[#f7f6f3] dark:from-[#2a2a2a] dark:to-[#161616]',
 }
 
-const toneAccent: Record<ProjectIconTone, string> = {
-  blue: 'bg-[#2383e2]',
-  green: 'bg-[#0f7b6c]',
-  orange: 'bg-[#c77100]',
-  purple: 'bg-[#6940a5]',
-  pink: 'bg-[#ad1a72]',
-  yellow: 'bg-[#9a6700]',
-  red: 'bg-[#e03e3e]',
-  gray: 'bg-[rgba(55,53,47,0.45)]',
-}
-
-function WindowChrome({
-  title,
+function PreviewFrame({
   tone,
   children,
   className,
 }: {
-  title: string
   tone: ProjectIconTone
   children: ReactNode
   className?: string
@@ -39,21 +26,10 @@ function WindowChrome({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-[12px] border border-[rgba(55,53,47,0.12)] bg-background shadow-[0_18px_40px_-24px_rgba(15,15,15,0.55)] dark:border-[rgba(255,255,255,0.1)]',
+        'overflow-hidden rounded-[12px] border border-[rgba(55,53,47,0.12)] shadow-[0_18px_40px_-24px_rgba(15,15,15,0.55)] dark:border-[rgba(255,255,255,0.1)]',
         className,
       )}
     >
-      <div className="flex items-center gap-2 border-b border-[rgba(55,53,47,0.08)] px-3 py-2.5 dark:border-[rgba(255,255,255,0.08)]">
-        <span className="flex gap-1.5" aria-hidden>
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        </span>
-        <span className="min-w-0 flex-1 truncate rounded-[5px] bg-[rgba(55,53,47,0.05)] px-2.5 py-1 text-center text-[11px] text-muted-foreground dark:bg-[rgba(255,255,255,0.05)]">
-          {title}
-        </span>
-        <span className={cn('h-2.5 w-2.5 rounded-full', toneAccent[tone])} aria-hidden />
-      </div>
       <div className={cn('relative min-h-[180px] bg-gradient-to-br p-3.5', toneSurface[tone])}>
         {children}
       </div>
@@ -266,29 +242,16 @@ function PreviewBody({ variant }: { variant: ProductPreviewVariant }) {
       )
     case 'library':
       return (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid h-[156px] grid-cols-3 gap-2">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="rounded-[6px] bg-background/90 p-1.5 shadow-sm">
-              <div className="mb-1.5 aspect-[3/4] rounded-[4px] bg-[rgba(15,123,108,0.18)]" />
-              <div className="h-1.5 w-full rounded-full bg-[rgba(55,53,47,0.12)] dark:bg-[rgba(255,255,255,0.12)]" />
+            <div key={i} className="flex min-h-0 flex-col rounded-[6px] bg-background/90 p-1.5 shadow-sm">
+              <div className="mb-1.5 min-h-0 flex-1 rounded-[4px] bg-[rgba(15,123,108,0.18)]" />
+              <div className="h-1.5 w-full shrink-0 rounded-full bg-[rgba(55,53,47,0.12)] dark:bg-[rgba(255,255,255,0.12)]" />
             </div>
           ))}
         </div>
       )
   }
-}
-
-const previewTitles: Record<ProductPreviewVariant, string> = {
-  dashboard: 'app.dashboard',
-  forms: 'app.forms',
-  healthcare: 'app.healthcare',
-  api: 'app.api-client',
-  licenses: 'app.licenses',
-  'design-system': 'app.design-system',
-  notebooks: 'app.notebooks',
-  notes: 'app.notes',
-  canvas: 'app.canvas',
-  library: 'app.library',
 }
 
 type ProductPreviewProps = {
@@ -298,10 +261,10 @@ type ProductPreviewProps = {
   title?: string
 }
 
-export function ProductPreview({ variant, tone, className, title }: ProductPreviewProps) {
+export function ProductPreview({ variant, tone, className }: ProductPreviewProps) {
   return (
-    <WindowChrome title={title ?? previewTitles[variant]} tone={tone} className={className}>
+    <PreviewFrame tone={tone} className={className}>
       <PreviewBody variant={variant} />
-    </WindowChrome>
+    </PreviewFrame>
   )
 }

@@ -85,11 +85,11 @@ export function BlockH3({
 
 export function BlockQuote({ children }: { children: ReactNode }) {
   return (
-    <blockquote className="notion-block my-2 flex gap-2.5 rounded-[4px] bg-[rgba(241,241,239,0.9)] px-3.5 py-3 dark:bg-[rgba(255,255,255,0.055)]">
+    <blockquote className="notion-block my-3 flex gap-2.5 rounded-[6px] bg-[rgba(241,241,239,0.9)] px-4 py-3.5 dark:bg-[rgba(255,255,255,0.055)]">
       <span className="mt-0.5 shrink-0 text-[18px] leading-none" aria-hidden>
         💬
       </span>
-      <p className="m-0 text-[15px] leading-[1.6] text-[rgba(55,53,47,0.8)] dark:text-[rgba(255,255,255,0.75)]">
+      <p className="m-0 text-[15px] leading-[1.65] text-[rgba(55,53,47,0.8)] dark:text-[rgba(255,255,255,0.75)]">
         {children}
       </p>
     </blockquote>
@@ -127,16 +127,16 @@ export function BlockToggle({
   defaultOpen?: boolean
 }) {
   return (
-    <Collapsible defaultOpen={defaultOpen} className="notion-block my-0.5">
-      <CollapsibleTrigger className="group flex w-full items-start gap-1 rounded-[4px] py-1 pr-1 text-left transition-colors hover:bg-[rgba(55,53,47,0.06)] dark:hover:bg-[rgba(255,255,255,0.055)]">
-        <span className="mt-0.5 flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[3px] text-muted-foreground">
+    <Collapsible defaultOpen={defaultOpen} className="notion-block">
+      <CollapsibleTrigger className="group flex w-full items-start gap-1.5 rounded-[6px] px-1 py-2 text-left transition-colors hover:bg-[rgba(55,53,47,0.06)] dark:hover:bg-[rgba(255,255,255,0.055)]">
+        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-[3px] text-muted-foreground">
           <ChevronRight className="h-3.5 w-3.5 transition-transform duration-150 group-data-[state=open]:rotate-90" />
         </span>
         <span className="min-w-0 flex-1 py-px text-[16px] font-medium leading-[1.5] text-foreground">
           {title}
         </span>
       </CollapsibleTrigger>
-      <CollapsibleContent className="pb-1 pl-[30px] text-[16px] leading-[1.5] text-foreground/90">
+      <CollapsibleContent className="pb-3 pl-8 pt-1 text-[16px] leading-[1.5] text-foreground/90">
         {children}
       </CollapsibleContent>
     </Collapsible>
@@ -151,7 +151,7 @@ export function BlockToggleGroup({
   defaultOpenIndex?: number
 }) {
   return (
-    <div className="my-1">
+    <div className="my-2 space-y-1">
       {items.map((item, index) => (
         <BlockToggle key={item.title} title={item.title} defaultOpen={index === defaultOpenIndex}>
           {item.body}
@@ -302,14 +302,14 @@ export function BlockTableOfContents({
   items: Array<{ id: string; label: string }>
 }) {
   return (
-    <nav className="notion-block my-2 py-0.5" aria-label={title}>
-      <p className="mb-1 text-[12px] font-medium text-muted-foreground">{title}</p>
-      <ul className="space-y-px border-l border-[rgba(55,53,47,0.12)] pl-3 dark:border-[rgba(255,255,255,0.12)]">
+    <nav className="notion-block my-3 py-1" aria-label={title}>
+      <p className="mb-2 text-[12px] font-medium text-muted-foreground">{title}</p>
+      <ul className="space-y-1 border-l border-[rgba(55,53,47,0.12)] pl-3 dark:border-[rgba(255,255,255,0.12)]">
         {items.map((item) => (
           <li key={item.id}>
             <a
               href={`#${item.id}`}
-              className="-ml-px block border-l-2 border-transparent py-1 pl-3 text-[14px] leading-snug text-muted-foreground transition-colors hover:text-foreground"
+              className="-ml-px block border-l-2 border-transparent py-1.5 pl-3 text-[14px] leading-snug text-muted-foreground transition-colors hover:text-foreground"
             >
               {item.label}
             </a>

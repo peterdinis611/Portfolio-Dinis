@@ -124,9 +124,9 @@ export function SectionAnchorNav({
   activeId?: string
 }) {
   return (
-    <nav className="notion-block my-2 py-0.5" aria-label={label}>
-      <p className="mb-1 text-[12px] font-medium text-muted-foreground">{label}</p>
-      <ul className="space-y-px border-l border-[rgba(55,53,47,0.12)] pl-3 dark:border-[rgba(255,255,255,0.12)]">
+    <nav className="notion-block my-3 py-1" aria-label={label}>
+      <p className="mb-2 text-[12px] font-medium text-muted-foreground">{label}</p>
+      <ul className="space-y-1 border-l border-[rgba(55,53,47,0.12)] pl-3 dark:border-[rgba(255,255,255,0.12)]">
         {items.map((item) => {
           const active = activeId === item.id
           return (
@@ -135,7 +135,7 @@ export function SectionAnchorNav({
                 href={`#${item.id}`}
                 aria-current={active ? 'location' : undefined}
                 className={cn(
-                  '-ml-px block border-l-2 py-1 pl-3 text-[14px] leading-snug transition-colors',
+                  '-ml-px block border-l-2 py-1.5 pl-3 text-[14px] leading-snug transition-colors',
                   active
                     ? 'border-[var(--link)] font-medium text-foreground'
                     : 'border-transparent text-muted-foreground hover:text-foreground',
@@ -427,16 +427,16 @@ export function PageTitle({
   meta?: ReactNode
 }) {
   return (
-    <header className="mb-5">
+    <header className="mb-6">
       {icon ? (
-        <div className="-ml-1 mb-2 inline-flex">{icon}</div>
+        <div className="-ml-1 mb-2.5 inline-flex">{icon}</div>
       ) : null}
       <h1 className="text-[40px] font-bold leading-[1.2] tracking-[-0.01em] text-foreground">
         {children}
       </h1>
-      {meta ? <div className="mt-2 flex flex-wrap items-center gap-1.5">{meta}</div> : null}
+      {meta ? <div className="mt-2.5 flex flex-wrap items-center gap-1.5">{meta}</div> : null}
       {description ? (
-        <div className="mt-1.5 max-w-2xl text-[16px] leading-[1.5] text-muted-foreground">
+        <div className="mt-3 max-w-2xl text-[16px] leading-[1.55] text-muted-foreground">
           {description}
         </div>
       ) : null}
@@ -543,7 +543,7 @@ export function BlockHeading({ children, className }: { children: ReactNode; cla
   return (
     <h2
       className={cn(
-        'mb-1 mt-8 text-[24px] font-semibold leading-[1.3] tracking-[-0.01em] text-foreground',
+        'mb-3 mt-8 text-[24px] font-semibold leading-[1.3] tracking-[-0.01em] text-foreground',
         className,
       )}
     >
@@ -554,7 +554,7 @@ export function BlockHeading({ children, className }: { children: ReactNode; cla
 
 export function BlockDivider() {
   return (
-    <hr className="my-3 border-0 border-t border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)]" />
+    <hr className="my-6 border-0 border-t border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)]" />
   )
 }
 
@@ -578,7 +578,7 @@ export function BlockCallout({
 
 export function BlockBullets({ items }: { items: readonly string[] }) {
   return (
-    <ul className="my-1 list-disc space-y-1 pl-7 text-[16px] leading-[1.5] text-foreground marker:text-muted-foreground">
+    <ul className="my-2 list-disc space-y-1.5 pl-7 text-[16px] leading-[1.55] text-foreground marker:text-muted-foreground">
       {items.map((item) => (
         <li key={item} className="pl-1">
           {item}
