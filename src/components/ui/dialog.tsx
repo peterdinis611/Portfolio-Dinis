@@ -16,7 +16,7 @@ const contentAnimationClass =
 export function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
     <DialogPrimitive.Overlay
-      className={cn('fixed inset-0 z-50 bg-black/40', overlayAnimationClass, className)}
+      className={cn('fixed inset-0 z-50 bg-black/30 backdrop-blur-sm', overlayAnimationClass, className)}
       {...props}
     />
   )
