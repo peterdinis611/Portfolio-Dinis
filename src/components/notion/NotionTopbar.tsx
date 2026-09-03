@@ -91,28 +91,6 @@ export function NotionTopbar({
       </div>
 
       <div className="flex items-center gap-0.5">
-        <button
-          type="button"
-          onClick={onOpenSearch}
-          className="hidden h-7 items-center gap-1.5 rounded-[4px] px-1.5 text-[14px] text-muted-foreground transition-colors hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground sm:inline-flex dark:hover:bg-[rgba(255,255,255,0.055)]"
-          aria-label={ui.notionQuickFind}
-        >
-          <Search className="h-3.5 w-3.5" />
-          <span>{ui.notionSearch}</span>
-          <kbd className="ml-1 rounded-[4px] bg-[rgba(55,53,47,0.08)] px-1 py-px font-sans text-[10px] text-muted-foreground dark:bg-[rgba(255,255,255,0.08)]">
-            ⌘K
-          </kbd>
-        </button>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 rounded-[4px] text-muted-foreground hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground sm:hidden dark:hover:bg-[rgba(255,255,255,0.055)]"
-          onClick={onOpenSearch}
-          aria-label={ui.notionQuickFind}
-        >
-          <Search className="h-4 w-4" />
-        </Button>
 
         <div className="mx-0.5 flex items-center">
           {(['sk', 'en'] as const).map((code) => (

@@ -45,40 +45,37 @@ export const pageCoverImages: Record<PageCoverVariant, PageCoverImage> = {
   },
 }
 
-/** Per-project cover crops — shared optimized assets, distinct framing. */
+/** Per-project cover crops — unique assets per project. */
 export const projectCoverImages: Record<string, PageCoverImage> = {
   'docu-nest': {
-    src: '/covers/code.jpg',
-    srcWebp: '/covers/code.webp',
-    alt: 'Code editor — Docu-Nest',
-    objectPosition: 'right 35%',
+    src: '/covers/docu-nest.jpg',
+    srcWebp: '/covers/docu-nest.webp',
+    alt: 'Notebook and notes — Docu-Nest',
+    objectPosition: 'center 40%',
   },
   'scribe-notes': {
-    src: '/covers/about.jpg',
-    srcWebp: '/covers/about.webp',
-    srcDark: '/covers/code.jpg',
-    srcDarkWebp: '/covers/code.webp',
-    alt: 'Writing workspace — Scribe Notes',
-    objectPosition: 'center 50%',
-    objectPositionDark: 'center 40%',
+    src: '/covers/scribe-notes.jpg',
+    srcWebp: '/covers/scribe-notes.webp',
+    alt: 'Writing and typewriter — Scribe Notes',
+    objectPosition: 'center 55%',
   },
   'boom-scope': {
-    src: '/covers/code.jpg',
-    srcWebp: '/covers/code.webp',
-    alt: 'Design workspace — Boom Scope',
-    objectPosition: 'center 30%',
+    src: '/covers/boom-scope.jpg',
+    srcWebp: '/covers/boom-scope.webp',
+    alt: 'Design and canvas workspace — Boom Scope',
+    objectPosition: 'center 35%',
   },
   'pulse-apiclient': {
-    src: '/covers/contact.jpg',
-    srcWebp: '/covers/contact.webp',
-    alt: 'Developer tools — Pulse API Client',
-    objectPosition: 'left 50%',
+    src: '/covers/pulse-apiclient.jpg',
+    srcWebp: '/covers/pulse-apiclient.webp',
+    alt: 'Code terminal and API — Pulse API Client',
+    objectPosition: 'center 30%',
   },
   'spst-kniznica': {
-    src: '/covers/experience.jpg',
-    srcWebp: '/covers/experience.webp',
-    alt: 'Collaboration — SPST Knižnica',
-    objectPosition: 'right 40%',
+    src: '/covers/spst-kniznica.jpg',
+    srcWebp: '/covers/spst-kniznica.webp',
+    alt: 'Library with books — SPST Knižnica',
+    objectPosition: 'center 50%',
   },
 }
 

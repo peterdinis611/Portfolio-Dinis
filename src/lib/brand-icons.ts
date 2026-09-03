@@ -22,18 +22,26 @@ import {
   siNodedotjs,
   siOpenjdk,
   siPostgresql,
+  siPrisma,
   siProsemirror,
   siPwa,
   siReact,
   siReactquery,
+  siRedis,
   siRust,
   siSass,
   siSqlite,
+  siSupabase,
   siTailwindcss,
+  siTanstack,
   siTauri,
   siTypescript,
+  siVercel,
+  siVite,
+  siVitest,
   siVuedotjs,
   siXstate,
+  siZod,
 } from 'simple-icons'
 
 export type BrandIconData = Pick<SimpleIcon, 'path' | 'hex' | 'title'>
@@ -88,6 +96,7 @@ const packageBrandIcons: Record<string, BrandIconData> = {
   nextdotjs: siNextdotjs,
   tailwindcss: siTailwindcss,
   reactquery: siReactquery,
+  tanstack: siTanstack,
   less: siLess,
   nodedotjs: siNodedotjs,
   mongodb: siMongodb,
@@ -114,6 +123,13 @@ const packageBrandIcons: Record<string, BrandIconData> = {
   auth0: siAuth0,
   tiptap: siProsemirror,
   prosemirror: siProsemirror,
+  prisma: siPrisma,
+  supabase: siSupabase,
+  vercel: siVercel,
+  vite: siVite,
+  vitest: siVitest,
+  redis: siRedis,
+  zod: siZod,
 }
 
 export function getBrandIcon(slug: string): BrandIconData | null {

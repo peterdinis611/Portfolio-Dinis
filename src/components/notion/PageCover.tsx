@@ -71,7 +71,7 @@ export function PageCover({
   return (
     <div
       className={cn(
-        'page-cover pointer-events-none relative h-32 w-full overflow-hidden sm:h-36',
+        'page-cover pointer-events-none relative h-40 w-full overflow-hidden sm:h-52',
         className,
       )}
     >
