@@ -1,4 +1,4 @@
-import { Menu, PanelLeft, Search } from 'lucide-react'
+import { Menu, PanelLeft } from 'lucide-react'
 import { ThemeToggleIcon } from '@/components/icons/ThemeToggleIcon'
 import { Button } from '@/components/ui/button'
 import { type Lang, type Theme, translations } from '@/i18n/translations'
@@ -27,7 +27,6 @@ export function NotionTopbar({
   sidebarCollapsed = false,
   onMenu,
   onOpenSidebar,
-  onOpenSearch,
   onLang,
   onTheme,
 }: NotionTopbarProps) {
