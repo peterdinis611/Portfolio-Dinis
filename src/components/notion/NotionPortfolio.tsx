@@ -2,20 +2,21 @@ import { useCallback, useEffect, useState } from 'react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { SettingsContext } from '@/context/AppProviders'
 import {
+  migrateHashToPath,
+  type PortfolioRoute,
   parsePortfolioRoute,
   portfolioRouteEquals,
-  type PortfolioRoute,
-  setPortfolioHash,
+  setPortfolioPath,
 } from '@/lib/portfolio-route'
-import { ErrorPage } from './pages/ErrorPage'
+import { cn } from '@/lib/utils'
 import { NotionPageView } from './NotionPageView'
-import { PortfolioErrorBoundary } from './PortfolioErrorBoundary'
-import type { PortfolioError } from './portfolio-error'
 import { NotionSearchDialog } from './NotionSearchDialog'
 import { NotionSidebar } from './NotionSidebar'
 import { NotionTopbar } from './NotionTopbar'
+import { PortfolioErrorBoundary } from './PortfolioErrorBoundary'
+import { ErrorPage } from './pages/ErrorPage'
+import type { PortfolioError } from './portfolio-error'
 import { ScrollToTop } from './ScrollToTop'
-import { cn } from '@/lib/utils'
 
 const SIDEBAR_COLLAPSED_KEY = 'portfolio-sidebar-collapsed'
 
@@ -31,6 +32,7 @@ export function NotionPortfolio() {
   const settingsActor = SettingsContext.useActorRef()
   const lang = SettingsContext.useSelector((s) => s.context.lang)
   const theme = SettingsContext.useSelector((s) => s.context.theme)
+  const animations = SettingsContext.useSelector((s) => s.context.animations)
 
   const [route, setRoute] = useState<PortfolioRoute>(() => parsePortfolioRoute())
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
@@ -51,7 +53,7 @@ export function NotionPortfolio() {
   const navigate = useCallback((next: PortfolioRoute) => {
     setRuntimeError(null)
     setRoute(next)
-    setPortfolioHash(next)
+    setPortfolioPath(next)
     setMobileSidebarOpen(false)
     requestAnimationFrame(() => {
       const pane = document.getElementById('main-content')
@@ -69,11 +71,12 @@ export function NotionPortfolio() {
   }, [])
 
   useEffect(() => {
+    migrateHashToPath()
     let currentRoute = parsePortfolioRoute()
     setRoute(currentRoute)
 
     if (currentRoute.page !== 'not-found' && currentRoute.page !== 'error') {
-      setPortfolioHash(currentRoute)
+      setPortfolioPath(currentRoute, 'replace')
     }
 
     const syncRoute = () => {
@@ -89,10 +92,8 @@ export function NotionPortfolio() {
       })
     }
 
-    window.addEventListener('hashchange', syncRoute)
     window.addEventListener('popstate', syncRoute)
     return () => {
-      window.removeEventListener('hashchange', syncRoute)
       window.removeEventListener('popstate', syncRoute)
     }
   }, [])
@@ -129,7 +130,6 @@ export function NotionPortfolio() {
         key={`${lang}-${route.page}-${route.projectId ?? ''}-${route.projectList ?? ''}-${route.attemptedPath ?? ''}`}
         lang={lang}
         route={route}
-        darkMode={theme === 'dark'}
       />
     </PortfolioErrorBoundary>
   )
@@ -186,6 +186,7 @@ export function NotionPortfolio() {
         <NotionTopbar
           lang={lang}
           theme={theme}
+          animations={animations}
           route={topbarRoute}
           sidebarCollapsed={sidebarCollapsed}
           onMenu={() => setMobileSidebarOpen(true)}
@@ -193,9 +194,16 @@ export function NotionPortfolio() {
           onOpenSearch={() => setSearchOpen(true)}
           onLang={(l) => settingsActor.send({ type: 'SET_LANG', lang: l })}
           onTheme={() => settingsActor.send({ type: 'TOGGLE_THEME' })}
+          onAnimations={() => settingsActor.send({ type: 'TOGGLE_ANIMATIONS' })}
         />
 
-        <main className="notion-page-pane flex-1 overflow-y-auto scroll-smooth" id="main-content">
+        <main
+          className={cn(
+            'notion-page-pane flex-1 overflow-y-auto',
+            animations === 'on' && 'scroll-smooth',
+          )}
+          id="main-content"
+        >
           {mainContent}
         </main>
         <ScrollToTop lang={lang} />

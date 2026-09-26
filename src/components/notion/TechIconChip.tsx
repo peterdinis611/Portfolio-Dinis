@@ -15,7 +15,7 @@ export function TechIconChip({ item, className }: TechIconChipProps) {
   return (
     <li
       className={cn(
-        'inline-flex items-center gap-2 rounded-sm border border-border bg-card/40 px-2 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/30',
+        'tech-chip inline-flex items-center gap-2 rounded-sm border border-border bg-card/40 px-2 py-1.5 text-[12px] font-medium text-foreground',
         className,
       )}
     >

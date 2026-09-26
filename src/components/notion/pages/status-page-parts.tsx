@@ -2,7 +2,13 @@ import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { BackLink, BlockHeading } from '../blocks'
-import { MOTION_EASE, MotionSection, staggerContainer, staggerItem, staggerItemLeft } from '../motion'
+import {
+  MOTION_EASE,
+  MotionSection,
+  staggerContainer,
+  staggerItem,
+  staggerItemLeft,
+} from '../motion'
 import { BlockDividerDots, BlockPageLink, BlockToggle } from '../notion-blocks'
 import type { PortfolioError } from '../portfolio-error'
 
@@ -57,13 +63,7 @@ export function StatusDetail({ label, value }: { label: string; value: string })
   )
 }
 
-export function StatusRetryButton({
-  label,
-  onClick,
-}: {
-  label: string
-  onClick?: () => void
-}) {
+export function StatusRetryButton({ label, onClick }: { label: string; onClick?: () => void }) {
   return (
     <motion.button
       type="button"
@@ -161,7 +161,7 @@ export function AnimatedExploreLinks({
             transition={{ type: 'spring', stiffness: 380, damping: 24 }}
           >
             <BlockPageLink
-              href={page.href ?? `#${page.id}`}
+              href={page.href ?? (page.id === 'about' ? '/' : `/${page.id}`)}
               icon={page.icon}
               label={page.label}
             />

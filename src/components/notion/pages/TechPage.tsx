@@ -1,11 +1,12 @@
 import { TechIconChip } from '@/components/notion/TechIconChip'
 import { techCategories } from '@/data/technologies'
-import { type Lang, translations } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { type Lang, translations } from '@/i18n/translations'
 import { BlockHeading, BlockText, PageShell, PageTitle } from '../blocks'
 import { MotionItem, MotionSection } from '../motion'
 import { BlockQuote, BlockTableOfContents, BlockToggleGroup } from '../notion-blocks'
 import { PageCover } from '../PageCover'
+import { PageCtaPanel } from '../PageCtaPanel'
 
 export function TechPage({ lang }: { lang: Lang }) {
   const t = translations[lang]
@@ -56,6 +57,10 @@ export function TechPage({ lang }: { lang: Lang }) {
           </section>
         </MotionItem>
       ))}
+
+      <MotionSection delay={0.2} className="mt-12">
+        <PageCtaPanel lang={lang} />
+      </MotionSection>
     </PageShell>
   )
 }

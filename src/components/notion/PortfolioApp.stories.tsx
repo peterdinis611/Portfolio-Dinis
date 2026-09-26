@@ -50,11 +50,13 @@ function PortfolioShell({
         <NotionTopbar
           lang={lang}
           theme={theme}
+          animations="on"
           route={route}
           onMenu={fn()}
           onOpenSearch={fn()}
           onLang={fn()}
           onTheme={fn()}
+          onAnimations={fn()}
         />
         <main className="notion-page-pane relative flex-1 overflow-y-auto" id="main-content">
           <div className="mx-auto max-w-[720px] px-4 py-6 sm:px-8">{page}</div>

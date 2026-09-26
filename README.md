@@ -1,6 +1,6 @@
 # Peter Dinis — Notion Portfolio
 
-Interactive portfolio with a Notion-like layout: sidebar, document pages, hash URLs, SK/EN language toggle, and light/dark theme. Content is authored in React; optional sync from Notion pages via [react-notion-x](https://github.com/NotionX/react-notion-x).
+Interactive portfolio with a Notion-like layout: sidebar, document pages, path URLs, SK/EN language toggle, and light/dark theme. Content is authored in React.
 
 ## Stack
 
@@ -8,7 +8,7 @@ Interactive portfolio with a Notion-like layout: sidebar, document pages, hash U
 |-------|--------|
 | UI | React 19, TypeScript, Vite 8 |
 | Styling | Tailwind CSS v4, shadcn/ui (Radix primitives) |
-| Synced pages | react-notion-x, notion-client |
+| Fonts | Instrument Serif (display), DM Sans (body) |
 | Motion | Framer Motion |
 | State | XState (`@xstate/react`) |
 | Icons | [simple-icons](https://simpleicons.org/) + Lucide |
@@ -36,7 +36,7 @@ npm run preview
 
 | Input | Action |
 |-------|--------|
-| Sidebar links | Navigate between pages (`#about`, `#tech`, …) |
+| Sidebar links | Navigate between pages (`/`, `/tech`, `/projects`, …) |
 | Search | Filter pages in the sidebar |
 | Header controls | Switch SK / EN and light / dark theme |
 | Mobile menu | Open sidebar sheet |
@@ -47,41 +47,22 @@ Language and theme preferences are stored in `localStorage` (`portfolio-lang`, `
 
 | Page | Content |
 |------|---------|
-| About | Bio, interests, services |
-| Technologies | Stack (frontend, backend, cloud, mobile) |
-| Experience | Job history with collapsible roles |
-| Projects | Selected work with descriptions |
-| Contact | Email, phone, location, social links |
-
-## Vault sync (optional)
-
-By default, pages are rendered from React components in `src/components/notion/pages/`. To render content from synced Notion pages instead, sync record maps at build time:
-
-```bash
-# Set page IDs (and optional auth for private workspaces)
-export NOTION_PAGE_ABOUT="your-page-id"
-export NOTION_PAGE_TECH="your-page-id"
-# … experience, projects, contact
-
-# Optional — private pages
-export NOTION_TOKEN_V2="your-notion-token"
-export NOTION_ACTIVE_USER="your-active-user-id"
-
-npm run notion:sync
-```
-
-Synced JSON files are written to `src/data/notion/recordmaps/`. When a file exists for a page, the app uses the synced renderer instead of the fallback React page.
+| About (`/`) | Bio, interests, services |
+| Technologies (`/tech`) | Stack (frontend, backend, cloud, mobile) |
+| Experience (`/experience`) | Job history with collapsible roles |
+| Projects (`/projects`) | Selected work with descriptions |
+| Contact (`/contact`) | Email, phone, location, social links |
 
 ## Project structure
 
 ```
 src/
-├── components/notion/   # Shell, pages, synced renderer
+├── components/notion/   # Shell, pages, blocks
 ├── components/ui/         # shadcn/ui primitives
 ├── context/               # XState providers
-├── data/                  # portfolio.ts, technologies.ts, notion/recordmaps/
+├── data/                  # portfolio.ts, technologies.ts
 ├── i18n/translations.ts   # SK / EN copy
-├── lib/                   # utils, SEO, notion record map loader
+├── lib/                   # utils, SEO, routing
 ├── machines/              # settingsMachine
 └── index.css              # Tailwind + theme tokens
 ```
@@ -103,12 +84,11 @@ src/
 | `npm run dev` | Start Vite dev server |
 | `npm run build` | Typecheck + production build |
 | `npm run preview` | Preview production build |
-| `npm run notion:sync` | Fetch Notion pages → JSON record maps |
 | `npm run verify` | `tsc` + Biome CI |
 
 ## SEO
 
-Meta tags, Open Graph, Twitter cards, canonical URLs, breadcrumbs JSON-LD and `Person` / `ProfilePage` schema update when **language** or **page** (`#about`, `#tech`, …) changes.
+Meta tags, Open Graph, Twitter cards, canonical URLs, breadcrumbs JSON-LD and `Person` / `ProfilePage` schema update when **language** or **page** (`/`, `/tech`, …) changes.
 
 | File | Purpose |
 |------|---------|

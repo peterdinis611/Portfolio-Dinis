@@ -1,5 +1,5 @@
-import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { projects } from '@/data/portfolio'
+import type { PortfolioRoute } from '@/lib/portfolio-route'
 
 export function routeToVaultFile(route: PortfolioRoute): string {
   if (route.page === 'not-found') return '404.md'

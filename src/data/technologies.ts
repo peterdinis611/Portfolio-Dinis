@@ -57,44 +57,7 @@ export const techCategories: TechCategory[] = [
   },
 ]
 
-export type TechPageSlice = {
-  id: string
-  categories: Array<{
-    categoryId: TechCategory['id']
-    from?: number
-    to?: number
-  }>
-}
-
-/** Book pages for tech chapter — balanced spreads, no empty halves. */
-export const techBookPages: TechPageSlice[] = [
-  {
-    id: 'tech-1',
-    categories: [{ categoryId: 'frontend' }],
-  },
-  {
-    id: 'tech-2',
-    categories: [{ categoryId: 'backend' }],
-  },
-  {
-    id: 'tech-3',
-    categories: [{ categoryId: 'cloud' }, { categoryId: 'mobile' }],
-  },
-]
-
-export function resolveTechPageSections(page: TechPageSlice): TechCategory[] {
-  return page.categories
-    .map(({ categoryId, from, to }) => {
-      const category = techCategories.find((c) => c.id === categoryId)
-      if (!category) return null
-      const items = category.items.slice(from ?? 0, to)
-      if (items.length === 0) return null
-      return { ...category, items }
-    })
-    .filter((c): c is TechCategory => c !== null)
-}
-
-/** Per-item icon presentation — solid chips for readable contrast on dark paper. */
+/** Per-item icon presentation — solid chips for readable contrast. */
 export function getTechIconPresentation(item: TechItem) {
   type Preset = { brand: string; iconColor: string; solid: true }
 

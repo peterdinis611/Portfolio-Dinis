@@ -83,9 +83,9 @@ export const BookmarkAndLinks: Story = {
         external
       />
       <div className="flex flex-wrap gap-2 pt-2">
-        <BlockPageLink href="#about" icon="👋" label="About" />
-        <BlockPageLink href="#projects" icon="🚀" label="Projects" />
-        <BlockPageLink href="#contact" icon="✉️" label="Contact" />
+        <BlockPageLink href="/" icon="👋" label="About" />
+        <BlockPageLink href="/projects" icon="🚀" label="Projects" />
+        <BlockPageLink href="/contact" icon="✉️" label="Contact" />
       </div>
     </div>
   ),
@@ -124,7 +124,7 @@ export const Gallery: Story = {
       items={[
         {
           id: 'boom-scope',
-          href: '#projects/boom-scope',
+          href: '/projects/boom-scope',
           icon: <ProjectIcon projectId="boom-scope" size="md" />,
           title: 'Boom Scope',
           subtitle: 'Design workspace with AI and real-time Convex backend.',
@@ -132,7 +132,7 @@ export const Gallery: Story = {
         },
         {
           id: 'docu-nest',
-          href: '#projects/docu-nest',
+          href: '/projects/docu-nest',
           icon: <ProjectIcon projectId="docu-nest" size="md" />,
           title: 'Docu-Nest',
           subtitle: 'AI-powered notebook platform with Clerk and Drizzle.',
@@ -140,7 +140,7 @@ export const Gallery: Story = {
         },
         {
           id: 'pulse-apiclient',
-          href: '#projects/pulse-apiclient',
+          href: '/projects/pulse-apiclient',
           icon: <ProjectIcon projectId="pulse-apiclient" size="md" />,
           title: 'Pulse API Client',
           subtitle: 'Postman-style desktop client in Tauri + Rust.',

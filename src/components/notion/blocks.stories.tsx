@@ -110,19 +110,19 @@ export const Database: Story = {
       rows={[
         {
           id: 'boom-scope',
-          href: '#projects/boom-scope',
+          href: '/projects/boom-scope',
           icon: <ProjectIcon projectId="boom-scope" size="sm" />,
           cells: ['Boom Scope', 'SIDE PROJECT', 'Next.js · Convex · TipTap'],
         },
         {
           id: 'docu-nest',
-          href: '#projects/docu-nest',
+          href: '/projects/docu-nest',
           icon: <ProjectIcon projectId="docu-nest" size="sm" />,
           cells: ['Docu-Nest', 'SIDE PROJECT', 'Next.js · Drizzle · Clerk'],
         },
         {
           id: 'pulse-apiclient',
-          href: '#projects/pulse-apiclient',
+          href: '/projects/pulse-apiclient',
           icon: <ProjectIcon projectId="pulse-apiclient" size="sm" />,
           cells: ['Pulse API Client', 'DESKTOP APP', 'Tauri · React · Rust'],
         },

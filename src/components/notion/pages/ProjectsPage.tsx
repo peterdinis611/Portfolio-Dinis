@@ -1,19 +1,16 @@
 import { useState } from 'react'
-import {
-  getProjectsForList,
-  projects,
-  type Project,
-  type ProjectListId,
-} from '@/data/portfolio'
-import { type Lang, translations } from '@/i18n/translations'
+import { getProjectsForList, type Project, type ProjectListId, projects } from '@/data/portfolio'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
-import { caseStudyContent, caseStudyUi } from '@/i18n/portfolio-template'
+import { projectMeta, projectPageUi } from '@/i18n/portfolio-template'
+import { type Lang, translations } from '@/i18n/translations'
+import { projectHref } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
 import { NotionDatabase, PageShell, PageTitle } from '../blocks'
 import { MotionSection } from '../motion'
-import { BlockGallery } from '../notion-blocks'
 import { getProjectListLabel } from '../nav'
+import { BlockGallery } from '../notion-blocks'
 import { PageCover } from '../PageCover'
+import { PageCtaPanel } from '../PageCtaPanel'
 import { ProjectIcon } from '../ProjectIcon'
 
 type ViewMode = 'gallery' | 'table'
@@ -25,33 +22,43 @@ type ProjectsPageProps = {
 
 function buildRows(lang: Lang, items: Project[]) {
   return items.map((project) => {
-    const study = caseStudyContent[lang][project.id]
+    const meta = projectMeta[lang][project.id]
     return {
       id: project.id,
-      href: `#projects/${project.id}`,
+      href: projectHref(project.id),
       icon: <ProjectIcon projectId={project.id} size="sm" />,
-      cells: [project.name, study.type, project.tech] as [string, string, string],
+      cells: [project.name, meta?.type ?? '', project.tech] as [string, string, string],
     }
   })
 }
 
 function buildGalleryItems(lang: Lang, items: Project[]) {
+  const descriptions = Object.fromEntries(
+    translations[lang].projects.map((p) => [p.id, p.description]),
+  )
+
   return items.map((project) => {
-    const study = caseStudyContent[lang][project.id]
+    const meta = projectMeta[lang][project.id]
     return {
       id: project.id,
-      href: `#projects/${project.id}`,
+      href: projectHref(project.id),
       icon: <ProjectIcon projectId={project.id} size="md" />,
       title: project.name,
-      subtitle: study.overview,
-      tags: [study.type, ...project.tech.split(' · ').slice(0, 3).map((tag) => tag.trim())],
+      subtitle: descriptions[project.id] ?? '',
+      tags: [
+        ...(meta?.type ? [meta.type] : []),
+        ...project.tech
+          .split(' · ')
+          .slice(0, 3)
+          .map((tag) => tag.trim()),
+      ],
     }
   })
 }
 
 export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
   const ui = translations[lang].ui
-  const csUi = caseStudyUi[lang]
+  const pageUi = projectPageUi[lang]
   const blocks = notionPageBlocks[lang].projects
   const [view, setView] = useState<ViewMode>('gallery')
 
@@ -65,11 +72,8 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
         <PageTitle icon="🚀" description={pageIntro}>
           {pageTitle}
         </PageTitle>
-        <div
-          className="inline-flex rounded-[6px] bg-[rgba(55,53,47,0.06)] p-0.5 text-[13px] dark:bg-[rgba(255,255,255,0.06)]"
-          role="group"
-          aria-label={blocks.galleryTitle}
-        >
+        <fieldset className="inline-flex rounded-[6px] border-0 bg-[rgba(55,53,47,0.06)] p-0.5 text-[13px] dark:bg-[rgba(255,255,255,0.06)]">
+          <legend className="sr-only">{blocks.galleryTitle}</legend>
           {(['gallery', 'table'] as const).map((mode) => (
             <button
               key={mode}
@@ -85,7 +89,7 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
               {mode === 'gallery' ? blocks.galleryTitle : blocks.databaseTitle}
             </button>
           ))}
-        </div>
+        </fieldset>
       </MotionSection>
 
       <MotionSection delay={0.08} className="mt-6">
@@ -93,10 +97,14 @@ export function ProjectsPage({ lang, projectList }: ProjectsPageProps) {
           <BlockGallery items={buildGalleryItems(lang, items)} />
         ) : (
           <NotionDatabase
-            columns={[csUi.dbName, csUi.dbType, csUi.dbStack]}
+            columns={[pageUi.dbName, pageUi.dbType, pageUi.dbStack]}
             rows={buildRows(lang, items)}
           />
         )}
+      </MotionSection>
+
+      <MotionSection delay={0.12} className="mt-10">
+        <PageCtaPanel lang={lang} />
       </MotionSection>
     </PageShell>
   )

@@ -11,8 +11,8 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { getProjectMeta, type ProjectIconTone } from '@/data/portfolio-meta'
+import { cn } from '@/lib/utils'
 
 const projectIcons: Record<string, LucideIcon> = {
   Building2,
@@ -29,11 +29,15 @@ const projectIcons: Record<string, LucideIcon> = {
 
 const toneClass: Record<ProjectIconTone, string> = {
   blue: 'bg-[rgba(35,131,226,0.14)] text-[#2383e2] dark:bg-[rgba(35,131,226,0.22)] dark:text-[#6cb5f9]',
-  green: 'bg-[rgba(15,123,108,0.14)] text-[#0f7b6c] dark:bg-[rgba(15,123,108,0.22)] dark:text-[#4dab9a]',
-  orange: 'bg-[rgba(217,115,13,0.14)] text-[#c77100] dark:bg-[rgba(217,115,13,0.22)] dark:text-[#ffa344]',
-  purple: 'bg-[rgba(105,64,165,0.14)] text-[#6940a5] dark:bg-[rgba(105,64,165,0.22)] dark:text-[#9a6dd7]',
+  green:
+    'bg-[rgba(15,123,108,0.14)] text-[#0f7b6c] dark:bg-[rgba(15,123,108,0.22)] dark:text-[#4dab9a]',
+  orange:
+    'bg-[rgba(217,115,13,0.14)] text-[#c77100] dark:bg-[rgba(217,115,13,0.22)] dark:text-[#ffa344]',
+  purple:
+    'bg-[rgba(105,64,165,0.14)] text-[#6940a5] dark:bg-[rgba(105,64,165,0.22)] dark:text-[#9a6dd7]',
   pink: 'bg-[rgba(173,26,114,0.12)] text-[#ad1a72] dark:bg-[rgba(173,26,114,0.2)] dark:text-[#e255a1]',
-  yellow: 'bg-[rgba(233,168,0,0.16)] text-[#9a6700] dark:bg-[rgba(233,168,0,0.2)] dark:text-[#ffdc49]',
+  yellow:
+    'bg-[rgba(233,168,0,0.16)] text-[#9a6700] dark:bg-[rgba(233,168,0,0.2)] dark:text-[#ffdc49]',
   red: 'bg-[rgba(224,62,62,0.12)] text-[#e03e3e] dark:bg-[rgba(224,62,62,0.2)] dark:text-[#ff7369]',
   gray: 'bg-[rgba(55,53,47,0.08)] text-[rgba(55,53,47,0.65)] dark:bg-[rgba(255,255,255,0.08)] dark:text-[rgba(255,255,255,0.75)]',
 }

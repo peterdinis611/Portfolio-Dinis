@@ -1,24 +1,20 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import type { Lang } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
-import { hasSyncedContent } from '@/lib/notion-recordmaps'
-import { NotionRendererPage } from './NotionRendererPage'
+import { MOTION_EASE } from './motion'
 import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
-import { ExperiencePage } from './pages/ExperiencePage'
 import { ErrorPage } from './pages/ErrorPage'
+import { ExperiencePage } from './pages/ExperiencePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { ProjectDetailPage } from './pages/ProjectDetailPage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { TechPage } from './pages/TechPage'
-import type { NotionPageId } from './types'
-
-const EASE = [0.32, 0.72, 0, 1] as const
 
 type NotionPageViewProps = {
   lang: Lang
   route: PortfolioRoute
-  darkMode: boolean
 }
 
 function FallbackPage({
@@ -60,35 +56,26 @@ function FallbackPage({
   }
 }
 
-export function NotionPageView({ lang, route, darkMode }: NotionPageViewProps) {
+export function NotionPageView({ lang, route }: NotionPageViewProps) {
   const { page, projectId, projectList, attemptedPath } = route
-  const useSyncedRenderer =
-    page !== 'not-found' &&
-    page !== 'error' &&
-    hasSyncedContent(page) &&
-    !projectId &&
-    !projectList
+  const reduce = useMotionDisabled()
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${attemptedPath ?? ''}-${useSyncedRenderer ? 'synced' : 'fallback'}`}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -6 }}
-        transition={{ duration: 0.28, ease: EASE }}
+        key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${attemptedPath ?? ''}`}
+        initial={reduce ? false : { opacity: 0, y: 14, filter: 'blur(4px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        exit={reduce ? undefined : { opacity: 0, y: -10, filter: 'blur(3px)' }}
+        transition={{ duration: reduce ? 0 : 0.38, ease: MOTION_EASE }}
       >
-        {useSyncedRenderer ? (
-          <NotionRendererPage page={page as NotionPageId} darkMode={darkMode} />
-        ) : (
-          <FallbackPage
-            lang={lang}
-            page={page}
-            projectId={projectId}
-            projectList={projectList}
-            attemptedPath={attemptedPath}
-          />
-        )}
+        <FallbackPage
+          lang={lang}
+          page={page}
+          projectId={projectId}
+          projectList={projectList}
+          attemptedPath={attemptedPath}
+        />
       </motion.div>
     </AnimatePresence>
   )

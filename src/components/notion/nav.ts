@@ -1,10 +1,7 @@
-import { projects, type ProjectListId } from '@/data/portfolio'
+import { type ProjectListId, projects } from '@/data/portfolio'
 import { projectMeta } from '@/data/portfolio-meta'
 import { type Lang, translations } from '../../i18n/translations'
-import {
-  projectHref,
-  type PortfolioRoute,
-} from '../../lib/portfolio-route'
+import { type PortfolioRoute, projectHref } from '../../lib/portfolio-route'
 import type { NotionPageDef } from './types'
 
 export type { PortfolioRoute, ProjectListId } from '../../lib/portfolio-route'
@@ -15,11 +12,13 @@ export {
   isProjectId,
   isProjectListId,
   pageFromHash,
+  pageHref,
   parsePortfolioRoute,
   projectHref,
   projectListHref,
   setPageHash,
   setPortfolioHash,
+  setPortfolioPath,
 } from '../../lib/portfolio-route'
 
 export function getNotionPages(lang: Lang): NotionPageDef[] {

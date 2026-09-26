@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
 import { ChevronLeft } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { BrandIcon } from '@/components/icons/BrandIcon'
 import { getNotionTagMeta, notionTagClass } from '@/lib/notion-tags'
 import { cn } from '@/lib/utils'
@@ -62,12 +62,7 @@ export function PageHero({
 }) {
   return (
     <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-      <div
-        className={cn(
-          'overflow-hidden bg-muted',
-          circular ? 'rounded-full' : 'rounded-[4px]',
-        )}
-      >
+      <div className={cn('overflow-hidden bg-muted', circular ? 'rounded-full' : 'rounded-[4px]')}>
         {photo}
       </div>
       <div className="max-w-md">
@@ -76,21 +71,13 @@ export function PageHero({
         {tagline ? (
           <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{tagline}</p>
         ) : null}
-        {subtitle ? (
-          <p className="mt-0.5 text-[13px] text-muted-foreground">{subtitle}</p>
-        ) : null}
+        {subtitle ? <p className="mt-0.5 text-[13px] text-muted-foreground">{subtitle}</p> : null}
       </div>
     </div>
   )
 }
 
-export function BioTagPills({
-  items,
-  className,
-}: {
-  items: string[]
-  className?: string
-}) {
+export function BioTagPills({ items, className }: { items: string[]; className?: string }) {
   return (
     <ul className={cn('flex flex-wrap gap-1.5', className)}>
       {items.map((item) => {
@@ -164,9 +151,7 @@ export function SectionTabs({
 }) {
   return (
     <div className="my-2">
-      {label ? (
-        <p className="mb-2 text-[12px] font-medium text-muted-foreground">{label}</p>
-      ) : null}
+      {label ? <p className="mb-2 text-[12px] font-medium text-muted-foreground">{label}</p> : null}
       <div
         role="tablist"
         aria-label={label}
@@ -328,10 +313,7 @@ export function NotionDatabase({
     <div className="my-2 overflow-hidden rounded-[4px] border border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)]">
       <div className="hidden border-b border-[rgba(55,53,47,0.09)] bg-[rgba(247,246,243,0.7)] px-3 py-2 dark:border-[rgba(255,255,255,0.09)] dark:bg-[rgba(255,255,255,0.03)] sm:grid sm:grid-cols-[minmax(0,1.3fr)_minmax(0,0.8fr)_minmax(0,1.2fr)] sm:gap-3">
         {columns.map((column) => (
-          <span
-            key={column}
-            className="text-[12px] font-medium text-muted-foreground"
-          >
+          <span key={column} className="text-[12px] font-medium text-muted-foreground">
             {column}
           </span>
         ))}
@@ -399,15 +381,15 @@ export function BackLink({ href, children }: { href: string; children: ReactNode
   return (
     <a
       href={href}
-      className="group mb-5 inline-flex items-center gap-2 rounded-[10px] py-1 pr-2.5 pl-1 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-[rgba(35,131,226,0.08)] hover:text-[var(--link)] dark:hover:bg-[rgba(82,156,202,0.12)]"
+      className="group mb-5 inline-flex items-center gap-2 rounded-[10px] py-1 pr-2.5 pl-1 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] hover:text-[var(--link)]"
     >
       <span
-        className="flex h-7 w-7 items-center justify-center rounded-[8px] border border-[rgba(55,53,47,0.08)] bg-[rgba(247,246,243,0.95)] text-foreground/70 shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition-all group-hover:-translate-x-0.5 group-hover:border-[rgba(35,131,226,0.25)] group-hover:bg-background group-hover:text-[var(--link)] dark:border-[rgba(255,255,255,0.1)] dark:bg-[rgba(255,255,255,0.06)]"
+        className="flex h-7 w-7 items-center justify-center rounded-[8px] border border-[rgba(55,53,47,0.08)] bg-[rgba(247,246,243,0.95)] text-foreground/70 shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition-all group-hover:-translate-x-0.5 group-hover:border-[color-mix(in_srgb,var(--primary)_35%,transparent)] group-hover:bg-background group-hover:text-[var(--link)] dark:border-[rgba(255,255,255,0.1)] dark:bg-[rgba(255,255,255,0.06)]"
         aria-hidden
       >
         <ChevronLeft className="h-4 w-4" strokeWidth={2.25} />
       </span>
-      <span className="underline decoration-transparent underline-offset-[3px] transition-[text-decoration-color] group-hover:decoration-[rgba(35,131,226,0.45)]">
+      <span className="underline decoration-transparent underline-offset-[3px] transition-[text-decoration-color] group-hover:decoration-[color-mix(in_srgb,var(--primary)_45%,transparent)]">
         {children}
       </span>
     </a>
@@ -427,10 +409,8 @@ export function PageTitle({
   meta?: ReactNode
 }) {
   return (
-    <header className="mb-6">
-      {icon ? (
-        <div className="-ml-1 mb-2.5 inline-flex">{icon}</div>
-      ) : null}
+    <header className="notion-page-title mb-6">
+      {icon ? <div className="-ml-1 mb-2.5 inline-flex">{icon}</div> : null}
       <h1 className="text-[40px] font-bold leading-[1.2] tracking-[-0.01em] text-foreground">
         {children}
       </h1>
@@ -470,10 +450,7 @@ export function StatGrid({ items }: { items: Array<{ value: string; label: strin
       {items.map((item, index) => (
         <div
           key={item.label}
-          className={cn(
-            'rounded-[4px] px-3 py-3 text-center',
-            surfaces[index % surfaces.length],
-          )}
+          className={cn('rounded-[4px] px-3 py-3 text-center', surfaces[index % surfaces.length])}
         >
           <p
             className={cn(
@@ -505,7 +482,7 @@ export function AboutCtaPanel({
 }) {
   return (
     <section className="my-2">
-      <div className="flex gap-2.5 rounded-[4px] bg-[rgba(35,131,226,0.12)] px-3.5 py-3.5">
+      <div className="page-cta-panel flex gap-2.5 rounded-[4px] bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] px-3.5 py-3.5">
         <span className="mt-0.5 shrink-0 text-[18px]" aria-hidden>
           ✉️
         </span>
@@ -533,10 +510,11 @@ export function AboutCtaPanel({
   )
 }
 
+/** Alias for reusable end-of-page CTA. */
+export { AboutCtaPanel as PageCtaPanelBase }
+
 export function BlockText({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <p className={cn('text-[16px] leading-[1.5] text-foreground/90', className)}>{children}</p>
-  )
+  return <p className={cn('text-[16px] leading-[1.5] text-foreground/90', className)}>{children}</p>
 }
 
 export function BlockHeading({ children, className }: { children: ReactNode; className?: string }) {

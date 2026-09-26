@@ -1,10 +1,10 @@
+import type { NotionPageId } from '@/components/notion/types'
 import {
   getProjectsForList,
   PROJECT_CATEGORY_BY_LIST,
-  projects,
   type ProjectListId,
+  projects,
 } from '@/data/portfolio'
-import type { NotionPageId } from '@/components/notion/types'
 
 export type { ProjectListId } from '@/data/portfolio'
 
@@ -32,14 +32,15 @@ export function isNotionPageId(value: string): value is NotionPageId {
   return ['about', 'tech', 'experience', 'projects', 'contact'].includes(value)
 }
 
+/** Prefer pathname; fall back to hash for legacy URLs during migration. */
 function getRoutePath(location: Pick<Location, 'hash' | 'pathname'>): string {
+  const pathname = location.pathname.replace(/^\/+|\/+$/g, '')
+  if (pathname && pathname !== 'index.html') return pathname
+
   const hashPath = location.hash.replace(/^#\/?/, '').trim()
   if (hashPath) return hashPath
 
-  const pathname = location.pathname.replace(/^\/+|\/+$/g, '')
-  if (!pathname || pathname === 'index.html') return ''
-
-  return pathname
+  return ''
 }
 
 function parseRoutePath(path: string): PortfolioRoute {
@@ -93,19 +94,41 @@ export function portfolioRouteEquals(a: PortfolioRoute, b: PortfolioRoute): bool
   )
 }
 
-export function setPortfolioHash(route: PortfolioRoute) {
+export function routeToPath(route: PortfolioRoute): string {
+  if (route.page === 'not-found') return '/'
+  if (route.projectId) return `/projects/${route.projectId}`
+  if (route.projectList) return `/projects/${route.projectList}`
+  if (route.page === 'about') return '/'
+  return `/${route.page}`
+}
+
+export function setPortfolioPath(route: PortfolioRoute, mode: 'push' | 'replace' = 'push') {
   if (route.page === 'not-found') return
 
-  const hash = route.projectId
-    ? `#projects/${route.projectId}`
-    : route.projectList
-      ? `#projects/${route.projectList}`
-      : `#${route.page}`
-  const next = `/${hash}`
+  const path = routeToPath(route)
+  const current = `${window.location.pathname}${window.location.search}${window.location.hash}`
+  if (current === path) return
 
-  if (`${window.location.pathname}${window.location.hash}` !== next) {
-    window.history.replaceState(null, '', next)
+  if (mode === 'replace') {
+    window.history.replaceState(null, '', path)
+  } else {
+    window.history.pushState(null, '', path)
   }
+  window.dispatchEvent(new Event('portfolio:navigate'))
+}
+
+/** Migrate legacy `#about` / `#projects/foo` hashes to path URLs. */
+export function migrateHashToPath() {
+  const hashPath = window.location.hash.replace(/^#\/?/, '').trim()
+  if (!hashPath) return
+
+  const route = parseRoutePath(hashPath)
+  if (route.page === 'not-found') {
+    window.history.replaceState(null, '', `/${hashPath}`)
+    return
+  }
+
+  setPortfolioPath(route, 'replace')
 }
 
 /** @deprecated Use parsePortfolioRoute().page */
@@ -115,21 +138,30 @@ export function pageFromHash(): NotionPageId {
   return route.page
 }
 
-/** @deprecated Use setPortfolioHash */
+/** @deprecated Use setPortfolioPath */
 export function setPageHash(page: NotionPageId) {
-  setPortfolioHash({ page })
+  setPortfolioPath({ page })
+}
+
+/** @deprecated Use setPortfolioPath */
+export function setPortfolioHash(route: PortfolioRoute) {
+  setPortfolioPath(route)
 }
 
 export function getProjectName(projectId: string): string | undefined {
   return projects.find((project) => project.id === projectId)?.name
 }
 
+export function pageHref(page: NotionPageId | 'error'): string {
+  return page === 'about' ? '/' : `/${page}`
+}
+
 export function projectHref(projectId: string): string {
-  return `#projects/${projectId}`
+  return `/projects/${projectId}`
 }
 
 export function projectListHref(listId: ProjectListId): string {
-  return `#projects/${listId}`
+  return `/projects/${listId}`
 }
 
 export function getAdjacentProjects(projectId: string) {

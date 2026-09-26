@@ -3,9 +3,10 @@ import { MailtoLink } from '@/components/ui/MailtoLink'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
 import { profile } from '@/data/portfolio'
 import { portfolioStats } from '@/data/portfolio-meta'
-import { type Lang, translations } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { aboutTemplateContent } from '@/i18n/portfolio-template'
+import { type Lang, translations } from '@/i18n/translations'
+import { pageHref } from '@/lib/portfolio-route'
 import {
   AboutCtaPanel,
   BioTagPills,
@@ -21,13 +22,8 @@ import {
   StatGrid,
 } from '../blocks'
 import { MotionSection } from '../motion'
-import {
-  BlockCalloutRich,
-  BlockQuote,
-  BlockTodoList,
-  BlockToggleGroup,
-} from '../notion-blocks'
 import { getNotionPages } from '../nav'
+import { BlockCalloutRich, BlockQuote, BlockTodoList, BlockToggleGroup } from '../notion-blocks'
 import { PageCover } from '../PageCover'
 
 const statLabelKey = {
@@ -99,11 +95,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
 
         <div className="mt-4">
           {activeTab === 'about-facts' ? (
-            <div
-              role="tabpanel"
-              id="panel-about-facts"
-              aria-labelledby="tab-about-facts"
-            >
+            <div role="tabpanel" id="panel-about-facts" aria-labelledby="tab-about-facts">
               <BlockHeading className="mt-0">{blocks.basicInfoTitle}</BlockHeading>
               <PropertyTable>
                 <PropertyRow icon="🏠" label={template.livesInLabel}>
@@ -123,11 +115,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
           ) : null}
 
           {activeTab === 'about-skills' ? (
-            <div
-              role="tabpanel"
-              id="panel-about-skills"
-              aria-labelledby="tab-about-skills"
-            >
+            <div role="tabpanel" id="panel-about-skills" aria-labelledby="tab-about-skills">
               <BlockHeading className="mt-0">{template.skillsTitle}</BlockHeading>
               <p className="mb-3 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
                 {template.skillsIntro}
@@ -137,11 +125,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
           ) : null}
 
           {activeTab === 'about-approach' ? (
-            <div
-              role="tabpanel"
-              id="panel-about-approach"
-              aria-labelledby="tab-about-approach"
-            >
+            <div role="tabpanel" id="panel-about-approach" aria-labelledby="tab-about-approach">
               <BlockHeading className="mt-0">{blocks.approachTitle}</BlockHeading>
               <p className="mb-3 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
                 {blocks.approachIntro}
@@ -152,7 +136,9 @@ export function AboutPage({ lang }: { lang: Lang }) {
                   items={blocks.workingStyle.map((item) => ({
                     title: item.title,
                     body: (
-                      <BlockText className="text-[15px] text-muted-foreground">{item.body}</BlockText>
+                      <BlockText className="text-[15px] text-muted-foreground">
+                        {item.body}
+                      </BlockText>
                     ),
                   }))}
                   defaultOpenIndex={0}
@@ -179,7 +165,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
               </p>
               <PageNavPills
                 items={navPages.map((page) => ({
-                  href: page.id === 'projects' ? '#projects' : `#${page.id}`,
+                  href: pageHref(page.id),
                   icon: page.icon,
                   label: page.label,
                 }))}

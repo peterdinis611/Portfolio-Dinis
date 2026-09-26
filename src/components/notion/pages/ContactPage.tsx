@@ -6,8 +6,9 @@ import { ExternalLink } from '@/components/ui/ExternalLink'
 import { MailtoLink } from '@/components/ui/MailtoLink'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
 import { profile, socials } from '@/data/portfolio'
-import { type Lang, translations } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { type Lang, translations } from '@/i18n/translations'
+import { pageHref } from '@/lib/portfolio-route'
 import {
   BlockCallout,
   BlockDivider,
@@ -19,6 +20,7 @@ import {
   PropertyTable,
 } from '../blocks'
 import { MotionSection } from '../motion'
+import { getNotionPages } from '../nav'
 import {
   BlockBookmark,
   BlockCalloutRich,
@@ -27,7 +29,6 @@ import {
   BlockTodoList,
   BlockToggleGroup,
 } from '../notion-blocks'
-import { getNotionPages } from '../nav'
 import { PageCover } from '../PageCover'
 
 function ContactValue({
@@ -74,20 +75,17 @@ export function ContactPage({ lang }: { lang: Lang }) {
       </MotionSection>
 
       <MotionSection delay={0.06}>
-        <BlockColumns
-          cols={2}
-          children={[
-            <div key="lead">
-              <BlockText>{ui.contactText}</BlockText>
-            </div>,
-            <div key="cta" className="flex flex-col items-start justify-center gap-3">
-              <ProfilePhoto className="h-14 w-14 overflow-hidden rounded-full border border-border" />
-              <MailtoLink>
-                <Button className="h-8 px-4">{ui.endCta}</Button>
-              </MailtoLink>
-            </div>,
-          ]}
-        />
+        <BlockColumns cols={2}>
+          <div>
+            <BlockText>{ui.contactText}</BlockText>
+          </div>
+          <div className="flex flex-col items-start justify-center gap-3">
+            <ProfilePhoto className="h-14 w-14 overflow-hidden rounded-full border border-border" />
+            <MailtoLink>
+              <Button className="h-8 px-4">{ui.getInTouch}</Button>
+            </MailtoLink>
+          </div>
+        </BlockColumns>
       </MotionSection>
 
       <MotionSection delay={0.1} className="mt-6">
@@ -128,9 +126,7 @@ export function ContactPage({ lang }: { lang: Lang }) {
         <BlockCalloutRich title={blocks.nextStepsTitle} variant="info">
           <BlockTodoList items={blocks.nextSteps} />
         </BlockCalloutRich>
-        <BlockCallout variant="idea">
-          {t.profile.tagline}
-        </BlockCallout>
+        <BlockCallout variant="idea">{t.profile.tagline}</BlockCallout>
       </MotionSection>
 
       <MotionSection delay={0.26} className="mt-6">
@@ -155,9 +151,14 @@ export function ContactPage({ lang }: { lang: Lang }) {
       </MotionSection>
 
       <MotionSection delay={0.3} className="mt-6">
-        <BlockText className="mb-2 font-semibold text-foreground">Pages</BlockText>
+        <BlockText className="mb-2 font-semibold text-foreground">{ui.notionPages}</BlockText>
         {navPages.map((page) => (
-          <BlockPageLink key={page.id} href={`#${page.id}`} icon={page.icon} label={page.label} />
+          <BlockPageLink
+            key={page.id}
+            href={pageHref(page.id)}
+            icon={page.icon}
+            label={page.label}
+          />
         ))}
       </MotionSection>
     </PageShell>

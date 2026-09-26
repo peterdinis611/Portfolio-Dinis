@@ -4,11 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { type Lang, translations } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
-import {
-  getNotionPages,
-  getProjectNavItems,
-  isProjectsOverviewActive,
-} from './nav'
+import { getNotionPages, getProjectNavItems, isProjectsOverviewActive } from './nav'
 import { ProjectIcon } from './ProjectIcon'
 import type { NotionPageId } from './types'
 
@@ -76,7 +72,7 @@ export function NotionSidebar({
               className="flex h-8 w-5 shrink-0 items-center justify-center rounded-[4px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent hover:text-foreground group-hover/row:opacity-100 focus-visible:opacity-100"
               onClick={() => toggle('projects')}
               aria-expanded={projectsOpen}
-              aria-label={projectsOpen ? 'Collapse' : 'Expand'}
+              aria-label={projectsOpen ? ui.notionCollapse : ui.notionExpand}
             >
               <ChevronRight
                 className={cn(
@@ -151,7 +147,7 @@ export function NotionSidebar({
           className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent"
           onClick={() => onNavigate({ page: 'about' })}
         >
-          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-[rgba(35,131,226,0.85)] text-[10px] font-bold leading-none text-white">
+          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-[10px] font-bold leading-none text-primary-foreground">
             P
           </span>
           <span className="min-w-0 flex-1 truncate text-[14px] font-medium tracking-[-0.01em]">

@@ -1,23 +1,18 @@
 import { motion } from 'framer-motion'
 import { type Lang, translations } from '@/i18n/translations'
+import { pageHref } from '@/lib/portfolio-route'
 import { BlockText, PageShell, PageTitle } from '../blocks'
-import { BlockCalloutRich, BlockQuote } from '../notion-blocks'
 import { getNotionPages } from '../nav'
+import { BlockCalloutRich, BlockQuote } from '../notion-blocks'
 import {
   AnimatedExploreLinks,
-  staggerContainer,
-  staggerItem,
   StatusBackLink,
   StatusDetail,
+  staggerContainer,
+  staggerItem,
 } from './status-page-parts'
 
-export function NotFoundPage({
-  lang,
-  attemptedPath,
-}: {
-  lang: Lang
-  attemptedPath?: string
-}) {
+export function NotFoundPage({ lang, attemptedPath }: { lang: Lang; attemptedPath?: string }) {
   const ui = translations[lang].ui
   const pages = getNotionPages(lang)
 
@@ -25,7 +20,7 @@ export function NotFoundPage({
     <PageShell>
       <motion.div variants={staggerContainer} initial="hidden" animate="visible">
         <motion.div variants={staggerItem}>
-          <StatusBackLink href="#about">{ui.notionBackHome}</StatusBackLink>
+          <StatusBackLink href={pageHref('about')}>{ui.notionBackHome}</StatusBackLink>
         </motion.div>
 
         <motion.div variants={staggerItem}>
@@ -37,10 +32,7 @@ export function NotFoundPage({
         </motion.div>
 
         {attemptedPath ? (
-          <StatusDetail
-            label={ui.notionNotFoundPathLabel}
-            value={`#${attemptedPath}`}
-          />
+          <StatusDetail label={ui.notionNotFoundPathLabel} value={`/${attemptedPath}`} />
         ) : null}
 
         <motion.div variants={staggerItem} className="mt-6">

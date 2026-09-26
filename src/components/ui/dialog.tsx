@@ -13,10 +13,17 @@ const overlayAnimationClass =
 const contentAnimationClass =
   'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[2%] data-[state=open]:slide-in-from-top-[2%] data-[state=closed]:duration-200 data-[state=open]:duration-200'
 
-export function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrimitive.Overlay>) {
+export function DialogOverlay({
+  className,
+  ...props
+}: ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
     <DialogPrimitive.Overlay
-      className={cn('fixed inset-0 z-50 bg-black/30 backdrop-blur-sm', overlayAnimationClass, className)}
+      className={cn(
+        'fixed inset-0 z-50 bg-black/30 backdrop-blur-sm',
+        overlayAnimationClass,
+        className,
+      )}
       {...props}
     />
   )

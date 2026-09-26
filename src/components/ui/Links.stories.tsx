@@ -32,7 +32,7 @@ export const Email: Story = {
 export const External: Story = {
   render: () => (
     <div className="flex flex-col gap-2 text-[15px]">
-      <ExternalLink href="https://github.com/peterdinis" className="text-primary underline">
+      <ExternalLink href="https://github.com/peterdinis611" className="text-primary underline">
         GitHub
       </ExternalLink>
       <ExternalLink

@@ -12,6 +12,7 @@ const meta = {
   args: {
     lang: 'en',
     theme: 'light',
+    animations: 'on',
     route: { page: 'about' } satisfies PortfolioRoute,
     sidebarCollapsed: false,
     onMenu: fn(),
@@ -19,10 +20,12 @@ const meta = {
     onOpenSearch: fn(),
     onLang: fn(),
     onTheme: fn(),
+    onAnimations: fn(),
   },
   argTypes: {
     lang: { control: 'select', options: ['en', 'sk'] },
     theme: { control: 'select', options: ['light', 'dark'] },
+    animations: { control: 'select', options: ['on', 'off'] },
   },
 } satisfies Meta<typeof NotionTopbar>
 

@@ -1,8 +1,14 @@
-import { parsePortfolioRoute, getProjectName, type PortfolioRoute } from '@/lib/portfolio-route'
 import type { NotionPageId } from '@/components/notion/types'
-import { profile, projects, socials, type ProjectListId } from '@/data/portfolio'
+import { type ProjectListId, profile, projects, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
-import { caseStudyContent } from '@/i18n/portfolio-template'
+import {
+  getProjectName,
+  type PortfolioRoute,
+  pageHref,
+  parsePortfolioRoute,
+  projectHref,
+  projectListHref,
+} from '@/lib/portfolio-route'
 import { decodeEmail } from './email'
 
 const SITE_NAME = 'Peter Dinis — Portfolio'
@@ -98,22 +104,26 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
 const notFoundSeoCopy: Record<Lang, PageSeo> = {
   sk: {
     title: '404 | Stránka sa nenašla — Peter Dinis',
-    description: 'Táto stránka v portfóliu neexistuje. Vráť sa na úvod alebo preskúmaj dostupné sekcie.',
+    description:
+      'Táto stránka v portfóliu neexistuje. Vráť sa na úvod alebo preskúmaj dostupné sekcie.',
   },
   en: {
     title: '404 | Page not found — Peter Dinis',
-    description: 'This page does not exist in the portfolio. Return home or explore the available sections.',
+    description:
+      'This page does not exist in the portfolio. Return home or explore the available sections.',
   },
 }
 
 const errorSeoCopy: Record<Lang, PageSeo> = {
   sk: {
     title: '500 | Chyba — Peter Dinis',
-    description: 'V portfóliu nastala neočakávaná chyba. Skús obnoviť stránku alebo sa vráť na úvod.',
+    description:
+      'V portfóliu nastala neočakávaná chyba. Skús obnoviť stránku alebo sa vráť na úvod.',
   },
   en: {
     title: '500 | Error — Peter Dinis',
-    description: 'An unexpected error occurred in the portfolio. Try reloading or return to the home page.',
+    description:
+      'An unexpected error occurred in the portfolio. Try reloading or return to the home page.',
   },
 }
 
@@ -159,12 +169,14 @@ function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
 
   if (route.page === 'projects' && route.projectId) {
     const project = projects.find((item) => item.id === route.projectId)
-    const study = caseStudyContent[lang][route.projectId]
+    const description =
+      translations[lang].projects.find((p) => p.id === route.projectId)?.description ??
+      pageSeoCopy[lang].projects.description
     const label = lang === 'sk' ? 'Projekt' : 'Project'
 
     return {
       title: `${project?.name ?? route.projectId} | ${label} — Peter Dinis`,
-      description: study?.overview ?? pageSeoCopy[lang].projects.description,
+      description,
     }
   }
 
@@ -175,24 +187,25 @@ function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
 function pageUrl(siteUrl: string, page: NotionPageId): string {
   const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
   if (!base) return ''
-  return page === DEFAULT_PAGE ? base : `${base}/#${page}`
+  const path = pageHref(page)
+  return path === '/' ? base : `${base}${path}`
 }
 
 function projectUrl(siteUrl: string, projectId: string): string {
   const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
   if (!base) return ''
-  return `${base}/#projects/${projectId}`
+  return `${base}${projectHref(projectId)}`
 }
 
 function routeUrl(siteUrl: string, route: PortfolioRoute): string {
   if (route.page === 'not-found' && route.attemptedPath) {
     const origin = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-    return origin ? `${origin}/#${route.attemptedPath}` : ''
+    return origin ? `${origin}/${route.attemptedPath}` : ''
   }
 
   if (route.page === 'error') {
     const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-    return base ? `${base}/#error` : ''
+    return base ? `${base}/error` : ''
   }
 
   if (route.page === 'projects' && route.projectId) {
@@ -201,7 +214,7 @@ function routeUrl(siteUrl: string, route: PortfolioRoute): string {
 
   if (route.page === 'projects' && route.projectList) {
     const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-    return base ? `${base}/#projects/${route.projectList}` : ''
+    return base ? `${base}${projectListHref(route.projectList)}` : ''
   }
 
   if (route.page === 'not-found') return pageUrl(siteUrl, DEFAULT_PAGE)
@@ -372,7 +385,12 @@ export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAG
   setMeta('description', copy.description)
   setMeta('keywords', site.keywords)
   setMeta('author', profile.name)
-  setMeta('robots', route.page === 'not-found' || route.page === 'error' ? 'noindex, follow' : 'index, follow, max-image-preview:large')
+  setMeta(
+    'robots',
+    route.page === 'not-found' || route.page === 'error'
+      ? 'noindex, follow'
+      : 'index, follow, max-image-preview:large',
+  )
   setMeta('googlebot', 'index, follow')
 
   setMeta('og:title', copy.title, true)
@@ -401,7 +419,7 @@ export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAG
   if (siteUrl) setJsonLd(lang, route, siteUrl)
 }
 
-/** Run once before React mounts — uses stored language and current hash. */
+/** Run once before React mounts — uses stored language and current path. */
 export function initSeo() {
   const route = typeof window !== 'undefined' ? parsePortfolioRoute() : { page: DEFAULT_PAGE }
   applySeo(getStoredLang(), route)

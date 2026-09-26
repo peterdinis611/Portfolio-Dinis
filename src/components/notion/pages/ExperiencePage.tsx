@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { type Lang, translations } from '@/i18n/translations'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
+import { type Lang, translations } from '@/i18n/translations'
 import {
   BlockBullets,
   BlockDivider,
@@ -15,6 +15,7 @@ import {
 import { MotionSection } from '../motion'
 import { BlockQuote, BlockToggleGroup } from '../notion-blocks'
 import { PageCover } from '../PageCover'
+import { PageCtaPanel } from '../PageCtaPanel'
 
 type ExperienceJob = (typeof translations)[Lang]['experience'][number]
 
@@ -162,6 +163,10 @@ export function ExperiencePage({ lang }: { lang: Lang }) {
           />
         </MotionSection>
       ) : null}
+
+      <MotionSection delay={0.22} className="mt-12">
+        <PageCtaPanel lang={lang} />
+      </MotionSection>
     </PageShell>
   )
 }

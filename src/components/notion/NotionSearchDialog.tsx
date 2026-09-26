@@ -2,8 +2,8 @@ import { Search, SearchX } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { type Lang, translations } from '@/i18n/translations'
-import { type PortfolioSearchResult, searchPortfolio } from '@/lib/portfolio-search'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
+import { type PortfolioSearchResult, searchPortfolio } from '@/lib/portfolio-search'
 import { cn } from '@/lib/utils'
 import { getNotionPages } from './nav'
 import type { NotionPageId } from './types'
@@ -67,7 +67,9 @@ function SearchIntroState({
     <div className="px-1 py-2">
       <div className="mx-1 mb-3 rounded-[4px] border border-border bg-muted/40 px-3 py-2.5">
         <p className="text-[13px] font-medium text-foreground">{ui.notionQuickFind}</p>
-        <p className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">{ui.notionSearchIntro}</p>
+        <p className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">
+          {ui.notionSearchIntro}
+        </p>
       </div>
       <SearchPageList lang={lang} onSelect={onSelectPage} />
     </div>

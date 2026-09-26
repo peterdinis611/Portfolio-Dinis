@@ -83,11 +83,13 @@ export const notionPageBlocks: Record<
       ],
       basicInfoTitle: 'Základné info',
       currentlyTitle: 'Momentálne',
-      currentlyText: 'Pracujem na R&D projektoch v IBA.CZ — design systémy, Fluent UI a React aplikácie.',
+      currentlyText:
+        'Pracujem na R&D projektoch v IBA.CZ — design systémy, Fluent UI a React aplikácie.',
     },
     tech: {
       tocTitle: 'Obsah',
-      quote: 'Stack volím podľa produktu — nie naopak. Dôležitá je udržateľnosť, rýchlosť tímu a kvalita UX.',
+      quote:
+        'Stack volím podľa produktu — nie naopak. Dôležitá je udržateľnosť, rýchlosť tímu a kvalita UX.',
       principles: [
         {
           title: 'Frontend',
@@ -148,7 +150,7 @@ export const notionPageBlocks: Record<
       ],
       bookmarks: [
         {
-          href: 'https://github.com/peterdinis',
+          href: 'https://github.com/peterdinis611',
           title: 'GitHub — Peter Dinis',
           description: 'Open-source a ukážky kódu.',
           external: true,
@@ -168,7 +170,7 @@ export const notionPageBlocks: Record<
       ],
     },
     projectDetail: {
-      tocTitle: 'Obsah case study',
+      tocTitle: 'Obsah projektu',
       techNotesTitle: 'Technické poznámky',
       techNotesBody:
         'Kód je štruktúrovaný po feature moduloch, s typovanými API vrstvami a znovupoužiteľnými UI komponentmi.',
@@ -210,11 +212,13 @@ export const notionPageBlocks: Record<
       ],
       basicInfoTitle: 'Basic info',
       currentlyTitle: 'Currently',
-      currentlyText: 'Working on R&D projects at IBA.CZ — design systems, Fluent UI, and React applications.',
+      currentlyText:
+        'Working on R&D projects at IBA.CZ — design systems, Fluent UI, and React applications.',
     },
     tech: {
       tocTitle: 'Contents',
-      quote: 'I choose the stack based on the product — not the other way around. Sustainability, team speed, and UX quality matter most.',
+      quote:
+        'I choose the stack based on the product — not the other way around. Sustainability, team speed, and UX quality matter most.',
       principles: [
         {
           title: 'Frontend',
@@ -231,8 +235,7 @@ export const notionPageBlocks: Record<
       ],
     },
     experience: {
-      quote:
-        'Every role moved me closer to delivering whole products — not just isolated tasks.',
+      quote: 'Every role moved me closer to delivering whole products — not just isolated tasks.',
       tocTitle: 'On this page',
       processTitle: 'My work process',
       processSteps: [
@@ -275,7 +278,7 @@ export const notionPageBlocks: Record<
       ],
       bookmarks: [
         {
-          href: 'https://github.com/peterdinis',
+          href: 'https://github.com/peterdinis611',
           title: 'GitHub — Peter Dinis',
           description: 'Open source and code samples.',
           external: true,
@@ -295,7 +298,7 @@ export const notionPageBlocks: Record<
       ],
     },
     projectDetail: {
-      tocTitle: 'Case study contents',
+      tocTitle: 'Project contents',
       techNotesTitle: 'Technical notes',
       techNotesBody:
         'Code is structured by feature modules, with typed API layers and reusable UI components.',

@@ -1,5 +1,5 @@
 import { ChevronRight } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { Children, isValidElement, type ReactNode } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
 
@@ -161,11 +161,7 @@ export function BlockToggleGroup({
   )
 }
 
-export function BlockTodoList({
-  items,
-}: {
-  items: Array<{ text: string; done?: boolean }>
-}) {
+export function BlockTodoList({ items }: { items: Array<{ text: string; done?: boolean }> }) {
   return (
     <ul className="my-1">
       {items.map((item) => (
@@ -202,13 +198,7 @@ export function BlockNumberedList({ items }: { items: readonly string[] }) {
   )
 }
 
-export function BlockCode({
-  code,
-  language,
-}: {
-  code: string
-  language?: string
-}) {
+export function BlockCode({ code, language }: { code: string; language?: string }) {
   return (
     <div className="notion-block my-2 overflow-hidden rounded-[4px] bg-[rgba(135,131,120,0.15)] dark:bg-[rgba(255,255,255,0.055)]">
       {language ? (
@@ -320,22 +310,15 @@ export function BlockTableOfContents({
   )
 }
 
-export function BlockColumns({
-  children,
-  cols = 2,
-}: {
-  children: ReactNode[]
-  cols?: 2 | 3
-}) {
+export function BlockColumns({ children, cols = 2 }: { children: ReactNode; cols?: 2 | 3 }) {
+  const items = Children.toArray(children)
   return (
-    <div
-      className={cn(
-        'my-2 grid gap-4',
-        cols === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3',
-      )}
-    >
-      {children.map((child, index) => (
-        <div key={index} className="min-w-0 text-[16px] leading-[1.5]">
+    <div className={cn('my-2 grid gap-4', cols === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3')}>
+      {items.map((child, index) => (
+        <div
+          key={isValidElement(child) && child.key != null ? String(child.key) : `col-${index}`}
+          className="min-w-0 text-[16px] leading-[1.5]"
+        >
           {child}
         </div>
       ))}
@@ -358,14 +341,16 @@ export function BlockGallery({
   onItemSelect?: (id: string) => void
 }) {
   return (
-    <ul className="my-2 grid gap-2 sm:grid-cols-2">
-      {items.map((item) => {
+    <ul className="notion-gallery my-2 grid gap-2 sm:grid-cols-2">
+      {items.map((item, index) => {
         const className =
-          'notion-block group flex h-full w-full flex-col rounded-[8px] border border-[rgba(55,53,47,0.1)] p-3 text-left transition-colors hover:bg-[rgba(55,53,47,0.04)] dark:border-[rgba(255,255,255,0.1)] dark:hover:bg-[rgba(255,255,255,0.04)]'
+          'notion-gallery-card notion-block group flex h-full w-full flex-col rounded-[8px] border border-[rgba(55,53,47,0.1)] p-3 text-left dark:border-[rgba(255,255,255,0.1)]'
         const body = (
           <>
-            <span className="mb-2.5">{item.icon}</span>
-            <span className="mb-0.5 truncate text-[15px] font-medium text-foreground group-hover:text-[var(--link)]">
+            <span className="mb-2.5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5">
+              {item.icon}
+            </span>
+            <span className="mb-0.5 truncate text-[15px] font-medium text-foreground transition-colors group-hover:text-[var(--link)]">
               {item.title}
             </span>
             <span className="line-clamp-2 text-[13px] leading-snug text-muted-foreground">
@@ -373,13 +358,13 @@ export function BlockGallery({
             </span>
             {item.tags.length > 0 ? (
               <span className="mt-2 flex flex-wrap gap-1">
-                {item.tags.slice(0, 4).map((tag, index) => (
+                {item.tags.slice(0, 4).map((tag, tagIndex) => (
                   <span
                     key={tag}
                     className={cn(
                       'rounded-[3px] px-1.5 py-0.5 text-[11px]',
-                      index === 0
-                        ? 'bg-[rgba(105,64,165,0.14)] font-medium text-[#6940a5] dark:text-[#9a6dd7]'
+                      tagIndex === 0
+                        ? 'bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] font-medium text-[var(--primary)]'
                         : 'bg-[rgba(135,131,120,0.15)] text-muted-foreground',
                     )}
                   >
@@ -392,7 +377,11 @@ export function BlockGallery({
         )
 
         return (
-          <li key={item.id}>
+          <li
+            key={item.id}
+            className="notion-gallery-item"
+            style={{ animationDelay: `${80 + index * 55}ms` }}
+          >
             {onItemSelect ? (
               <button type="button" className={className} onClick={() => onItemSelect(item.id)}>
                 {body}
@@ -423,12 +412,7 @@ export function BlockCalloutRich({
   const meta = calloutVariantMeta[variant]
 
   return (
-    <div
-      className={cn(
-        'notion-block my-2 flex gap-2.5 rounded-[4px] px-3.5 py-3',
-        meta.className,
-      )}
-    >
+    <div className={cn('notion-block my-2 flex gap-2.5 rounded-[4px] px-3.5 py-3', meta.className)}>
       <span className="mt-0.5 shrink-0 text-[18px] leading-none" aria-hidden>
         {icon ?? meta.icon}
       </span>

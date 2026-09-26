@@ -44,7 +44,7 @@ const preview: Preview = {
           'Shell',
           'Pages',
           'Notion',
-          ['ProductPreview', 'ProjectShowcaseBlocks', 'PageCover', 'ProjectIcon', '*'],
+          ['PageCover', 'ProjectIcon', '*'],
           'UI',
           'Icons',
           'Chrome',

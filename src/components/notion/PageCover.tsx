@@ -1,10 +1,13 @@
+import { motion } from 'framer-motion'
 import {
   getProjectCover,
   type PageCoverImage,
   type PageCoverVariant,
   pageCoverImages,
 } from '@/data/page-covers'
+import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import { cn } from '@/lib/utils'
+import { MOTION_EASE } from './motion'
 
 export type { PageCoverVariant }
 
@@ -20,12 +23,9 @@ function CoverPicture({
   className?: string
 }) {
   const jpg = mode === 'dark' ? (cover.srcDark ?? cover.src) : cover.src
-  const webp =
-    mode === 'dark' ? (cover.srcDarkWebp ?? cover.srcWebp) : cover.srcWebp
+  const webp = mode === 'dark' ? (cover.srcDarkWebp ?? cover.srcWebp) : cover.srcWebp
   const objectPosition =
-    mode === 'dark'
-      ? (cover.objectPositionDark ?? cover.objectPosition)
-      : cover.objectPosition
+    mode === 'dark' ? (cover.objectPositionDark ?? cover.objectPosition) : cover.objectPosition
 
   return (
     <picture className={cn('absolute inset-0 block', className)}>
@@ -39,7 +39,7 @@ function CoverPicture({
       <img
         src={jpg}
         alt=""
-        className="h-full w-full scale-[1.02] object-cover"
+        className="page-cover-img h-full w-full object-cover"
         style={objectPosition ? { objectPosition } : undefined}
         loading={eager ? 'eager' : 'lazy'}
         fetchPriority={eager ? 'high' : 'auto'}
@@ -62,6 +62,7 @@ export function PageCover({
   projectId?: string
   className?: string
 }) {
+  const reduce = useMotionDisabled()
   const cover = projectId
     ? (getProjectCover(projectId) ?? pageCoverImages.projects)
     : pageCoverImages[variant ?? 'about']
@@ -69,20 +70,30 @@ export function PageCover({
   const hasDark = Boolean(cover.srcDark)
 
   return (
-    <div
+    <motion.div
       className={cn(
         'page-cover pointer-events-none relative h-40 w-full overflow-hidden sm:h-52',
         className,
       )}
+      initial={reduce ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: MOTION_EASE }}
     >
-      {hasDark ? (
-        <>
-          <CoverPicture cover={cover} mode="light" eager={eager} className="dark:hidden" />
-          <CoverPicture cover={cover} mode="dark" eager={eager} className="hidden dark:block" />
-        </>
-      ) : (
-        <CoverPicture cover={cover} mode="single" eager={eager} />
-      )}
+      <motion.div
+        className="absolute inset-0"
+        initial={reduce ? false : { scale: 1.08 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: reduce ? 0 : 1.35, ease: MOTION_EASE }}
+      >
+        {hasDark ? (
+          <>
+            <CoverPicture cover={cover} mode="light" eager={eager} className="dark:hidden" />
+            <CoverPicture cover={cover} mode="dark" eager={eager} className="hidden dark:block" />
+          </>
+        ) : (
+          <CoverPicture cover={cover} mode="single" eager={eager} />
+        )}
+      </motion.div>
       <div
         className={cn(
           'absolute inset-0',
@@ -98,6 +109,7 @@ export function PageCover({
         className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background via-background/85 to-transparent"
         aria-hidden
       />
-    </div>
+      <div className="page-cover-shine" aria-hidden />
+    </motion.div>
   )
 }

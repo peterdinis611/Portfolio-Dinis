@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { resolveSiteUrl } from './resolve-site-url.mjs'
 
-const pages = ['', 'about', 'tech', 'experience', 'projects', 'contact']
+const pages = ['', 'tech', 'experience', 'projects', 'contact']
 
 const projectLists = ['my-projects']
 
@@ -15,7 +15,7 @@ const lastmod = new Date().toISOString().slice(0, 10)
 
 const pageUrls = pages
   .map((page) => {
-    const loc = page ? `${siteUrl}/#${page}` : `${siteUrl}/`
+    const loc = page ? `${siteUrl}/${page}` : `${siteUrl}/`
     const priority = page === '' ? '1.0' : '0.8'
     return `  <url>
     <loc>${loc}</loc>
@@ -28,7 +28,7 @@ const pageUrls = pages
 
 const projectListUrls = projectLists
   .map((listId) => {
-    const loc = `${siteUrl}/#projects/${listId}`
+    const loc = `${siteUrl}/projects/${listId}`
     return `  <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>
@@ -40,7 +40,7 @@ const projectListUrls = projectLists
 
 const projectUrls = projects
   .map((projectId) => {
-    const loc = `${siteUrl}/#projects/${projectId}`
+    const loc = `${siteUrl}/projects/${projectId}`
     return `  <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>

@@ -15,6 +15,7 @@ export function NotionTabBar({ route }: { route: PortfolioRoute }) {
       <div
         role="tab"
         aria-selected
+        tabIndex={0}
         className="flex max-w-[min(100%,18rem)] items-center gap-1.5 rounded-t-sm border border-b-0 border-border px-3 py-1.5 text-xs text-foreground"
         style={{ background: 'var(--editor-surface)' }}
       >

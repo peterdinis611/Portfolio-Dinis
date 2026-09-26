@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { parsePortfolioRoute, type PortfolioRoute } from '@/lib/portfolio-route'
 import { SettingsContext } from '@/context/AppProviders'
+import { type PortfolioRoute, parsePortfolioRoute } from '@/lib/portfolio-route'
 import { applySeo } from '@/lib/seo'
 
 export function SeoManager() {
@@ -9,11 +9,11 @@ export function SeoManager() {
 
   useEffect(() => {
     const syncRoute = () => setRoute(parsePortfolioRoute())
-    window.addEventListener('hashchange', syncRoute)
+    window.addEventListener('portfolio:navigate', syncRoute)
     window.addEventListener('popstate', syncRoute)
     syncRoute()
     return () => {
-      window.removeEventListener('hashchange', syncRoute)
+      window.removeEventListener('portfolio:navigate', syncRoute)
       window.removeEventListener('popstate', syncRoute)
     }
   }, [])
