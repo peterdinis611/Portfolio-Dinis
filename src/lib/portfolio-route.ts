@@ -1,4 +1,5 @@
 import type { NotionPageId } from '@/components/notion/types'
+import { isNoteId, notes } from '@/data/notes'
 import {
   getProjectsForList,
   PROJECT_CATEGORY_BY_LIST,
@@ -14,11 +15,13 @@ export type PortfolioRoute = {
   page: PortfolioPageId
   projectId?: string
   projectList?: ProjectListId
+  noteId?: string
   attemptedPath?: string
 }
 
 const PROJECT_IDS = new Set(projects.map((project) => project.id))
 const PROJECT_LIST_IDS = new Set<ProjectListId>(['my-projects'])
+const NOTE_IDS = new Set(notes.map((note) => note.id))
 
 export function isProjectId(value: string): boolean {
   return PROJECT_IDS.has(value)
@@ -29,7 +32,7 @@ export function isProjectListId(value: string): value is ProjectListId {
 }
 
 export function isNotionPageId(value: string): value is NotionPageId {
-  return ['about', 'tech', 'experience', 'projects', 'contact'].includes(value)
+  return ['about', 'tech', 'experience', 'projects', 'notes', 'cv', 'contact'].includes(value)
 }
 
 /** Prefer pathname; fall back to hash for legacy URLs during migration. */
@@ -72,6 +75,16 @@ function parseRoutePath(path: string): PortfolioRoute {
     return { page: 'projects' }
   }
 
+  if (pagePart === 'notes') {
+    if (secondSegment) {
+      if (isNoteId(secondSegment) || NOTE_IDS.has(secondSegment)) {
+        return { page: 'notes', noteId: secondSegment }
+      }
+      return { page: 'not-found', attemptedPath: path }
+    }
+    return { page: 'notes' }
+  }
+
   if (isNotionPageId(pagePart)) {
     return { page: pagePart }
   }
@@ -90,6 +103,7 @@ export function portfolioRouteEquals(a: PortfolioRoute, b: PortfolioRoute): bool
     a.page === b.page &&
     a.projectId === b.projectId &&
     a.projectList === b.projectList &&
+    a.noteId === b.noteId &&
     a.attemptedPath === b.attemptedPath
   )
 }
@@ -98,6 +112,7 @@ export function routeToPath(route: PortfolioRoute): string {
   if (route.page === 'not-found') return '/'
   if (route.projectId) return `/projects/${route.projectId}`
   if (route.projectList) return `/projects/${route.projectList}`
+  if (route.noteId) return `/notes/${route.noteId}`
   if (route.page === 'about') return '/'
   return `/${route.page}`
 }
@@ -152,6 +167,11 @@ export function getProjectName(projectId: string): string | undefined {
   return projects.find((project) => project.id === projectId)?.name
 }
 
+export function getNoteTitle(noteId: string, lang: 'sk' | 'en'): string | undefined {
+  const note = notes.find((item) => item.id === noteId)
+  return note?.title[lang]
+}
+
 export function pageHref(page: NotionPageId | 'error'): string {
   return page === 'about' ? '/' : `/${page}`
 }
@@ -162,6 +182,10 @@ export function projectHref(projectId: string): string {
 
 export function projectListHref(listId: ProjectListId): string {
   return `/projects/${listId}`
+}
+
+export function noteHref(noteId: string): string {
+  return `/notes/${noteId}`
 }
 
 export function getAdjacentProjects(projectId: string) {
@@ -175,5 +199,15 @@ export function getAdjacentProjects(projectId: string) {
   return {
     prev: index > 0 ? peers[index - 1] : undefined,
     next: index < peers.length - 1 ? peers[index + 1] : undefined,
+  }
+}
+
+export function getAdjacentNotes(noteId: string) {
+  const index = notes.findIndex((item) => item.id === noteId)
+  if (index < 0) return { prev: undefined, next: undefined }
+
+  return {
+    prev: index > 0 ? notes[index - 1] : undefined,
+    next: index < notes.length - 1 ? notes[index + 1] : undefined,
   }
 }

@@ -1,8 +1,11 @@
 import type { NotionPageId } from '@/components/notion/types'
+import { notes } from '@/data/notes'
 import { type ProjectListId, profile, projects, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
 import {
+  getNoteTitle,
   getProjectName,
+  noteHref,
   type PortfolioRoute,
   pageHref,
   parsePortfolioRoute,
@@ -66,6 +69,16 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
       description:
         'Produkčné a open-source projekty: ÚDZS, EForms, Docu-Nest, Boom Scope, Pulse API Client, SPST Knižnica a ďalšie.',
     },
+    notes: {
+      title: 'Blog | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Tech blog: design systémy, Tauri desktop nástroje a TypeScript end-to-end — krátke články z praxe.',
+    },
+    cv: {
+      title: 'CV | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Životopis Petra Dinisa — skúsenosti, stack a kontakty. Pripravené na tlač alebo PDF.',
+    },
     contact: {
       title: 'Kontakt | Peter Dinis — Medior Full-Stack Developer',
       description:
@@ -92,6 +105,16 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
       title: 'Projects | Peter Dinis — Medior Full-Stack Developer',
       description:
         'Production and open-source projects: ÚDZS, EForms, Docu-Nest, Boom Scope, Pulse API Client, SPST Knižnica, and more.',
+    },
+    notes: {
+      title: 'Blog | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Tech blog: design systems, Tauri desktop tooling, and TypeScript end-to-end — short practice articles.',
+    },
+    cv: {
+      title: 'CV | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Resume of Peter Dinis — experience, stack, and contact. Print-ready or save as PDF.',
     },
     contact: {
       title: 'Contact | Peter Dinis — Medior Full-Stack Developer',
@@ -180,8 +203,34 @@ function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
     }
   }
 
+  if (route.page === 'notes' && route.noteId) {
+    const note = notes.find((item) => item.id === route.noteId)
+    const label = lang === 'sk' ? 'Článok' : 'Article'
+    return {
+      title: `${note?.title[lang] ?? route.noteId} | ${label} — Peter Dinis`,
+      description: note?.summary[lang] ?? pageSeoCopy[lang].notes.description,
+    }
+  }
+
   if (route.page === DEFAULT_PAGE) return seoCopy[lang]
   return pageSeoCopy[lang][route.page]
+}
+
+export function ogImagePathForRoute(route: PortfolioRoute): string {
+  if (route.page === 'projects' && route.projectId) {
+    return `/og/projects/${route.projectId}.svg`
+  }
+  if (route.page === 'notes' && route.noteId) {
+    return `/og/notes/${route.noteId}.svg`
+  }
+  if (route.page === 'projects' && route.projectList) {
+    return `/og/projects.svg`
+  }
+  if (route.page === 'not-found' || route.page === 'error') {
+    return '/og-image.jpg'
+  }
+  if (route.page === 'about') return '/og/about.svg'
+  return `/og/${route.page}.svg`
 }
 
 function pageUrl(siteUrl: string, page: NotionPageId): string {
@@ -210,6 +259,11 @@ function routeUrl(siteUrl: string, route: PortfolioRoute): string {
 
   if (route.page === 'projects' && route.projectId) {
     return projectUrl(siteUrl, route.projectId)
+  }
+
+  if (route.page === 'notes' && route.noteId) {
+    const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
+    return base ? `${base}${noteHref(route.noteId)}` : ''
   }
 
   if (route.page === 'projects' && route.projectList) {
@@ -251,11 +305,15 @@ function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
 
   const copy = resolveRouteSeo(lang, route)
   const isProjectDetail = route.page === 'projects' && Boolean(route.projectId)
+  const isNoteDetail = route.page === 'notes' && Boolean(route.noteId)
   const currentUrl = routeUrl(siteUrl, route)
   const projectsLabel = lang === 'sk' ? 'Projekty' : 'Projects'
+  const notesLabel = lang === 'sk' ? 'Blog' : 'Blog'
   const pageLabel = isProjectDetail
     ? (getProjectName(route.projectId!) ?? route.projectId!)
-    : pageSeoCopy[lang][route.page].title.split(' | ')[0]
+    : isNoteDetail
+      ? (getNoteTitle(route.noteId!, lang) ?? route.noteId!)
+      : pageSeoCopy[lang][route.page].title.split(' | ')[0]
 
   const breadcrumbItems = [
     {
@@ -273,6 +331,21 @@ function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
         position: 2,
         name: projectsLabel,
         item: pageUrl(siteUrl, 'projects'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: pageLabel,
+        item: currentUrl || siteUrl,
+      },
+    )
+  } else if (isNoteDetail && route.noteId) {
+    breadcrumbItems.push(
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: notesLabel,
+        item: pageUrl(siteUrl, 'notes'),
       },
       {
         '@type': 'ListItem',
@@ -377,7 +450,8 @@ export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAG
   const copy = resolveRouteSeo(lang, route)
   const siteUrl = getSiteUrl()
   const canonical = routeUrl(siteUrl, route)
-  const ogImage = siteUrl ? `${siteUrl}/og-image.jpg` : '/og-image.jpg'
+  const ogPath = ogImagePathForRoute(route)
+  const ogImage = siteUrl ? `${siteUrl}${ogPath}` : ogPath
 
   document.documentElement.lang = lang
   document.title = copy.title
@@ -400,14 +474,14 @@ export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAG
   setMeta('og:locale', site.ogLocale, true)
   setMeta('og:locale:alternate', lang === 'sk' ? 'en_US' : 'sk_SK', true)
   setMeta('og:image', ogImage, true)
-  setMeta('og:image:alt', `${profile.name} — ${translations[lang].profile.title}`, true)
+  setMeta('og:image:alt', copy.title, true)
   if (canonical) setMeta('og:url', canonical, true)
 
   setMeta('twitter:card', 'summary_large_image')
   setMeta('twitter:title', copy.title)
   setMeta('twitter:description', copy.description)
   setMeta('twitter:image', ogImage)
-  setMeta('twitter:image:alt', `${profile.name} — ${translations[lang].profile.title}`)
+  setMeta('twitter:image:alt', copy.title)
 
   if (canonical) {
     setLink('canonical', canonical)
@@ -430,7 +504,10 @@ export const notionPagesForSitemap: NotionPageId[] = [
   'tech',
   'experience',
   'projects',
+  'notes',
+  'cv',
   'contact',
 ]
 
 export const projectIdsForSitemap = projects.map((project) => project.id)
+export const noteIdsForSitemap = notes.map((note) => note.id)

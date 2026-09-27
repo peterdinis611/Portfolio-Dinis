@@ -9,7 +9,6 @@ const INTERACTIVE =
 function playClickSound(audioCtx: AudioContext) {
   const t0 = audioCtx.currentTime
 
-  // Soft mechanical / UI click — layered tone + noise tick
   const osc = audioCtx.createOscillator()
   const oscGain = audioCtx.createGain()
   osc.type = 'triangle'
@@ -44,48 +43,52 @@ function playClickSound(audioCtx: AudioContext) {
   noise.stop(t0 + 0.035)
 }
 
-function CursorArrow({ className }: { className?: string }) {
+function CursorArrow() {
   return (
     <svg
-      className={className}
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
       fill="none"
       role="presentation"
       focusable="false"
       aria-hidden
     >
+      {/* Soft drop shadow */}
       <path
-        className="portfolio-cursor-arrow-shadow"
-        d="M5.2 3.1 5.2 18.4 9.4 14.6 12.5 21.4 15.4 20.2 12.1 13.1 18.6 13.1Z"
+        d="M6 3.5v18.2l4.6-4.2 3.4 7.5 3.2-1.35-3.55-7.7H22Z"
+        fill="rgba(0,0,0,0.28)"
+        transform="translate(1.2 1.4)"
       />
+      {/* High-contrast PC arrow */}
       <path
-        className="portfolio-cursor-arrow-fill"
-        d="M5.2 3.1 5.2 18.4 9.4 14.6 12.5 21.4 15.4 20.2 12.1 13.1 18.6 13.1Z"
+        d="M6 3.5v18.2l4.6-4.2 3.4 7.5 3.2-1.35-3.55-7.7H22Z"
+        fill="#111111"
+        stroke="#ffffff"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
       />
-      <path
-        className="portfolio-cursor-arrow-stroke"
-        d="M5.2 3.1 5.2 18.4 9.4 14.6 12.5 21.4 15.4 20.2 12.1 13.1 18.6 13.1Z"
-      />
+      {/* Teal tip accent */}
+      <path d="M6 3.5 10.2 16.2 6 21.7Z" fill="var(--primary)" opacity="0.95" />
     </svg>
   )
 }
 
 export function PortfolioCursor() {
   const disabledMotion = useMotionDisabled()
-  const [active, setActive] = useState(false)
+  const [enabled, setEnabled] = useState(false)
   const [hover, setHover] = useState(false)
   const [pressed, setPressed] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [ready, setReady] = useState(false)
+  const readyRef = useRef(false)
   const audioRef = useRef<AudioContext | null>(null)
 
-  const rawX = useMotionValue(-100)
-  const rawY = useMotionValue(-100)
+  const rawX = useMotionValue(0)
+  const rawY = useMotionValue(0)
 
   const springConfig = disabledMotion
-    ? { stiffness: 1000, damping: 100, mass: 0.1 }
-    : { stiffness: 560, damping: 38, mass: 0.22 }
+    ? { stiffness: 2000, damping: 80, mass: 0.01 }
+    : { stiffness: 700, damping: 40, mass: 0.18 }
 
   const x = useSpring(rawX, springConfig)
   const y = useSpring(rawY, springConfig)
@@ -114,20 +117,15 @@ export function PortfolioCursor() {
 
   useEffect(() => {
     const fine = window.matchMedia('(pointer: fine)')
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
 
     const sync = () => {
-      const ok = fine.matches && !reduce.matches
-      setActive(ok)
-      document.documentElement.classList.toggle('has-custom-cursor', ok)
+      setEnabled(fine.matches)
     }
 
     sync()
     fine.addEventListener('change', sync)
-    reduce.addEventListener('change', sync)
     return () => {
       fine.removeEventListener('change', sync)
-      reduce.removeEventListener('change', sync)
       document.documentElement.classList.remove('has-custom-cursor')
       void audioRef.current?.close()
       audioRef.current = null
@@ -135,12 +133,22 @@ export function PortfolioCursor() {
   }, [])
 
   useEffect(() => {
-    if (!active) return
+    if (!enabled) {
+      document.documentElement.classList.remove('has-custom-cursor')
+      readyRef.current = false
+      setReady(false)
+      return
+    }
 
     const onMove = (event: MouseEvent) => {
       rawX.set(event.clientX)
       rawY.set(event.clientY)
-      setVisible(true)
+
+      if (!readyRef.current) {
+        readyRef.current = true
+        setReady(true)
+        document.documentElement.classList.add('has-custom-cursor')
+      }
 
       const target = event.target
       if (!(target instanceof Element)) {
@@ -156,29 +164,24 @@ export function PortfolioCursor() {
       click()
     }
     const onUp = () => setPressed(false)
-    const onLeave = () => setVisible(false)
-    const onEnter = () => setVisible(true)
 
     window.addEventListener('mousemove', onMove, { passive: true })
     window.addEventListener('mousedown', onDown)
     window.addEventListener('mouseup', onUp)
-    document.documentElement.addEventListener('mouseleave', onLeave)
-    document.documentElement.addEventListener('mouseenter', onEnter)
 
     return () => {
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mousedown', onDown)
       window.removeEventListener('mouseup', onUp)
-      document.documentElement.removeEventListener('mouseleave', onLeave)
-      document.documentElement.removeEventListener('mouseenter', onEnter)
+      document.documentElement.classList.remove('has-custom-cursor')
     }
-  }, [active, rawX, rawY, click])
+  }, [enabled, rawX, rawY, click])
 
-  if (!active) return null
+  if (!enabled || !ready) return null
 
   const spring = disabledMotion
     ? { duration: 0 }
-    : { type: 'spring' as const, stiffness: 480, damping: 30, mass: 0.3 }
+    : { type: 'spring' as const, stiffness: 520, damping: 32, mass: 0.28 }
 
   return (
     <div className="portfolio-cursor" aria-hidden>
@@ -186,9 +189,8 @@ export function PortfolioCursor() {
         className={cn('portfolio-cursor-pointer', hover && 'is-hover', pressed && 'is-pressed')}
         style={{ x, y }}
         animate={{
-          opacity: visible ? 1 : 0,
-          scale: pressed ? 0.86 : hover ? 1.12 : 1,
-          rotate: pressed ? -4 : hover ? -2 : 0,
+          scale: pressed ? 0.88 : hover ? 1.1 : 1,
+          rotate: pressed ? -6 : hover ? -3 : 0,
         }}
         transition={spring}
       >

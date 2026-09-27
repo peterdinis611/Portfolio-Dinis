@@ -3,12 +3,15 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { resolveSiteUrl } from './resolve-site-url.mjs'
 
-const pages = ['', 'tech', 'experience', 'projects', 'contact']
+const pages = ['', 'tech', 'experience', 'projects', 'notes', 'cv', 'contact']
 
 const projectLists = ['my-projects']
 
 const portfolioSource = readFileSync(resolve(process.cwd(), 'src/data/portfolio.ts'), 'utf8')
 const projects = [...portfolioSource.matchAll(/^\s*id:\s*'([^']+)'/gm)].map(([, id]) => id)
+
+const notesSource = readFileSync(resolve(process.cwd(), 'src/data/notes.ts'), 'utf8')
+const notes = [...notesSource.matchAll(/^\s*id:\s*'([^']+)'/gm)].map(([, id]) => id)
 
 const siteUrl = resolveSiteUrl()
 const lastmod = new Date().toISOString().slice(0, 10)
@@ -50,7 +53,19 @@ const projectUrls = projects
   })
   .join('\n')
 
-const urls = `${pageUrls}\n${projectListUrls}\n${projectUrls}`
+const noteUrls = notes
+  .map((noteId) => {
+    const loc = `${siteUrl}/notes/${noteId}`
+    return `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
+  </url>`
+  })
+  .join('\n')
+
+const urls = `${pageUrls}\n${projectListUrls}\n${projectUrls}\n${noteUrls}`
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

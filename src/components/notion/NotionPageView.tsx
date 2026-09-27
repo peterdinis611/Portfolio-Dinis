@@ -5,8 +5,11 @@ import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { MOTION_EASE } from './motion'
 import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
+import { CvPage } from './pages/CvPage'
 import { ErrorPage } from './pages/ErrorPage'
 import { ExperiencePage } from './pages/ExperiencePage'
+import { NoteDetailPage } from './pages/NoteDetailPage'
+import { NotesPage } from './pages/NotesPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { ProjectDetailPage } from './pages/ProjectDetailPage'
 import { ProjectsPage } from './pages/ProjectsPage'
@@ -22,12 +25,14 @@ function FallbackPage({
   page,
   projectId,
   projectList,
+  noteId,
   attemptedPath,
 }: {
   lang: Lang
   page: PortfolioRoute['page']
   projectId?: string
   projectList?: PortfolioRoute['projectList']
+  noteId?: string
   attemptedPath?: string
 }) {
   if (page === 'not-found') {
@@ -42,6 +47,10 @@ function FallbackPage({
     return <ProjectDetailPage lang={lang} projectId={projectId} />
   }
 
+  if (page === 'notes' && noteId) {
+    return <NoteDetailPage lang={lang} noteId={noteId} />
+  }
+
   switch (page) {
     case 'about':
       return <AboutPage lang={lang} />
@@ -51,19 +60,23 @@ function FallbackPage({
       return <ExperiencePage lang={lang} />
     case 'projects':
       return <ProjectsPage lang={lang} projectList={projectList} />
+    case 'notes':
+      return <NotesPage lang={lang} />
+    case 'cv':
+      return <CvPage lang={lang} />
     case 'contact':
       return <ContactPage lang={lang} />
   }
 }
 
 export function NotionPageView({ lang, route }: NotionPageViewProps) {
-  const { page, projectId, projectList, attemptedPath } = route
+  const { page, projectId, projectList, noteId, attemptedPath } = route
   const reduce = useMotionDisabled()
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${attemptedPath ?? ''}`}
+        key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${noteId ?? ''}-${attemptedPath ?? ''}`}
         initial={reduce ? false : { opacity: 0, y: 14, filter: 'blur(4px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         exit={reduce ? undefined : { opacity: 0, y: -10, filter: 'blur(3px)' }}
@@ -74,6 +87,7 @@ export function NotionPageView({ lang, route }: NotionPageViewProps) {
           page={page}
           projectId={projectId}
           projectList={projectList}
+          noteId={noteId}
           attemptedPath={attemptedPath}
         />
       </motion.div>

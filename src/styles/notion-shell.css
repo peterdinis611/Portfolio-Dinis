@@ -341,20 +341,7 @@ img {
   padding: 2rem clamp(1.25rem, 4vw, 3rem) 4rem;
 }
 
-.notion-page-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: clamp(2rem, 5vw, 2.5rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.35rem;
-}
-
-.notion-page-icon {
-  font-size: 1.15em;
-}
+/* Page title layout is owned by PageTitle in blocks.tsx */
 
 .notion-text {
   font-size: 1rem;

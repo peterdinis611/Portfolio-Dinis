@@ -7,6 +7,7 @@ import { notionPageBlocks } from '@/i18n/notion-blocks-content'
 import { aboutTemplateContent } from '@/i18n/portfolio-template'
 import { type Lang, translations } from '@/i18n/translations'
 import { pageHref } from '@/lib/portfolio-route'
+import { AvailabilityBanner } from '../AvailabilityBanner'
 import {
   AboutCtaPanel,
   BioTagPills,
@@ -53,6 +54,8 @@ export function AboutPage({ lang }: { lang: Lang }) {
         <PageTitle icon="👋" description={template.aboutShort}>
           {profile.name}
         </PageTitle>
+
+        <AvailabilityBanner lang={lang} />
 
         <div className="mb-5 flex items-start gap-5 sm:gap-6">
           <ProfilePhoto

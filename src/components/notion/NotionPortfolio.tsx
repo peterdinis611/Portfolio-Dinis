@@ -127,7 +127,7 @@ export function NotionPortfolio() {
   ) : (
     <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
       <NotionPageView
-        key={`${lang}-${route.page}-${route.projectId ?? ''}-${route.projectList ?? ''}-${route.attemptedPath ?? ''}`}
+        key={`${lang}-${route.page}-${route.projectId ?? ''}-${route.projectList ?? ''}-${route.noteId ?? ''}-${route.attemptedPath ?? ''}`}
         lang={lang}
         route={route}
       />
@@ -180,6 +180,13 @@ export function NotionPortfolio() {
         open={searchOpen}
         onOpenChange={setSearchOpen}
         onNavigate={navigate}
+        actions={{
+          theme,
+          animations,
+          onToggleTheme: () => settingsActor.send({ type: 'TOGGLE_THEME' }),
+          onToggleLang: () => settingsActor.send({ type: 'TOGGLE_LANG' }),
+          onToggleAnimations: () => settingsActor.send({ type: 'TOGGLE_ANIMATIONS' }),
+        }}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">

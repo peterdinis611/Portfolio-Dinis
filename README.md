@@ -2,6 +2,20 @@
 
 Interactive portfolio with a Notion-like layout: sidebar, document pages, path URLs, SK/EN language toggle, and light/dark theme. Content is authored in React.
 
+## Preview
+
+| About (light) | About (dark) |
+|:---:|:---:|
+| ![About light](docs/screenshots/about.png) | ![About dark](docs/screenshots/about-dark.png) |
+
+| Projects | Experience |
+|:---:|:---:|
+| ![Projects](docs/screenshots/projects.png) | ![Experience](docs/screenshots/experience.png) |
+
+| Technologies | Project detail |
+|:---:|:---:|
+| ![Tech](docs/screenshots/tech.png) | ![Docu-Nest](docs/screenshots/project-detail.png) |
+
 ## Stack
 
 | Layer | Tools |

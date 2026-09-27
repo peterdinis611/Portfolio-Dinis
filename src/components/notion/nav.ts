@@ -11,6 +11,7 @@ export {
   isNotionPageId,
   isProjectId,
   isProjectListId,
+  noteHref,
   pageFromHash,
   pageHref,
   parsePortfolioRoute,
@@ -28,6 +29,8 @@ export function getNotionPages(lang: Lang): NotionPageDef[] {
     { id: 'tech', icon: '⚡', label: ui.tech },
     { id: 'experience', icon: '💼', label: ui.experience },
     { id: 'projects', icon: '🚀', label: ui.projects },
+    { id: 'notes', icon: '✍️', label: ui.notes },
+    { id: 'cv', icon: '📄', label: ui.cv },
     { id: 'contact', icon: '✉️', label: ui.contact },
   ]
 }

@@ -252,6 +252,21 @@
     letter-spacing: -0.02em;
   }
 
+  .notion-page--with-cover .page-title-icon {
+    margin-top: -2.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .notion-page--with-cover .page-title-icon {
+      margin-top: -3rem;
+    }
+  }
+
+  /* Back link above title — don't pull icon over the link */
+  .notion-page--with-cover .notion-back-link + .notion-page-title .page-title-icon {
+    margin-top: 0.35rem;
+  }
+
   .notion-page-link {
     @apply inline-flex items-center gap-1.5 rounded-[4px] px-1.5 py-0.5 text-[14px] font-medium transition-colors;
     color: var(--link);
@@ -454,82 +469,51 @@ html.has-custom-cursor [contenteditable="true"] {
 .portfolio-cursor {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 2147483646;
   pointer-events: none;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .portfolio-cursor-pointer {
   position: fixed;
   top: 0;
   left: 0;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   margin: 0;
   pointer-events: none;
   will-change: transform;
-  filter: drop-shadow(0 2px 4px rgba(15, 15, 15, 0.28));
+  transform-origin: 6px 4px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
 }
 
-.portfolio-cursor-arrow-fill {
-  fill: #f7fbfb;
-}
-
-.portfolio-cursor-arrow-stroke {
-  fill: none;
-  stroke: var(--primary);
-  stroke-width: 1.35;
-  stroke-linejoin: round;
-}
-
-.portfolio-cursor-arrow-shadow {
-  fill: rgba(15, 23, 22, 0.18);
-  transform: translate(1px, 1.5px);
-}
-
-.dark .portfolio-cursor-arrow-fill {
-  fill: #102426;
-}
-
-.dark .portfolio-cursor-arrow-stroke {
-  stroke: var(--primary);
-}
-
-.dark .portfolio-cursor-arrow-shadow {
-  fill: rgba(0, 0, 0, 0.45);
-}
-
-.portfolio-cursor-pointer.is-hover .portfolio-cursor-arrow-fill {
-  fill: color-mix(in srgb, var(--primary) 18%, #ffffff);
-}
-
-.dark .portfolio-cursor-pointer.is-hover .portfolio-cursor-arrow-fill {
-  fill: color-mix(in srgb, var(--primary) 28%, #102426);
+.portfolio-cursor-pointer.is-hover {
+  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--primary) 45%, transparent));
 }
 
 .portfolio-cursor-pointer.is-pressed {
-  filter: drop-shadow(0 1px 2px rgba(15, 15, 15, 0.22));
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
 }
 
 .portfolio-cursor-ring-hint {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 18px;
-  height: 18px;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
-  border: 1.5px solid color-mix(in srgb, var(--primary) 55%, transparent);
-  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  border: 2px solid color-mix(in srgb, var(--primary) 70%, transparent);
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
   opacity: 0;
-  transform: scale(0.55);
+  transform: scale(0.4);
   transition:
-    opacity 180ms ease,
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 160ms ease,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .portfolio-cursor-ring-hint.is-visible {
   opacity: 1;
-  transform: scale(1.55);
+  transform: scale(1.65);
 }
 
 :root[data-animations="off"] .portfolio-cursor-ring-hint {
@@ -540,4 +524,37 @@ html.has-custom-cursor [contenteditable="true"] {
   @apply sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-sm focus:px-3 focus:py-2 focus:text-sm focus:font-semibold;
   background: var(--primary);
   color: var(--primary-foreground);
+}
+
+@media print {
+  .notion-sidebar-shell,
+  .notion-topbar,
+  .portfolio-cursor,
+  .skip-link,
+  [data-scroll-to-top],
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .notion-app-shell,
+  .notion-page-pane,
+  .notion-page {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .notion-page-pane {
+    padding: 0 !important;
+  }
+
+  .cv-page {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  a[href]::after {
+    content: none !important;
+  }
 }

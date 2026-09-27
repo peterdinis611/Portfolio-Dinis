@@ -35,7 +35,7 @@ export function PageShell({
       <article
         className={cn(
           'notion-page mx-auto w-full px-6 pb-24 sm:px-12 md:px-[96px]',
-          cover ? 'pt-3 sm:pt-4' : 'pt-10 sm:pt-12 md:pt-14',
+          cover ? 'notion-page--with-cover pt-3 sm:pt-4' : 'pt-10 sm:pt-12 md:pt-14',
           className,
         )}
       >
@@ -381,7 +381,7 @@ export function BackLink({ href, children }: { href: string; children: ReactNode
   return (
     <a
       href={href}
-      className="group mb-5 inline-flex items-center gap-2 rounded-[10px] py-1 pr-2.5 pl-1 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] hover:text-[var(--link)]"
+      className="notion-back-link group relative z-[2] mb-3 inline-flex items-center gap-2 rounded-[10px] py-1 pr-2.5 pl-1 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] hover:text-[var(--link)]"
     >
       <span
         className="flex h-7 w-7 items-center justify-center rounded-[8px] border border-[rgba(55,53,47,0.08)] bg-[rgba(247,246,243,0.95)] text-foreground/70 shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition-all group-hover:-translate-x-0.5 group-hover:border-[color-mix(in_srgb,var(--primary)_35%,transparent)] group-hover:bg-background group-hover:text-[var(--link)] dark:border-[rgba(255,255,255,0.1)] dark:bg-[rgba(255,255,255,0.06)]"
@@ -393,6 +393,17 @@ export function BackLink({ href, children }: { href: string; children: ReactNode
         {children}
       </span>
     </a>
+  )
+}
+
+function PageEmojiIcon({ children }: { children: ReactNode }) {
+  return (
+    <span
+      className="inline-flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.15rem] border border-[rgba(55,53,47,0.08)] bg-[color-mix(in_srgb,var(--editor-surface)_88%,var(--primary))] text-[2.35rem] leading-none shadow-[0_1px_2px_rgba(15,15,15,0.05),inset_0_1px_0_rgba(255,255,255,0.55)] dark:border-[rgba(255,255,255,0.1)] dark:bg-[color-mix(in_srgb,var(--editor-surface)_82%,var(--primary))] dark:shadow-[0_1px_2px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)]"
+      aria-hidden
+    >
+      {children}
+    </span>
   )
 }
 
@@ -408,10 +419,15 @@ export function PageTitle({
   description?: ReactNode
   meta?: ReactNode
 }) {
+  const resolvedIcon =
+    icon == null ? null : typeof icon === 'string' ? <PageEmojiIcon>{icon}</PageEmojiIcon> : icon
+
   return (
-    <header className="notion-page-title mb-6">
-      {icon ? <div className="-ml-1 mb-2.5 inline-flex">{icon}</div> : null}
-      <h1 className="text-[40px] font-bold leading-[1.2] tracking-[-0.01em] text-foreground">
+    <header className="notion-page-title mb-6 flex flex-col items-start">
+      {resolvedIcon ? (
+        <div className="page-title-icon relative z-[1] mb-3 sm:mb-3.5">{resolvedIcon}</div>
+      ) : null}
+      <h1 className="max-w-3xl text-[40px] font-bold leading-[1.15] tracking-[-0.01em] text-foreground text-balance">
         {children}
       </h1>
       {meta ? <div className="mt-2.5 flex flex-wrap items-center gap-1.5">{meta}</div> : null}

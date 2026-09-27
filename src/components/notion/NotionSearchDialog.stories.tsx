@@ -16,7 +16,19 @@ function SearchPlayground({
   return (
     <div className="flex min-h-[240px] items-start justify-center p-8">
       <Button onClick={() => setOpen(true)}>Open search</Button>
-      <NotionSearchDialog lang={lang} open={open} onOpenChange={setOpen} onNavigate={fn()} />
+      <NotionSearchDialog
+        lang={lang}
+        open={open}
+        onOpenChange={setOpen}
+        onNavigate={fn()}
+        actions={{
+          theme: 'light',
+          animations: 'on',
+          onToggleTheme: fn(),
+          onToggleLang: fn(),
+          onToggleAnimations: fn(),
+        }}
+      />
     </div>
   )
 }
@@ -38,6 +50,13 @@ export const Open: Story = {
     open: true,
     onOpenChange: fn(),
     onNavigate: fn(),
+    actions: {
+      theme: 'light',
+      animations: 'on',
+      onToggleTheme: fn(),
+      onToggleLang: fn(),
+      onToggleAnimations: fn(),
+    },
   },
   render: (args) => <SearchPlayground lang={args.lang} initialOpen />,
 }
@@ -48,6 +67,13 @@ export const Slovak: Story = {
     open: true,
     onOpenChange: fn(),
     onNavigate: fn(),
+    actions: {
+      theme: 'light',
+      animations: 'on',
+      onToggleTheme: fn(),
+      onToggleLang: fn(),
+      onToggleAnimations: fn(),
+    },
   },
   render: (args) => <SearchPlayground lang={args.lang} initialOpen />,
 }

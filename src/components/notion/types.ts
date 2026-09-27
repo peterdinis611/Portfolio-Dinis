@@ -1,4 +1,4 @@
-export type NotionPageId = 'about' | 'tech' | 'experience' | 'projects' | 'contact'
+export type NotionPageId = 'about' | 'tech' | 'experience' | 'projects' | 'notes' | 'cv' | 'contact'
 
 export type NotionPageDef = {
   id: NotionPageId

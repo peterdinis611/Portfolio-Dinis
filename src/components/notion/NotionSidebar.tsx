@@ -31,8 +31,8 @@ export function NotionSidebar({
 }: NotionSidebarProps) {
   const ui = translations[lang].ui
   const pages = getNotionPages(lang)
-  const mainPages = pages.filter((page) => page.id !== 'contact')
-  const contactPage = pages.find((page) => page.id === 'contact')
+  const mainPages = pages.filter((page) => page.id !== 'contact' && page.id !== 'cv')
+  const footerPages = pages.filter((page) => page.id === 'cv' || page.id === 'contact')
   const projectItems = useMemo(() => getProjectNavItems(), [])
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(['projects']))
 
@@ -61,9 +61,10 @@ export function NotionSidebar({
       isProjectsOverviewActive(route) && item.id === 'projects'
         ? true
         : route.page === item.id && item.id !== 'projects'
-    const projectsOpen = expanded.has('projects')
 
     if (item.id === 'projects') {
+      const projectsOpen = expanded.has('projects')
+
       return (
         <>
           <div className="group/row flex items-center gap-1">
@@ -84,8 +85,8 @@ export function NotionSidebar({
             <button
               type="button"
               className="notion-nav-item min-w-0 flex-1"
-              {...navActive(pageActive)}
-              onClick={() => onNavigate({ page: item.id })}
+              {...navActive(isProjectsOverviewActive(route))}
+              onClick={() => onNavigate({ page: 'projects' })}
             >
               <span className="text-[15px] leading-none" aria-hidden>
                 {item.icon}
@@ -141,13 +142,13 @@ export function NotionSidebar({
       )}
       aria-label={ui.notionSidebar}
     >
-      <div className="group/workspace flex items-center gap-1 px-2.5 pb-1.5 pt-3">
+      <div className="group/workspace flex items-center gap-1 px-2.5 pt-3 pb-1.5">
         <button
           type="button"
           className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent"
           onClick={() => onNavigate({ page: 'about' })}
         >
-          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-[10px] font-bold leading-none text-primary-foreground">
+          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-[10px] leading-none font-bold text-primary-foreground">
             P
           </span>
           <span className="min-w-0 flex-1 truncate text-[14px] font-medium tracking-[-0.01em]">
@@ -159,7 +160,7 @@ export function NotionSidebar({
           <button
             type="button"
             onClick={onCollapse}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] text-muted-foreground opacity-0 transition-opacity hover:bg-sidebar-accent hover:text-foreground group-hover/workspace:opacity-100 focus-visible:opacity-100"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] text-muted-foreground opacity-0 transition-opacity group-hover/workspace:opacity-100 hover:bg-sidebar-accent hover:text-foreground focus-visible:opacity-100"
             aria-label={ui.notionCloseSidebar}
             title={`${ui.notionCloseSidebar} (⌘\\)`}
           >
@@ -195,9 +196,11 @@ export function NotionSidebar({
         </ul>
       </ScrollArea>
 
-      {contactPage ? (
-        <div className="border-t border-[rgba(55,53,47,0.06)] px-2.5 py-2.5 dark:border-[rgba(255,255,255,0.06)]">
-          {renderPageButton(contactPage)}
+      {footerPages.length > 0 ? (
+        <div className="space-y-0.5 border-t border-[rgba(55,53,47,0.06)] px-2.5 py-2.5 dark:border-[rgba(255,255,255,0.06)]">
+          {footerPages.map((page) => (
+            <div key={page.id}>{renderPageButton(page)}</div>
+          ))}
         </div>
       ) : null}
     </aside>

@@ -1,5 +1,6 @@
 import { getNotionPages } from '@/components/notion/nav'
 import type { NotionPageId } from '@/components/notion/types'
+import { notes } from '@/data/notes'
 import { profile, projects } from '@/data/portfolio'
 import { techCategories } from '@/data/technologies'
 import { type Lang, translations } from '@/i18n/translations'
@@ -7,6 +8,7 @@ import { type Lang, translations } from '@/i18n/translations'
 export type PortfolioSearchResult = {
   page: NotionPageId
   projectId?: string
+  noteId?: string
   pageLabel: string
   pageIcon: string
   title: string
@@ -17,6 +19,7 @@ export type PortfolioSearchResult = {
 type SearchEntry = {
   page: NotionPageId
   projectId?: string
+  noteId?: string
   title: string
   subtitle?: string
   terms: string[]
@@ -129,6 +132,25 @@ function buildSearchIndex(lang: Lang): SearchEntry[] {
     })
   }
 
+  for (const note of notes) {
+    addEntry(entries, {
+      page: 'notes',
+      noteId: note.id,
+      title: note.title[lang],
+      subtitle: note.summary[lang],
+      terms: [note.title[lang], note.summary[lang], ...note.tags, ...note.body[lang]],
+      weight: 8,
+    })
+  }
+
+  addEntry(entries, {
+    page: 'cv',
+    title: t.ui.cv,
+    subtitle: t.profile.title,
+    terms: [t.ui.cv, t.ui.cvIntro, t.profile.title, 'resume', 'pdf'],
+    weight: 9,
+  })
+
   addEntry(entries, {
     page: 'contact',
     title: t.ui.contact,
@@ -199,7 +221,7 @@ export function searchPortfolio(lang: Lang, query: string, limit = 8): Portfolio
   const results: PortfolioSearchResult[] = []
 
   for (const { entry, score } of ranked) {
-    const key = `${entry.page}:${entry.title}:${entry.subtitle ?? ''}`
+    const key = `${entry.page}:${entry.noteId ?? ''}:${entry.projectId ?? ''}:${entry.title}`
     if (seen.has(key)) continue
     seen.add(key)
 
@@ -207,6 +229,7 @@ export function searchPortfolio(lang: Lang, query: string, limit = 8): Portfolio
     results.push({
       page: entry.page,
       projectId: entry.projectId,
+      noteId: entry.noteId,
       pageLabel: page.label,
       pageIcon: page.icon,
       title: entry.title,
