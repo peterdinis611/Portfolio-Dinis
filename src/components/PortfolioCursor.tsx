@@ -83,6 +83,8 @@ export function PortfolioCursor() {
   const pointerRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef(false)
   const hoverRef = useRef(false)
+  const coordsRef = useRef({ x: -100, y: -100 })
+  const rafRef = useRef(0)
   const audioRef = useRef<AudioContext | null>(null)
   const lastClickRef = useRef(0)
 
@@ -90,20 +92,32 @@ export function PortfolioCursor() {
     const fine = window.matchMedia('(pointer: fine)')
     if (!fine.matches) return
 
-    const place = (x: number, y: number) => {
+    const flush = () => {
+      rafRef.current = 0
       const el = pointerRef.current
-      if (!el) return false
-      // Position via left/top so CSS can still use transform for hover scale.
-      el.style.left = `${x - HOTSPOT_X}px`
-      el.style.top = `${y - HOTSPOT_Y}px`
+      if (!el) return
+      const { x, y } = coordsRef.current
+      el.style.transform = `translate3d(${x - HOTSPOT_X}px, ${y - HOTSPOT_Y}px, 0)`
+    }
+
+    const place = (x: number, y: number) => {
+      coordsRef.current = { x, y }
+      if (!pointerRef.current) return false
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(flush)
+      }
       return true
     }
 
     const activate = (x: number, y: number) => {
       if (!place(x, y)) return
+      // Apply immediately so the first frame is never stuck at 0,0.
+      const el = pointerRef.current
+      if (el) {
+        el.style.transform = `translate3d(${x - HOTSPOT_X}px, ${y - HOTSPOT_Y}px, 0)`
+      }
       if (activeRef.current) return
       activeRef.current = true
-      // Hide native cursor only after custom pointer is positioned.
       document.documentElement.classList.add('has-custom-cursor')
       setActive(true)
     }
@@ -142,9 +156,8 @@ export function PortfolioCursor() {
       playClickSound(ctx)
     }
 
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerType === 'touch') return
-      place(event.clientX, event.clientY)
+    const onMove = (event: PointerEvent | MouseEvent) => {
+      if ('pointerType' in event && event.pointerType === 'touch') return
       activate(event.clientX, event.clientY)
 
       const target = event.target
@@ -166,11 +179,7 @@ export function PortfolioCursor() {
 
     const onUp = () => setPressed(false)
 
-    const onLeaveWindow = (event: MouseEvent) => {
-      const related = event.relatedTarget
-      if (related instanceof Node && document.documentElement.contains(related)) return
-      deactivate()
-    }
+    const onLeaveDocument = () => deactivate()
 
     const onVisibility = () => {
       if (document.hidden) deactivate()
@@ -180,20 +189,24 @@ export function PortfolioCursor() {
       if (!fine.matches) deactivate()
     }
 
-    window.addEventListener('pointermove', onMove, { passive: true })
-    window.addEventListener('pointerdown', onDown)
-    window.addEventListener('pointerup', onUp)
-    window.addEventListener('pointercancel', onUp)
-    document.addEventListener('mouseout', onLeaveWindow)
+    // Capture on document so moves are never missed (scrollbars, overlays, etc.).
+    document.addEventListener('pointermove', onMove, { passive: true, capture: true })
+    document.addEventListener('mousemove', onMove, { passive: true, capture: true })
+    document.addEventListener('pointerdown', onDown, { capture: true })
+    document.addEventListener('pointerup', onUp, { capture: true })
+    document.addEventListener('pointercancel', onUp, { capture: true })
+    document.documentElement.addEventListener('mouseleave', onLeaveDocument)
     document.addEventListener('visibilitychange', onVisibility)
     fine.addEventListener('change', onFineChange)
 
     return () => {
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerdown', onDown)
-      window.removeEventListener('pointerup', onUp)
-      window.removeEventListener('pointercancel', onUp)
-      document.removeEventListener('mouseout', onLeaveWindow)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      document.removeEventListener('pointermove', onMove, { capture: true })
+      document.removeEventListener('mousemove', onMove, { capture: true })
+      document.removeEventListener('pointerdown', onDown, { capture: true })
+      document.removeEventListener('pointerup', onUp, { capture: true })
+      document.removeEventListener('pointercancel', onUp, { capture: true })
+      document.documentElement.removeEventListener('mouseleave', onLeaveDocument)
       document.removeEventListener('visibilitychange', onVisibility)
       fine.removeEventListener('change', onFineChange)
       document.documentElement.classList.remove('has-custom-cursor')
@@ -204,17 +217,18 @@ export function PortfolioCursor() {
 
   return (
     <div className={cn('portfolio-cursor', !active && 'is-hidden')} aria-hidden>
-      <div
-        ref={pointerRef}
-        className={cn(
-          'portfolio-cursor-pointer',
-          hover && 'is-hover',
-          pressed && 'is-pressed',
-          disabledMotion && 'is-instant',
-        )}
-      >
-        <CursorArrow />
-        <span className={cn('portfolio-cursor-ring-hint', hover && 'is-visible')} />
+      <div ref={pointerRef} className="portfolio-cursor-pointer">
+        <div
+          className={cn(
+            'portfolio-cursor-glyph',
+            hover && 'is-hover',
+            pressed && 'is-pressed',
+            disabledMotion && 'is-instant',
+          )}
+        >
+          <CursorArrow />
+          <span className={cn('portfolio-cursor-ring-hint', hover && 'is-visible')} />
+        </div>
       </div>
     </div>
   )

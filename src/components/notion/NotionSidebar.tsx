@@ -171,16 +171,14 @@ export function NotionSidebar({
 
       <div className="px-2.5 pb-2.5">
         {onOpenSearch ? (
-          <button
-            type="button"
-            onClick={onOpenSearch}
-            className="flex h-9 w-full items-center gap-2.5 rounded-[6px] px-2.5 text-left text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-          >
-            <Search className="h-3.5 w-3.5 shrink-0 opacity-70" strokeWidth={1.75} />
-            <span className="min-w-0 flex-1 truncate text-[13px]">{ui.notionQuickFind}</span>
-            <kbd className="rounded-[4px] bg-[rgba(55,53,47,0.08)] px-1.5 py-0.5 font-sans text-[10px] text-muted-foreground dark:bg-[rgba(255,255,255,0.08)]">
-              ⌘K
-            </kbd>
+          <button type="button" onClick={onOpenSearch} className="notion-quick-find group/find">
+            <span className="notion-quick-find-icon" aria-hidden>
+              <Search className="h-3.5 w-3.5" strokeWidth={2} />
+            </span>
+            <span className="min-w-0 flex-1 truncate text-left text-[13px] text-muted-foreground transition-colors group-hover/find:text-foreground">
+              {ui.notionQuickFind}
+            </span>
+            <kbd className="notion-quick-find-kbd">⌘K</kbd>
           </button>
         ) : null}
       </div>

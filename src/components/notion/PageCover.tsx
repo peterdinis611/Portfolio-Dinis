@@ -98,9 +98,9 @@ export function PageCover({
       {/* Minimal scrim — photos stay readable in light + dark */}
       <div className="absolute inset-0 z-[1] bg-transparent dark:bg-black/10" aria-hidden />
 
-      {/* Short fade into page — don’t wipe most of the cover */}
+      {/* Short fade into page — keep stack below page content */}
       <div
-        className="absolute inset-x-0 bottom-0 z-[2] h-12 bg-gradient-to-t from-background via-background/40 to-transparent sm:h-14"
+        className="absolute inset-x-0 bottom-0 z-[2] h-10 bg-gradient-to-t from-background via-background/35 to-transparent sm:h-12"
         aria-hidden
       />
       <div className="page-cover-shine z-[3]" aria-hidden />

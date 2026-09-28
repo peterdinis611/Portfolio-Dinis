@@ -35,7 +35,7 @@ export function PageShell({
       <article
         className={cn(
           'notion-page mx-auto w-full px-6 pb-24 sm:px-12 md:px-[96px]',
-          cover ? 'notion-page--with-cover pt-3 sm:pt-4' : 'pt-10 sm:pt-12 md:pt-14',
+          cover ? 'notion-page--with-cover pt-5 sm:pt-6' : 'pt-10 sm:pt-12 md:pt-14',
           className,
         )}
       >
@@ -425,7 +425,7 @@ export function PageTitle({
   return (
     <header className="notion-page-title mb-6 flex flex-col items-start">
       {resolvedIcon ? (
-        <div className="page-title-icon relative z-[1] mb-3 sm:mb-3.5">{resolvedIcon}</div>
+        <div className="page-title-icon relative z-[2] mb-3 sm:mb-3.5">{resolvedIcon}</div>
       ) : null}
       <h1 className="max-w-3xl text-[40px] font-bold leading-[1.15] tracking-[-0.01em] text-foreground text-balance">
         {children}
