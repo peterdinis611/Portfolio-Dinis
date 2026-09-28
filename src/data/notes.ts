@@ -202,6 +202,138 @@ const notesSource: Note[] = [
       ],
     },
   },
+  {
+    id: 'react-performance',
+    icon: '⚡',
+    date: '2026-03-20',
+    readingMinutes: 8,
+    tags: ['React', 'Performance', 'DX'],
+    title: {
+      sk: 'React performance bez predčasnej optimalizácie',
+      en: 'React performance without premature optimization',
+    },
+    summary: {
+      sk: 'Profiluj skôr než memoizuješ. Kde reálne bolí render, sieť a layout — a čo riešiť ako posledné.',
+      en: 'Profile before you memoize. Where render, network, and layout actually hurt — and what to fix last.',
+    },
+    body: {
+      sk: [
+        'Najčastejšia chyba nie je pomalý React — je to `useMemo` všade, pretože „tak sa to robí“. Memoizácia bez merania je šum. Najprv otvor React Profiler / Performance panel a pomenuj bottleneck: zbytočné re-rendery, veľký list, drahý layout, alebo čakanie na sieť.',
+        'Hierarchia fixov: 1) menej práce (rozdeľ komponenty, vytiahni state bližšie k listu), 2) lacnejší render (virtualizácia, pagination), 3) menej čakania (prefetch, Suspense boundaries, cache), 4) až potom mikro-optimalizácie (`memo`, `useCallback`). Väčšina produktov vyhrá na krokoch 1–3.',
+        'V enterprise UI (Fluent, husté tabuľky) často bolí layout thrashing a príliš veľa context providerov. Stabilné kľúče, oddelené „dumb“ riadky a oddelený selection state ušetria viac než desiatky `memo`.',
+        'Sieť je UX. Skeleton a optimistic UI nevyzerajú ako „performance hack“ — sú to produktové rozhodnutia. TanStack Query s dobrým `staleTime` často „zrýchli“ appku viac než tri `useMemo`.',
+        'Pravidlo: optimalizuj to, čo vieš zopakovať v profile. Ak po zmene nie je merateľný rozdiel, rollback. Performance PR bez metriky je len noise v git histórii.',
+        'A keď naozaj treba: `startTransition` pre nie-urgentné updaty, `useDeferredValue` pre heavy filtre, a lazy route-level code splitting. Nástroje existujú — použij ich cielene, nie ako default template.',
+      ],
+      en: [
+        'The most common mistake isn’t slow React — it’s `useMemo` everywhere because “that’s how it’s done.” Memoization without measurement is noise. Open the React Profiler / Performance panel first and name the bottleneck: wasteful re-renders, a huge list, expensive layout, or network wait.',
+        'Fix hierarchy: 1) less work (split components, pull state closer to the list), 2) cheaper render (virtualization, pagination), 3) less waiting (prefetch, Suspense boundaries, cache), 4) only then micro-opts (`memo`, `useCallback`). Most products win on steps 1–3.',
+        'In enterprise UI (Fluent, dense tables) layout thrashing and too many context providers often hurt more. Stable keys, dumb row components, and separated selection state beat dozens of `memo`s.',
+        'Network is UX. Skeletons and optimistic UI aren’t “performance hacks” — they’re product decisions. TanStack Query with a sane `staleTime` often “speeds up” the app more than three `useMemo`s.',
+        'Rule: optimize what you can reproduce in a profile. No measurable delta after a change? Rollback. A performance PR without a metric is just noise in git history.',
+        'And when you really need it: `startTransition` for non-urgent updates, `useDeferredValue` for heavy filters, and lazy route-level code splitting. The tools exist — use them on purpose, not as a default template.',
+      ],
+    },
+  },
+  {
+    id: 'code-review-culture',
+    icon: '🔍',
+    date: '2026-03-08',
+    readingMinutes: 7,
+    tags: ['Code review', 'Team', 'DX'],
+    title: {
+      sk: 'Code review, ktoré učí — nie len blokuje merge',
+      en: 'Code review that teaches — not just blocks merge',
+    },
+    summary: {
+      sk: 'Čo komentovať, čo neriešiť v PR, a ako z review urobiť coaching namiesto gatekeepingu.',
+      en: 'What to comment on, what not to bike-shed in a PR, and how to turn review into coaching instead of gatekeeping.',
+    },
+    body: {
+      sk: [
+        'Zlý review je checklist nitpickov: naming, poradie importov, osobný taste. Dobrý review chráni používateľa a budúceho developera: správnosť, edge casy, bezpečnosť, čitateľnosť kontraktu, regresné riziko.',
+        'Oddeluj blocker vs. nit. Blocker = „toto rozbije produkciu / dáta / a11y“. Nit = „preferoval by som X“ — a nit neblokuje merge. Ak všetko je blocker, tím sa naučí báť sa review namiesto učiť sa z neho.',
+        'Píš otázky a dôvod, nie len príkaz. „Tu by som dal early return, lebo…“ učí. „Zmeň toto“ vytvára závislosť. Pri junioroch je review najlacnejší mentoring, aký máš.',
+        'Veľkosť PR je feature. 80 riadkov s jedným cieľom reviewuješ lepšie než 800 riadkov „aj refaktor aj feature“. Ak musí byť veľké, rozdeľ commitmi a popisom: čo testovať, čo je zámerné breaking.',
+        'Automatizuj vkus: formatter, lint, typecheck, basic a11y. Ľudský review má ísť na veci, ktoré CI nevie. Inak míňaš senior čas na to, čo vie Biome za 40 ms.',
+        'Kultúra: ďakuj za dobré PR, chváľ dobré rozhodnutia nahlas. Review nie je súd. Je to spoločná ochrana produktu — a signál, že kvalita je tímová, nie individuálna hrdosť.',
+      ],
+      en: [
+        'Bad review is a checklist of nits: naming, import order, personal taste. Good review protects the user and the next developer: correctness, edge cases, security, contract readability, regression risk.',
+        'Separate blocker vs nit. Blocker = “this breaks production / data / a11y.” Nit = “I’d prefer X” — and nits don’t block merge. If everything is a blocker, the team learns to fear review instead of learn from it.',
+        'Write questions and reasons, not just orders. “I’d early-return here because…” teaches. “Change this” creates dependency. For juniors, review is the cheapest mentoring you have.',
+        'PR size is a feature. Eighty lines with one goal review better than 800 lines of “refactor + feature.” If it must be large, split with commits and a description: what to test, what’s intentional breaking.',
+        'Automate taste: formatter, lint, typecheck, basic a11y. Human review should spend time on what CI can’t see. Otherwise you burn senior minutes on what Biome catches in 40ms.',
+        'Culture: thank good PRs, praise good decisions out loud. Review isn’t a trial. It’s shared protection of the product — and a signal that quality is a team sport, not individual pride.',
+      ],
+    },
+  },
+  {
+    id: 'api-boundaries',
+    icon: '🔌',
+    date: '2026-02-18',
+    readingMinutes: 8,
+    tags: ['API', 'NestJS', 'Architecture'],
+    title: {
+      sk: 'API hranice, ktoré produktový tím neobchádza',
+      en: 'API boundaries product teams don’t route around',
+    },
+    summary: {
+      sk: 'Verzie, chyby, idempotencia a prečo „rýchly endpoint naviac“ zabíja platformu.',
+      en: 'Versions, errors, idempotency — and why “one quick extra endpoint” kills the platform.',
+    },
+    body: {
+      sk: [
+        'API nie je zoznam controllerov. Je to kontrakt medzi tímami. Keď frontend potrebuje „ešte jedno pole“, a ty pridáš endpoint bez vlastníka, o rok máš zoo one-off routes a nikto nevie, čo je kanonické.',
+        'Začni od use-casov, nie od tabuliek. Resource model (`/licenses/:id`) + jasné commandy (`POST .../renew`) bije anémické CRUD, kde UI skladá business logiku z piatich GET-ov. NestJS modules majú sedieť na bounded contexts, nie na „všetko v AppModule“.',
+        'Chyby majú shape. `code`, `message`, `fields` — konzistentné naprieč službami. Frontend potom vie mapovať UI, nie parsovať náhodný string. 4xx vs 5xx nie je akademická diskusia; je to SLA a alerting.',
+        'Idempotencia pri write operáciách (platby, submit formulárov, sync) šetrí support tickets. `Idempotency-Key` alebo prirodzený business kľúč. Retry bez nej je duplicitný chaos.',
+        'Verzie a deprecation: breaking change bez komunikácie je incident. Preferuj additive zmeny; keď musíš lámať, deadline + dual-run. „Dočasný endpoint“ bez ownera sa stane večný.',
+        'Dokumentácia pri kóde (OpenAPI generované z DTO) + príklady request/response. Ak developer potrebuje Slack, aby pochopil endpoint, platforma neuspela — bez ohľadu na to, ako pekný má Swagger UI.',
+      ],
+      en: [
+        'An API isn’t a list of controllers. It’s a contract between teams. When frontend needs “one more field” and you add an ownerless endpoint, a year later you have a zoo of one-offs and no one knows what’s canonical.',
+        'Start from use cases, not tables. A resource model (`/licenses/:id`) plus clear commands (`POST .../renew`) beats anemic CRUD where UI assembles business logic from five GETs. NestJS modules should map to bounded contexts — not “everything in AppModule.”',
+        'Errors need a shape. `code`, `message`, `fields` — consistent across services. Frontend can map UI instead of parsing random strings. 4xx vs 5xx isn’t academic; it’s SLA and alerting.',
+        'Idempotency on writes (payments, form submit, sync) saves support tickets. `Idempotency-Key` or a natural business key. Retry without it is duplicate chaos.',
+        'Versions and deprecation: a breaking change without communication is an incident. Prefer additive changes; when you must break, set a deadline and dual-run. A “temporary endpoint” with no owner becomes permanent.',
+        'Docs next to code (OpenAPI generated from DTOs) plus request/response examples. If a developer needs Slack to understand an endpoint, the platform failed — no matter how pretty the Swagger UI looks.',
+      ],
+    },
+  },
+  {
+    id: 'a11y-enterprise',
+    icon: '♿',
+    date: '2026-01-28',
+    readingMinutes: 7,
+    tags: ['Accessibility', 'Fluent UI', 'UX'],
+    title: {
+      sk: 'Prístupnosť v enterprise UI nie je „nice to have“',
+      en: 'Accessibility in enterprise UI isn’t a nice-to-have',
+    },
+    summary: {
+      sk: 'Keyboard, focus, kontrast a prečo Fluent/SharePoint bez a11y nie je hotový produkt.',
+      en: 'Keyboard, focus, contrast — and why Fluent/SharePoint without a11y isn’t a finished product.',
+    },
+    body: {
+      sk: [
+        'V enterprise často počuješ „naši useri to nepoužívajú so screen readerom“. To je predpoklad, nie dátum. Klávesnica, fokus a kontrast pomáhajú aj power userom a ľuďom s dočasnými obmedzeniami. A11y je UX kvalita, nie checkbox na konci sprintu.',
+        'Fluent UI ti dáva dobrý základ — ale nezachráni zlý custom overlay, focustrap, ktorý nefunguje, alebo tabuľku, kde sa nedá dostať na akcie bez myši. Testuj Tab order skôr než vizuálny pixel-perfect.',
+        'Kontrast a hustota: enterprise love tiny gray text. Ak dizajn systém povoľuje nečitateľné tokeny, oprav tokeny — nie každú obrazovku zvlášť. Design systém je aj a11y systém.',
+        'Formuláre: label vždy viazaný, chyby oznamované prístupne (`aria-describedby`), disabled nie ako jediný stav pre „nemôžeš“. Modal: focus in, focus back, Escape. Toto sú opakujúce sa bugy, nie one-off.',
+        'Automatizácia: axe/lighthouse v CI chytí nízko visiace ovocie. Manuálny keyboard pass na kritických flowoch (login, submit, admin akcie) zachytí zvyšok. Bez oboch máš falošný pocit bezpečia.',
+        'Ak dodávaš pre verejný sektor alebo healthcare, a11y nie je brand story — je to požiadavka. Buduj ju do Definition of Done. Inak ju doháňaš po audite, keď už bolí.',
+      ],
+      en: [
+        'In enterprise you often hear “our users don’t use a screen reader.” That’s an assumption, not data. Keyboard, focus, and contrast also help power users and people with temporary impairments. A11y is UX quality, not a checkbox at sprint end.',
+        'Fluent UI gives a solid base — but it won’t save a broken custom overlay, a focus trap that fails, or a table where actions aren’t reachable without a mouse. Test Tab order before pixel-perfect visuals.',
+        'Contrast and density: enterprise loves tiny gray text. If the design system allows unreadable tokens, fix the tokens — not every screen one by one. A design system is an a11y system too.',
+        'Forms: labels always wired, errors announced accessibly (`aria-describedby`), disabled not the only “you can’t” state. Modals: focus in, focus restore, Escape. These are recurring bugs, not one-offs.',
+        'Automation: axe/Lighthouse in CI catches low-hanging fruit. A manual keyboard pass on critical flows (login, submit, admin actions) catches the rest. Without both you get false confidence.',
+        'If you ship for public sector or healthcare, a11y isn’t a brand story — it’s a requirement. Bake it into the Definition of Done. Otherwise you chase it after an audit, when it already hurts.',
+      ],
+    },
+  },
 ]
 
 /** Newest first — single sorted source for listing & adjacency. */

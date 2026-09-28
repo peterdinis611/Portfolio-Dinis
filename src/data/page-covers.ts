@@ -15,17 +15,18 @@ export const pageCoverImages: Record<PageCoverVariant, PageCoverImage> = {
   about: {
     src: '/covers/about.jpg',
     srcWebp: '/covers/about.webp',
-    srcDark: '/covers/code.jpg',
-    srcDarkWebp: '/covers/code.webp',
+    // Keep the brighter workspace photo in dark mode — code.jpg disappears into the shell.
+    srcDark: '/covers/about.jpg',
+    srcDarkWebp: '/covers/about.webp',
     alt: 'Developer workspace with laptop showing code',
     objectPosition: 'center 40%',
-    objectPositionDark: 'left 42%',
+    objectPositionDark: 'center 35%',
   },
   tech: {
-    src: '/covers/code.jpg',
-    srcWebp: '/covers/code.webp',
-    alt: 'Source code on a screen',
-    objectPosition: 'left 42%',
+    src: '/covers/experience.jpg',
+    srcWebp: '/covers/experience.webp',
+    alt: 'Developers collaborating at a laptop',
+    objectPosition: 'center 42%',
   },
   experience: {
     src: '/covers/experience.jpg',
@@ -33,10 +34,10 @@ export const pageCoverImages: Record<PageCoverVariant, PageCoverImage> = {
     alt: 'Developers collaborating at a laptop',
   },
   projects: {
-    src: '/covers/code.jpg',
-    srcWebp: '/covers/code.webp',
-    alt: 'Code editor on a monitor',
-    objectPosition: 'left 42%',
+    src: '/covers/about.jpg',
+    srcWebp: '/covers/about.webp',
+    alt: 'Developer workspace',
+    objectPosition: 'center 40%',
   },
   contact: {
     src: '/covers/contact.jpg',

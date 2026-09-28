@@ -18,7 +18,9 @@
     "biome:ci": "biome ci .",
     "seo:generate": "node scripts/generate-seo.mjs && node scripts/generate-og.mjs",
     "og:generate": "node scripts/generate-og.mjs",
-    "verify": "tsc -b && biome ci .",
+    "verify": "tsc -b && biome ci . && vitest run",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -58,6 +60,7 @@
     "@vitejs/plugin-react": "^6.0.5",
     "storybook": "^10.5.10",
     "typescript": "~6.0.3",
-    "vite": "^8.2.1"
+    "vite": "^8.2.1",
+    "vitest": "^5.0.2"
   }
 }

@@ -28,7 +28,7 @@ function CoverPicture({
     mode === 'dark' ? (cover.objectPositionDark ?? cover.objectPosition) : cover.objectPosition
 
   return (
-    <picture className={cn('absolute inset-0 block', className)}>
+    <picture className={cn('absolute inset-0 block h-full w-full', className)}>
       {webp ? (
         <source
           srcSet={webp}
@@ -39,7 +39,7 @@ function CoverPicture({
       <img
         src={jpg}
         alt=""
-        className="page-cover-img h-full w-full object-cover"
+        className="page-cover-img absolute inset-0 h-full w-full object-cover"
         style={objectPosition ? { objectPosition } : undefined}
         loading={eager ? 'eager' : 'lazy'}
         fetchPriority={eager ? 'high' : 'auto'}
@@ -72,18 +72,18 @@ export function PageCover({
   return (
     <motion.div
       className={cn(
-        'page-cover pointer-events-none relative h-40 w-full overflow-hidden sm:h-52',
+        'page-cover pointer-events-none relative h-48 w-full overflow-hidden sm:h-60 md:h-72',
         className,
       )}
       initial={reduce ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, ease: MOTION_EASE }}
+      transition={{ duration: 0.45, ease: MOTION_EASE }}
     >
       <motion.div
-        className="absolute inset-0"
-        initial={reduce ? false : { scale: 1.08 }}
+        className="absolute inset-0 z-0"
+        initial={reduce ? false : { scale: 1.06 }}
         animate={{ scale: 1 }}
-        transition={{ duration: reduce ? 0 : 1.35, ease: MOTION_EASE }}
+        transition={{ duration: reduce ? 0 : 1.2, ease: MOTION_EASE }}
       >
         {hasDark ? (
           <>
@@ -94,22 +94,16 @@ export function PageCover({
           <CoverPicture cover={cover} mode="single" eager={eager} />
         )}
       </motion.div>
+
+      {/* Minimal scrim — photos stay readable in light + dark */}
+      <div className="absolute inset-0 z-[1] bg-transparent dark:bg-black/10" aria-hidden />
+
+      {/* Short fade into page — don’t wipe most of the cover */}
       <div
-        className={cn(
-          'absolute inset-0',
-          hasDark
-            ? 'bg-black/[0.08] dark:bg-black/15'
-            : projectId || variant === 'projects' || variant === 'tech'
-              ? 'bg-black/[0.08] dark:bg-black/25'
-              : 'bg-black/[0.12] dark:bg-black/40',
-        )}
+        className="absolute inset-x-0 bottom-0 z-[2] h-12 bg-gradient-to-t from-background via-background/40 to-transparent sm:h-14"
         aria-hidden
       />
-      <div
-        className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background via-background/85 to-transparent"
-        aria-hidden
-      />
-      <div className="page-cover-shine" aria-hidden />
+      <div className="page-cover-shine z-[3]" aria-hidden />
     </motion.div>
   )
 }

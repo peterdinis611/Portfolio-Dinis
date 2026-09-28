@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import { cn } from '@/lib/utils'
 
@@ -76,99 +76,76 @@ function CursorArrow() {
 
 export function PortfolioCursor() {
   const disabledMotion = useMotionDisabled()
-  const [enabled, setEnabled] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [active, setActive] = useState(false)
   const [hover, setHover] = useState(false)
   const [pressed, setPressed] = useState(false)
 
   const pointerRef = useRef<HTMLDivElement>(null)
+  const activeRef = useRef(false)
   const hoverRef = useRef(false)
-  const visibleRef = useRef(false)
-  const rafRef = useRef(0)
-  const pendingRef = useRef<{ x: number; y: number } | null>(null)
   const audioRef = useRef<AudioContext | null>(null)
   const lastClickRef = useRef(0)
 
-  const ensureAudio = useCallback(() => {
-    if (typeof window === 'undefined') return null
-    const Ctx =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-    if (!Ctx) return null
-    if (!audioRef.current || audioRef.current.state === 'closed') {
-      audioRef.current = new Ctx()
-    }
-    return audioRef.current
-  }, [])
-
-  const click = useCallback(() => {
-    const now = performance.now()
-    if (now - lastClickRef.current < 90) return
-    lastClickRef.current = now
-
-    const ctx = ensureAudio()
-    if (!ctx) return
-    if (ctx.state === 'suspended') {
-      void ctx.resume().then(() => playClickSound(ctx))
-      return
-    }
-    playClickSound(ctx)
-  }, [ensureAudio])
-
-  const flushPosition = useCallback(() => {
-    rafRef.current = 0
-    const pending = pendingRef.current
-    const el = pointerRef.current
-    if (!pending || !el) return
-    el.style.left = `${pending.x - HOTSPOT_X}px`
-    el.style.top = `${pending.y - HOTSPOT_Y}px`
-  }, [])
-
   useEffect(() => {
     const fine = window.matchMedia('(pointer: fine)')
-    const sync = () => setEnabled(fine.matches)
-    sync()
-    fine.addEventListener('change', sync)
-    return () => {
-      fine.removeEventListener('change', sync)
-      document.documentElement.classList.remove('has-custom-cursor')
-      void audioRef.current?.close()
-      audioRef.current = null
-    }
-  }, [])
+    if (!fine.matches) return
 
-  useEffect(() => {
-    if (!enabled) {
-      document.documentElement.classList.remove('has-custom-cursor')
-      visibleRef.current = false
-      setVisible(false)
-      return
+    const place = (x: number, y: number) => {
+      const el = pointerRef.current
+      if (!el) return false
+      // Position via left/top so CSS can still use transform for hover scale.
+      el.style.left = `${x - HOTSPOT_X}px`
+      el.style.top = `${y - HOTSPOT_Y}px`
+      return true
     }
 
-    const show = () => {
-      if (visibleRef.current) return
-      visibleRef.current = true
-      setVisible(true)
+    const activate = (x: number, y: number) => {
+      if (!place(x, y)) return
+      if (activeRef.current) return
+      activeRef.current = true
+      // Hide native cursor only after custom pointer is positioned.
       document.documentElement.classList.add('has-custom-cursor')
+      setActive(true)
     }
 
-    const hide = () => {
-      if (!visibleRef.current) return
-      visibleRef.current = false
-      setVisible(false)
+    const deactivate = () => {
+      if (!activeRef.current) return
+      activeRef.current = false
       hoverRef.current = false
+      setActive(false)
       setHover(false)
       setPressed(false)
       document.documentElement.classList.remove('has-custom-cursor')
     }
 
-    const onMove = (event: MouseEvent) => {
-      pendingRef.current = { x: event.clientX, y: event.clientY }
-      if (!rafRef.current) {
-        rafRef.current = requestAnimationFrame(flushPosition)
+    const ensureAudio = () => {
+      const Ctx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      if (!Ctx) return null
+      if (!audioRef.current || audioRef.current.state === 'closed') {
+        audioRef.current = new Ctx()
       }
+      return audioRef.current
+    }
 
-      show()
+    const playClick = () => {
+      const now = performance.now()
+      if (now - lastClickRef.current < 90) return
+      lastClickRef.current = now
+      const ctx = ensureAudio()
+      if (!ctx) return
+      if (ctx.state === 'suspended') {
+        void ctx.resume().then(() => playClickSound(ctx))
+        return
+      }
+      playClickSound(ctx)
+    }
+
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') return
+      place(event.clientX, event.clientY)
+      activate(event.clientX, event.clientY)
 
       const target = event.target
       const nextHover = target instanceof Element ? Boolean(target.closest(INTERACTIVE)) : false
@@ -178,43 +155,55 @@ export function PortfolioCursor() {
       }
     }
 
-    const onDown = (event: MouseEvent) => {
-      if (event.button !== 0) return
+    const onDown = (event: PointerEvent) => {
+      if (event.pointerType === 'touch' || event.button !== 0) return
       setPressed(true)
       const target = event.target
       if (target instanceof Element && target.closest(INTERACTIVE)) {
-        click()
+        playClick()
       }
     }
+
     const onUp = () => setPressed(false)
-    const onLeave = () => hide()
-    const onEnter = (event: MouseEvent) => {
-      pendingRef.current = { x: event.clientX, y: event.clientY }
-      flushPosition()
-      show()
+
+    const onLeaveWindow = (event: MouseEvent) => {
+      const related = event.relatedTarget
+      if (related instanceof Node && document.documentElement.contains(related)) return
+      deactivate()
     }
 
-    window.addEventListener('mousemove', onMove, { passive: true })
-    window.addEventListener('mousedown', onDown)
-    window.addEventListener('mouseup', onUp)
-    document.documentElement.addEventListener('mouseleave', onLeave)
-    document.documentElement.addEventListener('mouseenter', onEnter)
+    const onVisibility = () => {
+      if (document.hidden) deactivate()
+    }
+
+    const onFineChange = () => {
+      if (!fine.matches) deactivate()
+    }
+
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onDown)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
+    document.addEventListener('mouseout', onLeaveWindow)
+    document.addEventListener('visibilitychange', onVisibility)
+    fine.addEventListener('change', onFineChange)
 
     return () => {
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('mousedown', onDown)
-      window.removeEventListener('mouseup', onUp)
-      document.documentElement.removeEventListener('mouseleave', onLeave)
-      document.documentElement.removeEventListener('mouseenter', onEnter)
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+      document.removeEventListener('mouseout', onLeaveWindow)
+      document.removeEventListener('visibilitychange', onVisibility)
+      fine.removeEventListener('change', onFineChange)
       document.documentElement.classList.remove('has-custom-cursor')
+      void audioRef.current?.close()
+      audioRef.current = null
     }
-  }, [enabled, click, flushPosition])
-
-  if (!enabled) return null
+  }, [])
 
   return (
-    <div className={cn('portfolio-cursor', !visible && 'is-hidden')} aria-hidden>
+    <div className={cn('portfolio-cursor', !active && 'is-hidden')} aria-hidden>
       <div
         ref={pointerRef}
         className={cn(

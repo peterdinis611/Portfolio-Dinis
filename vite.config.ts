@@ -1,7 +1,7 @@
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 function resolveSiteUrlForBuild(): string {
   if (process.env.VITE_SITE_URL) return process.env.VITE_SITE_URL.trim().replace(/\/$/, '')
@@ -26,5 +26,9 @@ export default defineConfig({
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
     },
+  },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.{test,spec}.ts'],
   },
 })

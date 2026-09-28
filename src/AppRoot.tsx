@@ -1,38 +1,39 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { type ComponentType, useEffect, useState } from 'react'
 import { PreloadScreen } from './components/PreloadScreen'
 import { preloadApp } from './lib/preload'
 
-const LazyNotionPortfolio = lazy(() =>
-  import('./components/notion/NotionPortfolio').then((m) => ({ default: m.NotionPortfolio })),
-)
-
 export function AppRoot() {
-  const [booted, setBooted] = useState(false)
+  const [Portfolio, setPortfolio] = useState<ComponentType | null>(null)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
     let active = true
+
     preloadApp((value) => {
       if (active) setProgress(value)
     })
-      .then(() => {
-        if (active) setBooted(true)
+      .then(() => import('./components/notion/NotionPortfolio'))
+      .then((mod) => {
+        if (!active) return
+        setPortfolio(() => mod.NotionPortfolio)
       })
-      .catch(() => {
-        if (active) setBooted(true)
+      .catch(async () => {
+        try {
+          const mod = await import('./components/notion/NotionPortfolio')
+          if (active) setPortfolio(() => mod.NotionPortfolio)
+        } catch {
+          if (active) setProgress(1)
+        }
       })
+
     return () => {
       active = false
     }
   }, [])
 
-  if (!booted) {
+  if (!Portfolio) {
     return <PreloadScreen progress={progress} />
   }
 
-  return (
-    <Suspense fallback={<PreloadScreen progress={0.92} />}>
-      <LazyNotionPortfolio />
-    </Suspense>
-  )
+  return <Portfolio />
 }
