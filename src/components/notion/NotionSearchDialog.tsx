@@ -11,9 +11,11 @@ import {
 } from 'lucide-react'
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { useToast } from '@/components/ui/Toast'
 import { notes } from '@/data/notes'
 import { projects } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
+import { celebrateCvExport } from '@/lib/cv-celebrate'
 import { decodeEmail } from '@/lib/email'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { searchPortfolio } from '@/lib/portfolio-search'
@@ -54,6 +56,7 @@ export function NotionSearchDialog({
   actions,
 }: NotionSearchDialogProps) {
   const ui = translations[lang].ui
+  const { toast } = useToast()
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
@@ -166,7 +169,8 @@ export function NotionSearchDialog({
       title: ui.cmdPrintCv,
       run: () => {
         go({ page: 'cv' })
-        window.setTimeout(() => window.print(), 350)
+        celebrateCvExport('print', lang, toast)
+        window.setTimeout(() => window.print(), 420)
       },
     },
   ]

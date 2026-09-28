@@ -1,5 +1,5 @@
 import type { NotionPageId } from '@/components/notion/types'
-import { isNoteId, notes } from '@/data/notes'
+import { getNote, isNoteId, notes } from '@/data/notes'
 import {
   getProjectsForList,
   PROJECT_CATEGORY_BY_LIST,
@@ -21,7 +21,6 @@ export type PortfolioRoute = {
 
 const PROJECT_IDS = new Set(projects.map((project) => project.id))
 const PROJECT_LIST_IDS = new Set<ProjectListId>(['my-projects'])
-const NOTE_IDS = new Set(notes.map((note) => note.id))
 
 export function isProjectId(value: string): boolean {
   return PROJECT_IDS.has(value)
@@ -77,7 +76,7 @@ function parseRoutePath(path: string): PortfolioRoute {
 
   if (pagePart === 'notes') {
     if (secondSegment) {
-      if (isNoteId(secondSegment) || NOTE_IDS.has(secondSegment)) {
+      if (isNoteId(secondSegment)) {
         return { page: 'notes', noteId: secondSegment }
       }
       return { page: 'not-found', attemptedPath: path }
@@ -168,8 +167,7 @@ export function getProjectName(projectId: string): string | undefined {
 }
 
 export function getNoteTitle(noteId: string, lang: 'sk' | 'en'): string | undefined {
-  const note = notes.find((item) => item.id === noteId)
-  return note?.title[lang]
+  return getNote(noteId)?.title[lang]
 }
 
 export function pageHref(page: NotionPageId | 'error'): string {

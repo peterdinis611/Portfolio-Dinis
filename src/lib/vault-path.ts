@@ -1,4 +1,4 @@
-import { notes } from '@/data/notes'
+import { getNote } from '@/data/notes'
 import { projects } from '@/data/portfolio'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
 
@@ -16,7 +16,7 @@ export function routeToVaultLabel(route: PortfolioRoute, lang: 'sk' | 'en'): str
     return projects.find((p) => p.id === route.projectId)?.name ?? route.projectId
   }
   if (route.noteId) {
-    return notes.find((n) => n.id === route.noteId)?.title[lang] ?? route.noteId
+    return getNote(route.noteId)?.title[lang] ?? route.noteId
   }
   const labels: Record<string, Record<'sk' | 'en', string>> = {
     about: { sk: 'O mne', en: 'About' },

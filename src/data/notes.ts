@@ -9,7 +9,7 @@ export type Note = {
   body: { sk: string[]; en: string[] }
 }
 
-export const notes: Note[] = [
+const notesSource: Note[] = [
   {
     id: 'design-systems',
     icon: '🎨',
@@ -40,6 +40,37 @@ export const notes: Note[] = [
         'Docs must live next to the component — not in a Confluence page nobody opens. Props, states, do’s/don’ts, and a real layout example. If a developer needs ten minutes to understand `Button`, the system already lost before merge.',
         'Success isn’t component count. It’s feature velocity without visual drift, PRs that reuse the system instead of copying styles, and whether a junior can ship a screen without asking “which gray do we use?”',
         'If you’re building a design system in a production team, start small: tokens + 5–8 highest-use components + Storybook + a lint/review rule. Expand later. A big “complete DS v1” launch often dies as unused documentation.',
+      ],
+    },
+  },
+  {
+    id: 'xstate-ui',
+    icon: '⚙️',
+    date: '2026-03-01',
+    readingMinutes: 7,
+    tags: ['XState', 'React', 'Architecture'],
+    title: {
+      sk: 'XState pre UI, ktoré má stavy — nie len boolean flagy',
+      en: 'XState for UI with real states — not just boolean flags',
+    },
+    summary: {
+      sk: 'Keď loading/error/success nestačí a flow má vetvy, machine ušetrí mesiac debugovania.',
+      en: 'When loading/error/success isn’t enough and the flow has branches, a machine saves a month of debugging.',
+    },
+    body: {
+      sk: [
+        'Boolean hell pozná každý: `isOpen`, `isLoading`, `hasError`, `step === 3`. Po treťom PR už nikto nevie, ktoré kombinácie sú platné. Bug sa prejaví ako „nejde kliknúť Submit po retry“ — a root cause je neplatný stavový priestor.',
+        'XState (a statecharts všeobecne) núti pomenovať stavy a prechody. Idle → submitting → success | failure → retry. Nie je to overengineering pre modal s jedným tlačidlom. Je to poistka pre auth flow, multi-step formuláre, sync deskotop appky alebo settings machine v portfóliu.',
+        'V Pulse API Client a v tomto portfóliu mi machine pomáha oddeliť „čo používateľ vidí“ od „aké akcie sú dovolené“. UI len číta snapshot a posiela eventy. Testuješ machine bez Reactu — a React komponenty ostanú tenké.',
+        'Trade-off: learning curve a viac boilerplate na začiatku. Ak tím ešte bojuje s useEffect, začni jedným kritickým flowom (login, upload, checkout). Keď uvidia, že edge casey zmizli z issue trackeru, adopcia príde sama.',
+        'Pravidlo: ak máš viac ako tri booleany, ktoré spolu súvisia, alebo async flow s retry/cancel, zváž machine. Ak máš jeden toggle, stačí useState. Nástroj má sedieť na zložitosť — nie na CV.',
+      ],
+      en: [
+        'Everyone knows boolean hell: `isOpen`, `isLoading`, `hasError`, `step === 3`. After the third PR nobody knows which combinations are valid. The bug shows up as “can’t click Submit after retry” — root cause is an illegal state space.',
+        'XState (and statecharts in general) forces named states and transitions. Idle → submitting → success | failure → retry. That isn’t overengineering for a one-button modal. It’s insurance for auth flows, multi-step forms, desktop sync, or a settings machine in a portfolio.',
+        'In Pulse API Client and this portfolio, a machine helps separate “what the user sees” from “which actions are allowed.” UI reads the snapshot and sends events. You test the machine without React — and React components stay thin.',
+        'Trade-off: learning curve and more boilerplate up front. If the team still struggles with useEffect, start with one critical flow (login, upload, checkout). When edge cases disappear from the tracker, adoption follows.',
+        'Rule of thumb: more than three related booleans, or an async flow with retry/cancel — consider a machine. One toggle? useState is fine. The tool should match complexity — not pad a résumé.',
       ],
     },
   },
@@ -77,6 +108,37 @@ export const notes: Note[] = [
     },
   },
   {
+    id: 'convex-realtime',
+    icon: '⚡',
+    date: '2026-01-28',
+    readingMinutes: 7,
+    tags: ['Convex', 'Next.js', 'Realtime'],
+    title: {
+      sk: 'Realtime bez websocket spaghetti — Convex v praxi',
+      en: 'Realtime without websocket spaghetti — Convex in practice',
+    },
+    summary: {
+      sk: 'Boom Scope: projekty, notes a canvas na live dátach — kedy sa oplatí backend-as-a-product.',
+      en: 'Boom Scope: projects, notes, and canvas on live data — when backend-as-a-product pays off.',
+    },
+    body: {
+      sk: [
+        'Pri Boom Scope som chcel workspace, kde zmeny v notes a na canvase prídu okamžite — bez vlastného socket servera, reconnect logiky a conflict resolution od nuly. Convex to rieši ako produkt: queries sú live, mutácie sú transakčné, auth sedí k Next.js.',
+        'Model je iný než klasické REST + Redis pub/sub. Pišeš funkcie blízko dát, klient subscribe-uje na query a UI sa aktualizuje samo. Menej glue kódu, viac času na produkt. Pre side project s malým tímom (alebo solo) je to obrovský pákový efekt.',
+        'Obmedzenia treba poznať vopred: vendor lock-in, pricing pri raste, a menej „low-level“ kontroly než pri vlastnom NestJS + PostgreSQL. Ak potrebuješ komplexné reporty, multi-region write alebo prísny data residency, klasický stack môže byť čistejší.',
+        'Kombinácia Next.js App Router + Convex + Clerk mi sedí na appky typu workspace: rýchly feedback loop, málo infra a jasný mental model. NestJS nechávam na enterprise API, kde kontrakty, audit a integrácie sú ťažšie ako realtime UX.',
+        'Odporúčanie: prototypuj realtime features na Convexe, zmeraj, čo používatelia skutočne potrebujú, a až potom rozhodni, či držíš managed backend alebo migrujete kritiscké časti do vlastnej infraštruktúry.',
+      ],
+      en: [
+        'For Boom Scope I wanted a workspace where notes and canvas updates land instantly — without owning a socket server, reconnect logic, and conflict resolution from scratch. Convex solves that as a product: queries are live, mutations are transactional, auth fits Next.js.',
+        'The model differs from classic REST + Redis pub/sub. You write functions close to the data, the client subscribes to a query, and UI updates itself. Less glue, more product time. For a side project with a tiny team (or solo), that’s huge leverage.',
+        'Know the limits early: vendor lock-in, pricing at scale, and less low-level control than NestJS + PostgreSQL. If you need heavy reporting, multi-region writes, or strict data residency, a classic stack can be cleaner.',
+        'Next.js App Router + Convex + Clerk fits workspace-style apps: fast feedback loop, little infra, clear mental model. I keep NestJS for enterprise APIs where contracts, audit, and integrations weigh more than realtime UX.',
+        'Recommendation: prototype realtime features on Convex, measure what users actually need, then decide whether to keep a managed backend or migrate critical pieces to owned infrastructure.',
+      ],
+    },
+  },
+  {
     id: 'typescript-end-to-end',
     icon: '📘',
     date: '2026-01-18',
@@ -109,12 +171,63 @@ export const notes: Note[] = [
       ],
     },
   },
+  {
+    id: 'mentoring-juniors',
+    icon: '🌱',
+    date: '2025-12-10',
+    readingMinutes: 6,
+    tags: ['Mentoring', 'Leadership', 'Team'],
+    title: {
+      sk: 'Mentoring juniorov bez micromanagementu',
+      en: 'Mentoring juniors without micromanagement',
+    },
+    summary: {
+      sk: 'Code review ako coaching, malé ownershipy a ako merať rast — nie počet komentárov v PR.',
+      en: 'Code review as coaching, small ownerships, and how to measure growth — not PR comment count.',
+    },
+    body: {
+      sk: [
+        'Mentoring nie je „opravím ti PR za teba“. To je najrýchlejší spôsob, ako vychovať závislého developera. Cieľ je, aby junior nabudúce vedel rozhodnúť sám — s lepším modelom, nie s tvojím diffom skopírovaným do hlavnej vetvy.',
+        'V code review pýtam otázky skôr než dávam príkazy: „Čo sa stane, keď request zlyhá?“ „Kde by toto zlyhalo pre screen reader?“ Junior sa učí myslieť; ty zistíš, či ide o medzeru vo vedomostiach alebo o deadline pressure.',
+        'Dávam malé, jasné ownershipy: jeden komponent v design systéme, jeden endpoint, jeden monitoring alert. Ownership bez kontextu je strach. Ownership s mentorm v dosahu je rast.',
+        'Meradlá: samostatnosť na podobnom tasku, kvalita otázok pred PR, a či vie vysvetliť trade-off. Nie počet riadkov ani počet emoji v Slacku. Soft skills sú súčasť craftu — komunikácia o riziku je engineering.',
+        'Ak si medior/senior, mentoring je aj tvoja škola. Vysvetľovaním si overíš, či naozaj rozumieš architektúre. Tím je silnejší; ty máš menej bus-factor rizika. To je win-win, nie charita.',
+      ],
+      en: [
+        'Mentoring isn’t “I’ll fix your PR for you.” That’s the fastest way to raise a dependent developer. The goal is that next time the junior can decide alone — with a better model, not your diff pasted into main.',
+        'In review I ask questions before giving orders: “What happens when the request fails?” “Where would this break for a screen reader?” The junior learns to think; you learn whether it’s a knowledge gap or deadline pressure.',
+        'I give small, clear ownerships: one design-system component, one endpoint, one monitoring alert. Ownership without context is fear. Ownership with a mentor in reach is growth.',
+        'Metrics: independence on a similar task, quality of questions before the PR, and whether they can explain a trade-off. Not line count or Slack emoji. Soft skills are part of the craft — communicating risk is engineering.',
+        'If you’re mid/senior, mentoring is also your school. Teaching verifies whether you actually understand the architecture. The team gets stronger; you reduce bus-factor risk. That’s win-win, not charity.',
+      ],
+    },
+  },
 ]
 
+/** Newest first — single sorted source for listing & adjacency. */
+export const notes: Note[] = [...notesSource].sort((a, b) =>
+  a.date < b.date ? 1 : a.date > b.date ? -1 : 0,
+)
+
+const notesById = new Map(notes.map((note) => [note.id, note]))
+
 export function getNote(id: string): Note | undefined {
-  return notes.find((note) => note.id === id)
+  return notesById.get(id)
 }
 
 export function isNoteId(value: string): boolean {
-  return notes.some((note) => note.id === value)
+  return notesById.has(value)
+}
+
+export function getNoteTags(): string[] {
+  const set = new Set<string>()
+  for (const note of notes) {
+    for (const tag of note.tags) set.add(tag)
+  }
+  return [...set].sort((a, b) => a.localeCompare(b))
+}
+
+export function getNotesByTag(tag: string | null): Note[] {
+  if (!tag) return notes
+  return notes.filter((note) => note.tags.includes(tag))
 }

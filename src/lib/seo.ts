@@ -1,5 +1,5 @@
 import type { NotionPageId } from '@/components/notion/types'
-import { notes } from '@/data/notes'
+import { getNote, notes } from '@/data/notes'
 import { type ProjectListId, profile, projects, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
 import {
@@ -72,7 +72,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     notes: {
       title: 'Blog | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Tech blog: design systémy, Tauri desktop nástroje a TypeScript end-to-end — krátke články z praxe.',
+        'Tech blog: design systémy, XState, Tauri, Convex, TypeScript a mentoring — články z praxe.',
     },
     cv: {
       title: 'CV | Peter Dinis — Medior Full-Stack Developer',
@@ -109,7 +109,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     notes: {
       title: 'Blog | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Tech blog: design systems, Tauri desktop tooling, and TypeScript end-to-end — short practice articles.',
+        'Tech blog: design systems, XState, Tauri, Convex, TypeScript, and mentoring — practice articles.',
     },
     cv: {
       title: 'CV | Peter Dinis — Medior Full-Stack Developer',
@@ -204,7 +204,7 @@ function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
   }
 
   if (route.page === 'notes' && route.noteId) {
-    const note = notes.find((item) => item.id === route.noteId)
+    const note = getNote(route.noteId)
     const label = lang === 'sk' ? 'Článok' : 'Article'
     return {
       title: `${note?.title[lang] ?? route.noteId} | ${label} — Peter Dinis`,

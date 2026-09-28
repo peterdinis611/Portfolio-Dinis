@@ -3,18 +3,18 @@ export type AvailabilityStatus = 'open' | 'selective' | 'busy'
 export type Localized = { sk: string; en: string }
 
 export const availability = {
-  status: 'open' as AvailabilityStatus,
+  status: 'selective' as AvailabilityStatus,
   headline: {
-    sk: 'Otvorený voči novým rolám',
-    en: 'Open to new roles',
+    sk: 'Aktuálne nie som dostupný okamžite — otvorený zaujímavým rolám',
+    en: 'Not available immediately — open to the right roles',
   } satisfies Localized,
   workMode: {
-    sk: 'Hybrid · Praha / remote',
-    en: 'Hybrid · Prague / remote',
+    sk: 'Hybrid · Praha / remote · relokácia OK',
+    en: 'Hybrid · Prague / remote · relocation OK',
   } satisfies Localized,
   detail: {
-    sk: 'Hľadám produktové full-stack alebo frontend role — React, TypeScript, design systémy. Ozvi sa.',
-    en: 'Looking for product full-stack or frontend roles — React, TypeScript, design systems. Reach out.',
+    sk: 'IBA.CZ a side projekty majú prioritu. Napíš, ak máš silnú full-stack / React príležitosť — ozvem sa podľa kapacity.',
+    en: 'IBA.CZ and side projects come first. Reach out for a strong full-stack / React opportunity — I’ll respond as capacity allows.',
   } satisfies Localized,
 }
 

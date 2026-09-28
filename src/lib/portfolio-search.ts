@@ -138,7 +138,7 @@ function buildSearchIndex(lang: Lang): SearchEntry[] {
       noteId: note.id,
       title: note.title[lang],
       subtitle: note.summary[lang],
-      terms: [note.title[lang], note.summary[lang], ...note.tags, ...note.body[lang]],
+      terms: [note.title[lang], note.summary[lang], ...note.tags],
       weight: 8,
     })
   }

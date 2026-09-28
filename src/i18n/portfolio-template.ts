@@ -45,7 +45,7 @@ export const aboutTemplateContent: Record<
     profileFacts: {
       livesIn: 'Praha, Česko',
       education: 'SPŠT Bardejov — Informačné technológie',
-      speaks: 'Slovenčina, Angličtina',
+      speaks: 'Slovenčina, Angličtina (B2), Čeština',
       loves: 'React, hry, turistika',
     },
     skillsTitle: 'Moje schopnosti',
@@ -93,7 +93,7 @@ export const aboutTemplateContent: Record<
     profileFacts: {
       livesIn: 'Prague, Czech Republic',
       education: 'SPŠT Bardejov — Information Technology',
-      speaks: 'Slovak, English',
+      speaks: 'Slovak, English (B2), Czech',
       loves: 'React, gaming, hiking',
     },
     skillsTitle: 'My skills',

@@ -40,7 +40,7 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
 
       <MotionSection delay={0.05} className="mt-6 max-w-2xl space-y-4">
         {paragraphs.map((paragraph) => (
-          <BlockText key={paragraph.slice(0, 32)}>{paragraph}</BlockText>
+          <BlockText key={paragraph}>{paragraph}</BlockText>
         ))}
       </MotionSection>
 

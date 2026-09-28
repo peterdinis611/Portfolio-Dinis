@@ -1,4 +1,5 @@
 import type { Decorator, Preview } from '@storybook/react-vite'
+import { ToastProvider } from '../src/components/ui/Toast'
 import { SettingsContext } from '../src/context/AppProviders'
 import '../src/index.css'
 import '../src/styles/notion-shell.css'
@@ -9,15 +10,17 @@ const withProviders: Decorator = (Story, context) => {
 
   return (
     <SettingsContext.Provider>
-      {bare ? (
-        <div className="bg-background text-foreground">
-          <Story />
-        </div>
-      ) : (
-        <div className="min-h-[120px] bg-background p-6 text-foreground">
-          <Story />
-        </div>
-      )}
+      <ToastProvider>
+        {bare ? (
+          <div className="bg-background text-foreground">
+            <Story />
+          </div>
+        ) : (
+          <div className="min-h-[120px] bg-background p-6 text-foreground">
+            <Story />
+          </div>
+        )}
+      </ToastProvider>
     </SettingsContext.Provider>
   )
 }
