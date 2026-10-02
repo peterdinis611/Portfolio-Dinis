@@ -1,3 +1,6 @@
+import type { NoteBlock, NoteCoverId } from '@/lib/note-blocks'
+import { type NoteDraft, upgradeBody } from './upgrade-note-body'
+
 export type Note = {
   id: string
   icon: string
@@ -6,15 +9,21 @@ export type Note = {
   tags: string[]
   title: { sk: string; en: string }
   summary: { sk: string; en: string }
-  body: { sk: string[]; en: string[] }
+  body: { sk: NoteBlock[]; en: NoteBlock[] }
+  featured?: boolean
+  cover?: NoteCoverId
+  accent?: string
 }
 
-const notesSource: Note[] = [
+const notesSource: NoteDraft[] = [
   {
     id: 'design-systems',
     icon: '🎨',
     date: '2026-03-12',
     readingMinutes: 8,
+    featured: true,
+    cover: 'boom-scope',
+    accent: '#18747a',
     tags: ['Design systems', 'React', 'Fluent UI'],
     title: {
       sk: 'Design systém, ktorý tím skutočne používa',
@@ -23,6 +32,30 @@ const notesSource: Note[] = [
     summary: {
       sk: 'Tokeny, dokumentácia a code review — čo oddelí knižnicu komponentov od mŕtvej dokumentácie.',
       en: 'Tokens, docs, and code review — what separates a component library from dead documentation.',
+    },
+    outline: {
+      sk: ['Most do produkcie', 'Tokeny a kontrakt', 'Ako merať úspech'],
+      en: ['Bridge into production', 'Tokens and contract', 'How to measure success'],
+    },
+    extras: {
+      sk: {
+        list: [
+          'Design tokeny ako single source of truth',
+          'Storybook ako živý kontrakt',
+          'Code review, ktoré odmietne one-off štýly',
+        ],
+        callout:
+          'Začni malým: tokeny + 5–8 komponentov + Storybook + lint pravidlo. Veľký „DS v1“ launch často zomrie ako dokumentácia.',
+      },
+      en: {
+        list: [
+          'Design tokens as the single source of truth',
+          'Storybook as a living contract',
+          'Code review that rejects one-off styles',
+        ],
+        callout:
+          'Start small: tokens + 5–8 components + Storybook + a lint rule. A big “DS v1” launch often dies as unused docs.',
+      },
     },
     body: {
       sk: [
@@ -48,6 +81,8 @@ const notesSource: Note[] = [
     icon: '⚙️',
     date: '2026-03-01',
     readingMinutes: 7,
+    cover: 'pulse-apiclient',
+    accent: '#6940a5',
     tags: ['XState', 'React', 'Architecture'],
     title: {
       sk: 'XState pre UI, ktoré má stavy — nie len boolean flagy',
@@ -56,6 +91,52 @@ const notesSource: Note[] = [
     summary: {
       sk: 'Keď loading/error/success nestačí a flow má vetvy, machine ušetrí mesiac debugovania.',
       en: 'When loading/error/success isn’t enough and the flow has branches, a machine saves a month of debugging.',
+    },
+    outline: {
+      sk: ['Boolean hell', 'Prečo statecharts', 'Kedy áno / nie'],
+      en: ['Boolean hell', 'Why statecharts', 'When yes / no'],
+    },
+    extras: {
+      sk: {
+        code: {
+          lang: 'ts',
+          code: `// Idle → submitting → success | failure → retry
+createMachine({
+  id: 'submit',
+  initial: 'idle',
+  states: {
+    idle: { on: { SUBMIT: 'submitting' } },
+    submitting: {
+      on: { SUCCESS: 'success', FAILURE: 'failure' },
+    },
+    success: { type: 'final' },
+    failure: { on: { RETRY: 'submitting' } },
+  },
+})`,
+        },
+        callout:
+          'Viac ako tri súvisiace booleany alebo async flow s retry/cancel → zváž machine. Jeden toggle? Stačí useState.',
+      },
+      en: {
+        code: {
+          lang: 'ts',
+          code: `// Idle → submitting → success | failure → retry
+createMachine({
+  id: 'submit',
+  initial: 'idle',
+  states: {
+    idle: { on: { SUBMIT: 'submitting' } },
+    submitting: {
+      on: { SUCCESS: 'success', FAILURE: 'failure' },
+    },
+    success: { type: 'final' },
+    failure: { on: { RETRY: 'submitting' } },
+  },
+})`,
+        },
+        callout:
+          'More than three related booleans, or async retry/cancel — consider a machine. One toggle? useState is fine.',
+      },
     },
     body: {
       sk: [
@@ -79,6 +160,22 @@ const notesSource: Note[] = [
     icon: '🖥️',
     date: '2026-02-04',
     readingMinutes: 9,
+    cover: 'scribe-notes',
+    accent: '#0f7b6c',
+    outline: {
+      sk: ['Prečo nie Electron', 'Hranica UI / Rust', 'Kedy Tauri áno'],
+      en: ['Why not Electron', 'UI / Rust boundary', 'When Tauri wins'],
+    },
+    extras: {
+      sk: {
+        callout:
+          'Ak produkt „má byť browser tab“, zostaň na webe. Ak má žiť na disku — Tauri je silná voľba.',
+      },
+      en: {
+        callout:
+          'If the product “should be a browser tab,” stay on the web. If it lives on disk — Tauri is a strong bet.',
+      },
+    },
     tags: ['Tauri', 'Rust', 'Desktop'],
     title: {
       sk: 'Prečo Tauri na desktop nástroje',
@@ -112,6 +209,20 @@ const notesSource: Note[] = [
     icon: '⚡',
     date: '2026-01-28',
     readingMinutes: 7,
+    cover: 'docu-nest',
+    accent: '#e9a800',
+    outline: {
+      sk: ['Realtime bez boilerplate', 'Model dát', 'Trade-offy'],
+      en: ['Realtime without boilerplate', 'Data model', 'Trade-offs'],
+    },
+    extras: {
+      sk: {
+        callout: 'Convex žiari, keď UI = live query. Nie je univerzálna náhrada za každý Postgres.',
+      },
+      en: {
+        callout: 'Convex shines when UI = live query. It isn’t a universal Postgres replacement.',
+      },
+    },
     tags: ['Convex', 'Next.js', 'Realtime'],
     title: {
       sk: 'Realtime bez websocket spaghetti — Convex v praxi',
@@ -143,6 +254,20 @@ const notesSource: Note[] = [
     icon: '📘',
     date: '2026-01-18',
     readingMinutes: 7,
+    cover: 'pulse-apiclient',
+    accent: '#2383e2',
+    outline: {
+      sk: ['Jeden typový príbeh', 'Hranice modulov', 'Čo netypovať'],
+      en: ['One type story', 'Module boundaries', 'What not to type'],
+    },
+    extras: {
+      sk: {
+        callout: 'Typy majú znižovať kognitívnu záťaž — nie generovať ju cez `any` a `as`.',
+      },
+      en: {
+        callout: 'Types should reduce cognitive load — not create it via `any` and `as`.',
+      },
+    },
     tags: ['TypeScript', 'DX', 'Architecture'],
     title: {
       sk: 'TypeScript end-to-end bez magie',
@@ -176,6 +301,22 @@ const notesSource: Note[] = [
     icon: '🌱',
     date: '2025-12-10',
     readingMinutes: 6,
+    cover: 'experience',
+    accent: '#9a6700',
+    outline: {
+      sk: ['Mentoring ≠ code review', 'Rámec rastu', 'Čo merať'],
+      en: ['Mentoring ≠ code review', 'Growth frame', 'What to measure'],
+    },
+    extras: {
+      sk: {
+        callout:
+          'Najlepší mentoring nechá juniora odísť so schopnosťou rozhodovať — nie s tvojím PR template.',
+      },
+      en: {
+        callout:
+          'Great mentoring leaves a junior able to decide — not just clone your PR template.',
+      },
+    },
     tags: ['Mentoring', 'Leadership', 'Team'],
     title: {
       sk: 'Mentoring juniorov bez micromanagementu',
@@ -207,6 +348,22 @@ const notesSource: Note[] = [
     icon: '⚡',
     date: '2026-03-20',
     readingMinutes: 8,
+    cover: 'code',
+    accent: '#0b6e99',
+    outline: {
+      sk: ['Meraj pred optimalizáciou', 'Časté pasce', 'Checklist'],
+      en: ['Measure before optimizing', 'Common traps', 'Checklist'],
+    },
+    extras: {
+      sk: {
+        list: ['Profiluj v React DevTools', 'Oddel render od dát', 'Memo až keď máš dôkaz'],
+        callout: 'useMemo nie je architektúra. Najprv zisti, čo sa znova renderuje a prečo.',
+      },
+      en: {
+        list: ['Profile in React DevTools', 'Separate render from data', 'Memo only with evidence'],
+        callout: 'useMemo isn’t architecture. First learn what re-renders and why.',
+      },
+    },
     tags: ['React', 'Performance', 'DX'],
     title: {
       sk: 'React performance bez predčasnej optimalizácie',
@@ -240,6 +397,20 @@ const notesSource: Note[] = [
     icon: '🔍',
     date: '2026-03-08',
     readingMinutes: 7,
+    cover: 'about',
+    accent: '#6940a5',
+    outline: {
+      sk: ['Review ako učenie', 'Čo komentovať', 'Rýchlosť vs kvalita'],
+      en: ['Review as learning', 'What to comment', 'Speed vs quality'],
+    },
+    extras: {
+      sk: {
+        callout: 'Dobrý review komentár vysvetľuje trade-off — nie len „zmeň toto“.',
+      },
+      en: {
+        callout: 'A good review comment explains the trade-off — not just “change this.”',
+      },
+    },
     tags: ['Code review', 'Team', 'DX'],
     title: {
       sk: 'Code review, ktoré učí — nie len blokuje merge',
@@ -273,6 +444,22 @@ const notesSource: Note[] = [
     icon: '🔌',
     date: '2026-02-18',
     readingMinutes: 8,
+    cover: 'pulse-apiclient',
+    accent: '#18747a',
+    outline: {
+      sk: ['Hranice a kontrakty', 'Chybové stavy', 'Dokumentácia pri kóde'],
+      en: ['Boundaries and contracts', 'Error states', 'Docs next to code'],
+    },
+    extras: {
+      sk: {
+        callout:
+          'Ak developer potrebuje Slack na pochopenie endpointu, platforma zlyhala — aj s pekným Swaggerom.',
+      },
+      en: {
+        callout:
+          'If a developer needs Slack to understand an endpoint, the platform failed — pretty Swagger or not.',
+      },
+    },
     tags: ['API', 'NestJS', 'Architecture'],
     title: {
       sk: 'API hranice, ktoré produktový tím neobchádza',
@@ -306,6 +493,26 @@ const notesSource: Note[] = [
     icon: '♿',
     date: '2026-01-28',
     readingMinutes: 7,
+    cover: 'contact',
+    accent: '#0f7b6c',
+    outline: {
+      sk: ['A11y je UX kvalita', 'Fluent nestačí', 'DoD a CI'],
+      en: ['A11y is UX quality', 'Fluent isn’t enough', 'DoD and CI'],
+    },
+    extras: {
+      sk: {
+        list: ['Tab order pred pixel-perfect', 'Label + aria-describedby', 'Focus trap v modaloch'],
+        callout: 'Zaraď a11y do Definition of Done. Po audite už bolí.',
+      },
+      en: {
+        list: [
+          'Tab order before pixel-perfect',
+          'Label + aria-describedby',
+          'Focus traps in modals',
+        ],
+        callout: 'Bake a11y into the Definition of Done. After an audit it already hurts.',
+      },
+    },
     tags: ['Accessibility', 'Fluent UI', 'UX'],
     title: {
       sk: 'Prístupnosť v enterprise UI nie je „nice to have“',
@@ -336,10 +543,18 @@ const notesSource: Note[] = [
   },
 ]
 
+function finalizeNote(draft: NoteDraft): Note {
+  const { outline, extras, body, ...rest } = draft
+  return {
+    ...rest,
+    body: upgradeBody(body, outline, extras),
+  }
+}
+
 /** Newest first — single sorted source for listing & adjacency. */
-export const notes: Note[] = [...notesSource].sort((a, b) =>
-  a.date < b.date ? 1 : a.date > b.date ? -1 : 0,
-)
+export const notes: Note[] = notesSource
+  .map(finalizeNote)
+  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
 
 const notesById = new Map(notes.map((note) => [note.id, note]))
 
@@ -362,4 +577,24 @@ export function getNoteTags(): string[] {
 export function getNotesByTag(tag: string | null): Note[] {
   if (!tag) return notes
   return notes.filter((note) => note.tags.includes(tag))
+}
+
+export function getRelatedNotes(noteId: string, limit = 3): Note[] {
+  const current = getNote(noteId)
+  if (!current) return []
+
+  const tagSet = new Set(current.tags)
+  return notes
+    .filter((note) => note.id !== noteId)
+    .map((note) => ({
+      note,
+      score: note.tags.reduce((sum, tag) => sum + (tagSet.has(tag) ? 1 : 0), 0),
+    }))
+    .filter((item) => item.score > 0)
+    .sort(
+      (a, b) =>
+        b.score - a.score || (a.note.date < b.note.date ? 1 : a.note.date > b.note.date ? -1 : 0),
+    )
+    .slice(0, limit)
+    .map((item) => item.note)
 }

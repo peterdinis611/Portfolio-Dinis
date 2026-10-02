@@ -22,8 +22,10 @@ describe('notes data', () => {
       expect(note.summary.en.trim()).not.toBe('')
       expect(note.body.sk.length).toBeGreaterThanOrEqual(4)
       expect(note.body.en.length).toBe(note.body.sk.length)
+      expect(note.body.sk.some((block) => block.type === 'h2')).toBe(true)
       expect(note.tags.length).toBeGreaterThan(0)
       expect(note.readingMinutes).toBeGreaterThan(0)
+      expect(note.cover).toBeTruthy()
     }
   })
 
@@ -53,13 +55,18 @@ describe('notes search', () => {
     expect(normalizeSearch('Prístupnosť')).toBe('pristupnost')
   })
 
-  it('scores title hits higher than body hits', () => {
+  it('scores title hits higher than unrelated queries', () => {
     const note = getNote('react-performance')
     expect(note).toBeDefined()
     const titleScore = scoreNote(note!, 'en', 'performance')
     const unrelated = scoreNote(note!, 'en', 'kubernetes-cluster-xyz')
-    expect(titleScore).toBeGreaterThan(10)
+    expect(titleScore).toBeGreaterThan(40)
     expect(unrelated).toBe(0)
+  })
+
+  it('ranks closer title matches above weaker body matches', () => {
+    const byTitle = filterNotes({ lang: 'en', query: 'design system' })
+    expect(byTitle[0]?.id).toBe('design-systems')
   })
 
   it('filters by query across SK and EN', () => {

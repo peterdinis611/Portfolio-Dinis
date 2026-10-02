@@ -431,6 +431,247 @@
     background: color-mix(in srgb, var(--primary) 5%, transparent);
     box-shadow: 0 10px 24px -16px color-mix(in srgb, var(--primary) 50%, transparent);
   }
+
+  /* Notes blog search — keep in @layer so Tailwind/lightningcss ships it */
+  .notes-search {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .notes-search-field {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 3rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 12px;
+    border: 1px solid rgba(55, 53, 47, 0.14);
+    background: color-mix(in srgb, var(--editor-surface) 92%, var(--primary));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      0 6px 18px -14px rgba(15, 15, 15, 0.28);
+  }
+
+  .dark .notes-search-field {
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 8px 22px -16px rgba(0, 0, 0, 0.55);
+  }
+
+  .notes-search-field:focus-within {
+    border-color: color-mix(in srgb, var(--primary) 48%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.65),
+      0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
+  }
+
+  .notes-search-field.has-query {
+    border-color: color-mix(in srgb, var(--primary) 42%, transparent);
+  }
+
+  .notes-search-field.is-keyed {
+    animation: notes-search-keyed 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .notes-search-field.is-keyed .notes-search-icon {
+    animation: notes-search-icon-keyed 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .notes-search-icon {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    color: color-mix(in srgb, var(--primary) 80%, var(--muted-foreground));
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    flex-shrink: 0;
+  }
+
+  .notes-search-field:focus-within .notes-search-icon,
+  .notes-search-field.has-query .notes-search-icon {
+    background: color-mix(in srgb, var(--primary) 18%, transparent);
+    color: var(--primary);
+  }
+
+  .notes-search-field.has-query .notes-search-icon svg {
+    animation: notes-search-listening 1.55s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  .notes-search-input {
+    width: 100%;
+    min-width: 0;
+    height: 2.15rem;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font-size: 14.5px;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+    outline: none;
+  }
+
+  .notes-search-input::placeholder {
+    color: var(--muted-foreground);
+    opacity: 0.85;
+  }
+
+  .notes-search-input::-webkit-search-decoration,
+  .notes-search-input::-webkit-search-cancel-button,
+  .notes-search-input::-webkit-search-results-button,
+  .notes-search-input::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  .notes-search-clear {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 7px;
+    color: var(--muted-foreground);
+  }
+
+  .notes-search-clear:hover {
+    background: rgba(55, 53, 47, 0.08);
+    color: var(--foreground);
+  }
+
+  .dark .notes-search-clear:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .notes-search-kbd {
+    display: grid;
+    place-items: center;
+    min-width: 1.55rem;
+    height: 1.55rem;
+    padding: 0 0.35rem;
+    border-radius: 6px;
+    border: 1px solid rgba(55, 53, 47, 0.12);
+    background: color-mix(in srgb, var(--editor-surface) 90%, transparent);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+  }
+
+  .dark .notes-search-kbd {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .notes-search-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .notes-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.85rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: rgba(55, 53, 47, 0.06);
+    color: var(--muted-foreground);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .dark .notes-tag {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .notes-tag:hover {
+    color: var(--foreground);
+    border-color: rgba(55, 53, 47, 0.1);
+    background: rgba(55, 53, 47, 0.09);
+  }
+
+  .dark .notes-tag:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .notes-tag.is-active {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-color: transparent;
+  }
+
+  .notes-tag.is-active.is-tag {
+    background: color-mix(in srgb, var(--primary) 16%, transparent);
+    color: var(--primary);
+    border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+  }
+
+  .notes-tag-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--primary-foreground) 22%, transparent);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .notes-tag:not(.is-active) .notes-tag-count {
+    background: rgba(55, 53, 47, 0.1);
+    color: var(--muted-foreground);
+  }
+
+  .dark .notes-tag:not(.is-active) .notes-tag-count {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .notes-search-meta {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--muted-foreground);
+  }
+
+  .notes-sort {
+    flex-shrink: 0;
+  }
+
+  .notes-sort-select {
+    height: 1.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(55, 53, 47, 0.12);
+    background: rgba(55, 53, 47, 0.04);
+    padding: 0 0.75rem;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--foreground);
+    outline: none;
+  }
+
+  .dark .notes-sort-select {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .notes-featured .page-cover {
+    border-radius: 0;
+  }
+
+  .notes-featured .page-cover-shine {
+    animation: none;
+    opacity: 0.35;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -636,96 +877,12 @@ html.has-custom-cursor [contenteditable="true"] {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 
-/* ─── Notes blog search ─── */
-.notes-search {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.notes-search-field {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 0.65rem;
-  min-height: 3rem;
-  padding: 0.35rem 0.55rem 0.35rem 0.55rem;
-  border-radius: 12px;
-  border: 1px solid rgba(55, 53, 47, 0.12);
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--editor-surface) 88%, var(--primary)) 0%,
-    var(--editor-surface) 55%,
-    color-mix(in srgb, var(--muted) 40%, var(--editor-surface)) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.65),
-    0 8px 22px -18px rgba(15, 15, 15, 0.35);
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.dark .notes-search-field {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 10px 28px -20px rgba(0, 0, 0, 0.7);
-}
-
-.notes-search-field:focus-within {
-  border-color: color-mix(in srgb, var(--primary) 48%, transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent),
-    0 10px 26px -18px color-mix(in srgb, var(--primary) 45%, transparent);
-}
-
-.notes-search-field.has-query {
-  border-color: color-mix(in srgb, var(--primary) 42%, transparent);
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--editor-surface) 78%, var(--primary)) 0%,
-    var(--editor-surface) 52%,
-    color-mix(in srgb, var(--muted) 28%, var(--editor-surface)) 100%
-  );
-}
-
-.notes-search-field.is-keyed {
-  animation: notes-search-keyed 450ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.notes-search-field.is-keyed .notes-search-icon {
-  animation: notes-search-icon-keyed 450ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.notes-search-field.has-query .notes-search-icon {
-  background: color-mix(in srgb, var(--primary) 20%, transparent);
-  color: var(--primary);
-}
-
-.notes-search-field.has-query .notes-search-icon svg {
-  animation: notes-search-listening 1.55s ease-in-out infinite;
-  transform-origin: center;
-}
-
-.notes-search.has-query .notes-search-meta {
-  animation: notes-search-meta-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 @keyframes notes-search-keyed {
   0% {
     transform: scale(1);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent),
-      0 10px 26px -18px color-mix(in srgb, var(--primary) 45%, transparent);
   }
   40% {
     transform: scale(1.012);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.75),
-      0 0 0 5px color-mix(in srgb, var(--primary) 22%, transparent),
-      0 14px 30px -16px color-mix(in srgb, var(--primary) 55%, transparent);
   }
   100% {
     transform: scale(1);
@@ -733,41 +890,20 @@ html.has-custom-cursor [contenteditable="true"] {
 }
 
 @keyframes notes-search-icon-keyed {
-  0% {
-    transform: scale(1) rotate(0deg);
-  }
-  35% {
-    transform: scale(1.14) rotate(-8deg);
-  }
-  70% {
-    transform: scale(1.04) rotate(4deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
+  0% { transform: scale(1) rotate(0deg); }
+  35% { transform: scale(1.14) rotate(-8deg); }
+  70% { transform: scale(1.04) rotate(4deg); }
+  100% { transform: scale(1) rotate(0deg); }
 }
 
 @keyframes notes-search-listening {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.08);
-    opacity: 0.82;
-  }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.82; }
 }
 
 @keyframes notes-search-meta-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -784,175 +920,6 @@ html.has-custom-cursor [contenteditable="true"] {
 :root[data-animations="off"] .notes-search-field.has-query .notes-search-icon svg,
 :root[data-animations="off"] .notes-search.has-query .notes-search-meta {
   animation: none;
-}
-
-.notes-search-icon {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 8px;
-  color: color-mix(in srgb, var(--primary) 80%, var(--muted-foreground));
-  background: color-mix(in srgb, var(--primary) 11%, transparent);
-  flex-shrink: 0;
-  transition:
-    background 160ms ease,
-    color 160ms ease;
-}
-
-.notes-search-field:focus-within .notes-search-icon {
-  background: color-mix(in srgb, var(--primary) 18%, transparent);
-  color: var(--primary);
-}
-
-.notes-search-input {
-  width: 100%;
-  min-width: 0;
-  height: 2.15rem;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  font-size: 14.5px;
-  letter-spacing: -0.01em;
-  color: var(--foreground);
-  outline: none;
-}
-
-.notes-search-input::placeholder {
-  color: var(--muted-foreground);
-  opacity: 0.85;
-}
-
-.notes-search-input::-webkit-search-decoration,
-.notes-search-input::-webkit-search-cancel-button,
-.notes-search-input::-webkit-search-results-button,
-.notes-search-input::-webkit-search-results-decoration {
-  display: none;
-}
-
-.notes-search-clear {
-  display: grid;
-  place-items: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 7px;
-  color: var(--muted-foreground);
-  transition:
-    background 140ms ease,
-    color 140ms ease;
-}
-
-.notes-search-clear:hover {
-  background: rgba(55, 53, 47, 0.08);
-  color: var(--foreground);
-}
-
-.dark .notes-search-clear:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.notes-search-kbd {
-  display: grid;
-  place-items: center;
-  min-width: 1.55rem;
-  height: 1.55rem;
-  padding: 0 0.35rem;
-  border-radius: 6px;
-  border: 1px solid rgba(55, 53, 47, 0.12);
-  background: color-mix(in srgb, var(--editor-surface) 90%, transparent);
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted-foreground);
-  box-shadow: 0 1px 0 rgba(55, 53, 47, 0.06);
-}
-
-.dark .notes-search-kbd {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: none;
-}
-
-.notes-search-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.notes-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  min-height: 1.85rem;
-  padding: 0.2rem 0.7rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  background: rgba(55, 53, 47, 0.055);
-  color: var(--muted-foreground);
-  font-size: 12px;
-  font-weight: 550;
-  letter-spacing: -0.01em;
-  transition:
-    background 140ms ease,
-    color 140ms ease,
-    border-color 140ms ease,
-    transform 140ms ease;
-}
-
-.dark .notes-tag {
-  background: rgba(255, 255, 255, 0.07);
-}
-
-.notes-tag:hover {
-  color: var(--foreground);
-  border-color: rgba(55, 53, 47, 0.1);
-  background: rgba(55, 53, 47, 0.08);
-}
-
-.dark .notes-tag:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.notes-tag.is-active {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  border-color: transparent;
-  box-shadow: 0 6px 14px -10px color-mix(in srgb, var(--primary) 80%, transparent);
-}
-
-.notes-tag.is-active.is-tag {
-  background: color-mix(in srgb, var(--primary) 16%, transparent);
-  color: var(--primary);
-  border-color: color-mix(in srgb, var(--primary) 28%, transparent);
-  box-shadow: none;
-}
-
-.notes-tag-count {
-  display: inline-grid;
-  place-items: center;
-  min-width: 1.15rem;
-  height: 1.15rem;
-  padding: 0 0.3rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--primary-foreground) 22%, transparent);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.notes-tag:not(.is-active) .notes-tag-count {
-  background: rgba(55, 53, 47, 0.1);
-  color: var(--muted-foreground);
-}
-
-.dark .notes-tag:not(.is-active) .notes-tag-count {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.notes-search-meta {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--muted-foreground);
 }
 
 .skip-link {

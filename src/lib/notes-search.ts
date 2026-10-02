@@ -1,6 +1,8 @@
+import Fuse from 'fuse.js'
 import type { Note } from '@/data/notes'
-import { getNotesByTag } from '@/data/notes'
+import { getNotesByTag, notes } from '@/data/notes'
 import type { Lang } from '@/i18n/translations'
+import { flattenNoteBody } from '@/lib/note-blocks'
 
 export type NotesQuery = {
   lang: Lang
@@ -8,59 +10,72 @@ export type NotesQuery = {
   tag?: string | null
 }
 
+type NoteSearchDoc = {
+  id: string
+  title: string
+  summary: string
+  tags: string
+  body: string
+  note: Note
+}
+
 /** Diacritics-insensitive lowercase for SK/EN search. */
 export function normalizeSearch(value: string): string {
   return value.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '')
 }
 
-/** Score a single note against a free-text query. Higher is better; 0 = no match. */
-export function scoreNote(note: Note, lang: Lang, query: string): number {
-  const tokens = normalizeSearch(query).split(/\s+/).filter(Boolean)
-  if (tokens.length === 0) return 1
+const fuseByLang = new Map<Lang, Fuse<NoteSearchDoc>>()
 
-  const title = normalizeSearch(note.title[lang])
-  const summary = normalizeSearch(note.summary[lang])
-  const tags = note.tags.map((tag) => normalizeSearch(tag))
-  const body = normalizeSearch(note.body[lang].slice(0, 2).join(' '))
-  let score = 0
+function buildDocs(lang: Lang): NoteSearchDoc[] {
+  return notes.map((note) => ({
+    id: note.id,
+    title: normalizeSearch(note.title[lang]),
+    summary: normalizeSearch(note.summary[lang]),
+    tags: normalizeSearch(note.tags.join(' ')),
+    body: normalizeSearch(flattenNoteBody(note.body[lang]).slice(0, 1200)),
+    note,
+  }))
+}
 
-  for (const token of tokens) {
-    let matched = false
+function getNotesFuse(lang: Lang): Fuse<NoteSearchDoc> {
+  const cached = fuseByLang.get(lang)
+  if (cached) return cached
 
-    if (title === token) {
-      score += 24
-      matched = true
-    } else if (title.startsWith(token)) {
-      score += 18
-      matched = true
-    } else if (title.includes(token)) {
-      score += 14
-      matched = true
-    }
+  const fuse = new Fuse(buildDocs(lang), {
+    includeScore: true,
+    ignoreLocation: true,
+    // Slightly fuzzy — good for typos + SK/EN fragments.
+    threshold: 0.38,
+    distance: 120,
+    minMatchCharLength: 2,
+    keys: [
+      { name: 'title', weight: 0.45 },
+      { name: 'tags', weight: 0.25 },
+      { name: 'summary', weight: 0.2 },
+      { name: 'body', weight: 0.1 },
+    ],
+  })
 
-    if (tags.some((tag) => tag === token || tag.includes(token))) {
-      score += 12
-      matched = true
-    }
-
-    if (summary.includes(token)) {
-      score += 8
-      matched = true
-    }
-
-    if (body.includes(token)) {
-      score += 4
-      matched = true
-    }
-
-    if (!matched) return 0
-  }
-
-  return score
+  fuseByLang.set(lang, fuse)
+  return fuse
 }
 
 /**
- * Filter + rank blog notes by optional tag and free-text query.
+ * Fuse score is 0 (best) → 1 (worst). Convert to higher-is-better ~0–100.
+ * Exact-ish hits land near 100; weak fuzzy matches stay low.
+ */
+export function scoreNote(note: Note, lang: Lang, query: string): number {
+  const trimmed = query.trim()
+  if (!trimmed) return 1
+
+  const fuse = getNotesFuse(lang)
+  const hit = fuse.search(normalizeSearch(trimmed)).find((result) => result.item.id === note.id)
+  if (!hit || hit.score == null) return 0
+  return Math.round((1 - hit.score) * 100)
+}
+
+/**
+ * Filter + rank blog notes via Fuse.js (optional tag pre-filter).
  * Empty query returns date-sorted (or tag-filtered) list.
  */
 export function filterNotes({ lang, query, tag = null }: NotesQuery): Note[] {
@@ -68,9 +83,14 @@ export function filterNotes({ lang, query, tag = null }: NotesQuery): Note[] {
   const trimmed = query?.trim() ?? ''
   if (!trimmed) return base
 
-  return base
-    .map((note) => ({ note, score: scoreNote(note, lang, trimmed) }))
-    .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score || (a.note.date < b.note.date ? 1 : -1))
-    .map((item) => item.note)
+  const allowed = new Set(base.map((note) => note.id))
+  const fuse = getNotesFuse(lang)
+  const results = fuse.search(normalizeSearch(trimmed))
+
+  return results.filter((result) => allowed.has(result.item.id)).map((result) => result.item.note)
+}
+
+/** Test helper — clear Fuse caches between suites if needed. */
+export function resetNotesSearchCache() {
+  fuseByLang.clear()
 }

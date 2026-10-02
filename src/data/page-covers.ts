@@ -83,3 +83,26 @@ export const projectCoverImages: Record<string, PageCoverImage> = {
 export function getProjectCover(projectId: string): PageCoverImage | undefined {
   return projectCoverImages[projectId]
 }
+
+const extraCovers: Record<string, PageCoverImage> = {
+  code: {
+    src: '/covers/code.jpg',
+    srcWebp: '/covers/code.webp',
+    alt: 'Code editor on laptop screen',
+    objectPosition: 'center 35%',
+  },
+}
+
+export function getNoteCover(coverId: string | undefined): PageCoverImage {
+  if (!coverId) return pageCoverImages.tech
+  if (coverId in pageCoverImages) {
+    return pageCoverImages[coverId as PageCoverVariant]
+  }
+  if (coverId in projectCoverImages) {
+    return projectCoverImages[coverId]!
+  }
+  if (coverId in extraCovers) {
+    return extraCovers[coverId]!
+  }
+  return pageCoverImages.tech
+}

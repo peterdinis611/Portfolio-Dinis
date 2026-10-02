@@ -1,10 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, Search, X } from 'lucide-react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
-import { getNoteTags, notes } from '@/data/notes'
+import { getNoteTags, type Note, notes } from '@/data/notes'
+import { getNoteCover } from '@/data/page-covers'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import type { Lang } from '@/i18n/translations'
 import { translations } from '@/i18n/translations'
+import { getFeaturedNote, type NotesSort, sortNotes } from '@/lib/note-blocks'
 import { filterNotes } from '@/lib/notes-search'
 import { noteHref } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
@@ -12,22 +14,107 @@ import { PageShell, PageTitle } from '../blocks'
 import { MOTION_EASE, MotionSection } from '../motion'
 import { PageCover } from '../PageCover'
 
+const SORTS: NotesSort[] = ['newest', 'reading', 'az']
+
+function readNotesParams(): { q: string; tag: string | null; sort: NotesSort } {
+  const params = new URLSearchParams(window.location.search)
+  const sortParam = params.get('sort')
+  const sort = SORTS.includes(sortParam as NotesSort) ? (sortParam as NotesSort) : 'newest'
+  return {
+    q: params.get('q') ?? '',
+    tag: params.get('tag'),
+    sort,
+  }
+}
+
+function writeNotesParams(state: { q: string; tag: string | null; sort: NotesSort }) {
+  const params = new URLSearchParams()
+  if (state.q.trim()) params.set('q', state.q.trim())
+  if (state.tag) params.set('tag', state.tag)
+  if (state.sort !== 'newest') params.set('sort', state.sort)
+  const qs = params.toString()
+  const next = qs ? `/notes?${qs}` : '/notes'
+  const current = `${window.location.pathname}${window.location.search}`
+  if (current !== next) {
+    window.history.replaceState(null, '', next)
+  }
+}
+
+function NoteCard({ note, lang, readLabel }: { note: Note; lang: Lang; readLabel: string }) {
+  return (
+    <a
+      href={noteHref(note.id)}
+      className="group flex h-full flex-col rounded-[12px] border border-[rgba(55,53,47,0.1)] bg-[color-mix(in_srgb,var(--editor-surface)_94%,var(--primary))] p-4 transition-colors hover:border-[color-mix(in_srgb,var(--primary)_42%,transparent)] hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)] dark:border-[rgba(255,255,255,0.1)]"
+    >
+      <span className="mb-3 flex items-start justify-between gap-2">
+        <span
+          className="flex h-11 w-11 items-center justify-center rounded-[12px] text-[22px] transition-transform duration-300 group-hover:-translate-y-0.5"
+          style={{
+            background: note.accent
+              ? `color-mix(in srgb, ${note.accent} 18%, transparent)`
+              : 'rgba(24,116,122,0.14)',
+          }}
+          aria-hidden
+        >
+          {note.icon}
+        </span>
+        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--link)] opacity-70 transition-opacity group-hover:opacity-100">
+          {readLabel}
+          <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
+        </span>
+      </span>
+      <span className="mb-1.5 text-[16px] font-semibold tracking-[-0.01em] text-foreground group-hover:text-[var(--link)]">
+        {note.title[lang]}
+      </span>
+      <span className="mb-3 line-clamp-3 flex-1 text-[13px] leading-relaxed text-muted-foreground">
+        {note.summary[lang]}
+      </span>
+      <span className="mt-auto flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+        <time dateTime={note.date}>{note.date}</time>
+        <span aria-hidden>·</span>
+        <span>
+          {translations[lang].ui.notesReading.replace('{min}', String(note.readingMinutes))}
+        </span>
+        {note.tags.slice(0, 2).map((tag) => (
+          <span
+            key={tag}
+            className="rounded-[3px] bg-[rgba(55,53,47,0.06)] px-1.5 py-0.5 dark:bg-[rgba(255,255,255,0.08)]"
+          >
+            {tag}
+          </span>
+        ))}
+      </span>
+    </a>
+  )
+}
+
 export function NotesPage({ lang }: { lang: Lang }) {
   const ui = translations[lang].ui
   const reduceMotion = useMotionDisabled()
-  const [query, setQuery] = useState('')
-  const [activeTag, setActiveTag] = useState<string | null>(null)
+  const initial = useMemo(() => readNotesParams(), [])
+  const [query, setQuery] = useState(initial.q)
+  const [activeTag, setActiveTag] = useState<string | null>(initial.tag)
+  const [sort, setSort] = useState<NotesSort>(initial.sort)
   const [typeTick, setTypeTick] = useState(0)
   const deferredQuery = useDeferredValue(query)
   const inputRef = useRef<HTMLInputElement>(null)
   const fieldRef = useRef<HTMLLabelElement>(null)
   const tags = useMemo(() => getNoteTags(), [])
+
   const filtered = useMemo(
     () => filterNotes({ lang, query: deferredQuery, tag: activeTag }),
     [lang, deferredQuery, activeTag],
   )
+  const sorted = useMemo(() => sortNotes(filtered, sort, lang), [filtered, sort, lang])
   const hasQuery = Boolean(query.trim())
   const isFiltering = hasQuery || activeTag !== null
+  const showFeatured = !isFiltering && sort === 'newest'
+  const featured = showFeatured ? getFeaturedNote(sorted) : undefined
+  const gridNotes = featured ? sorted.filter((note) => note.id !== featured.id) : sorted
+
+  useEffect(() => {
+    writeNotesParams({ q: query, tag: activeTag, sort })
+  }, [query, activeTag, sort])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -54,12 +141,17 @@ export function NotesPage({ lang }: { lang: Lang }) {
     const field = fieldRef.current
     if (!field) return
     field.classList.remove('is-keyed')
-    // Force reflow so the keyframe can restart on every keystroke.
     void field.offsetWidth
     field.classList.add('is-keyed')
     const timer = window.setTimeout(() => field.classList.remove('is-keyed'), 480)
     return () => window.clearTimeout(timer)
   }, [typeTick, reduceMotion])
+
+  const sortLabel = (value: NotesSort) => {
+    if (value === 'reading') return ui.notesSortReading
+    if (value === 'az') return ui.notesSortAz
+    return ui.notesSortNewest
+  }
 
   return (
     <PageShell cover={<PageCover variant="tech" />}>
@@ -86,9 +178,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
               onChange={(event) => {
                 const next = event.target.value
                 setQuery(next)
-                if (!reduceMotion && next.trim()) {
-                  setTypeTick((tick) => tick + 1)
-                }
+                if (!reduceMotion && next.trim()) setTypeTick((tick) => tick + 1)
               }}
               placeholder={ui.notesSearchPlaceholder}
               autoComplete="off"
@@ -109,36 +199,91 @@ export function NotesPage({ lang }: { lang: Lang }) {
             )}
           </label>
 
-          <div className="notes-search-tags">
-            <button
-              type="button"
-              onClick={() => setActiveTag(null)}
-              className={cn('notes-tag', activeTag === null && 'is-active')}
-            >
-              {ui.notesAll}
-              <span className="notes-tag-count">{notes.length}</span>
-            </button>
-            {tags.map((tag) => (
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="notes-search-tags">
               <button
-                key={tag}
                 type="button"
-                onClick={() => setActiveTag((prev) => (prev === tag ? null : tag))}
-                className={cn('notes-tag', activeTag === tag && 'is-active is-tag')}
+                onClick={() => setActiveTag(null)}
+                className={cn('notes-tag', activeTag === null && 'is-active')}
               >
-                {tag}
+                {ui.notesAll}
+                <span className="notes-tag-count">{notes.length}</span>
               </button>
-            ))}
+              {tags.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => setActiveTag((prev) => (prev === tag ? null : tag))}
+                  className={cn('notes-tag', activeTag === tag && 'is-active is-tag')}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+
+            <label className="notes-sort self-start">
+              <span className="sr-only">{ui.notesSort}</span>
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value as NotesSort)}
+                className="notes-sort-select"
+              >
+                {SORTS.map((value) => (
+                  <option key={value} value={value}>
+                    {sortLabel(value)}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
           <p className="notes-search-meta" aria-live="polite">
             {isFiltering
-              ? ui.notesResultsCount.replace('{count}', String(filtered.length))
+              ? ui.notesResultsCount.replace('{count}', String(sorted.length))
               : ui.notesResultsAll.replace('{count}', String(notes.length))}
           </p>
         </div>
 
+        {featured ? (
+          <a
+            href={noteHref(featured.id)}
+            className="notes-featured group mb-5 grid overflow-hidden rounded-[14px] border border-[rgba(55,53,47,0.1)] transition-colors hover:border-[color-mix(in_srgb,var(--primary)_45%,transparent)] dark:border-[rgba(255,255,255,0.1)] md:grid-cols-[1.15fr_1fr]"
+          >
+            <div className="relative min-h-[180px] overflow-hidden md:min-h-[240px]">
+              <PageCover
+                cover={getNoteCover(featured.cover)}
+                accent={featured.accent}
+                className="h-full min-h-[180px] md:min-h-[240px]"
+              />
+              <span className="absolute top-3 left-3 rounded-[6px] bg-background/90 px-2 py-1 text-[11px] font-semibold tracking-wide text-foreground uppercase backdrop-blur-sm">
+                {ui.notesFeatured}
+              </span>
+            </div>
+            <div className="flex flex-col justify-center gap-3 p-5 sm:p-6">
+              <span className="text-[28px]" aria-hidden>
+                {featured.icon}
+              </span>
+              <span className="text-[24px] leading-tight font-semibold tracking-[-0.02em] text-foreground group-hover:text-[var(--link)] sm:text-[28px]">
+                {featured.title[lang]}
+              </span>
+              <span className="text-[14px] leading-relaxed text-muted-foreground">
+                {featured.summary[lang]}
+              </span>
+              <span className="mt-1 flex flex-wrap items-center gap-2 text-[12px] text-muted-foreground">
+                <time dateTime={featured.date}>{featured.date}</time>
+                <span aria-hidden>·</span>
+                <span>{ui.notesReading.replace('{min}', String(featured.readingMinutes))}</span>
+                <span className="inline-flex items-center gap-1 font-medium text-[var(--link)]">
+                  {ui.notesRead}
+                  <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
+                </span>
+              </span>
+            </div>
+          </a>
+        ) : null}
+
         <AnimatePresence mode="popLayout" initial={false}>
-          {filtered.length === 0 ? (
+          {sorted.length === 0 ? (
             <motion.div
               key="empty"
               className="rounded-[10px] border border-dashed border-[rgba(55,53,47,0.14)] px-4 py-8 text-center dark:border-[rgba(255,255,255,0.14)]"
@@ -164,7 +309,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
             </motion.div>
           ) : (
             <motion.ul
-              key={`results-${deferredQuery}-${activeTag ?? 'all'}`}
+              key={`results-${deferredQuery}-${activeTag ?? 'all'}-${sort}`}
               className="grid gap-3 sm:grid-cols-2"
               initial="hidden"
               animate="show"
@@ -180,7 +325,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
                 },
               }}
             >
-              {filtered.map((note) => (
+              {gridNotes.map((note) => (
                 <motion.li
                   key={note.id}
                   variants={{
@@ -191,42 +336,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
                   }}
                   transition={{ duration: 0.32, ease: MOTION_EASE }}
                 >
-                  <a
-                    href={noteHref(note.id)}
-                    className="group flex h-full flex-col rounded-[12px] border border-[rgba(55,53,47,0.1)] bg-[color-mix(in_srgb,var(--editor-surface)_94%,var(--primary))] p-4 transition-colors hover:border-[color-mix(in_srgb,var(--primary)_42%,transparent)] hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)] dark:border-[rgba(255,255,255,0.1)]"
-                  >
-                    <span className="mb-3 flex items-start justify-between gap-2">
-                      <span
-                        className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[rgba(24,116,122,0.14)] text-[22px] transition-transform duration-300 group-hover:-translate-y-0.5 dark:bg-[rgba(126,200,207,0.16)]"
-                        aria-hidden
-                      >
-                        {note.icon}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--link)] opacity-70 transition-opacity group-hover:opacity-100">
-                        {ui.notesRead}
-                        <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-                      </span>
-                    </span>
-                    <span className="mb-1.5 text-[16px] font-semibold tracking-[-0.01em] text-foreground group-hover:text-[var(--link)]">
-                      {note.title[lang]}
-                    </span>
-                    <span className="mb-3 line-clamp-3 flex-1 text-[13px] leading-relaxed text-muted-foreground">
-                      {note.summary[lang]}
-                    </span>
-                    <span className="mt-auto flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
-                      <time dateTime={note.date}>{note.date}</time>
-                      <span aria-hidden>·</span>
-                      <span>{ui.notesReading.replace('{min}', String(note.readingMinutes))}</span>
-                      {note.tags.slice(0, 2).map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-[3px] bg-[rgba(55,53,47,0.06)] px-1.5 py-0.5 dark:bg-[rgba(255,255,255,0.08)]"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </span>
-                  </a>
+                  <NoteCard note={note} lang={lang} readLabel={ui.notesRead} />
                 </motion.li>
               ))}
             </motion.ul>

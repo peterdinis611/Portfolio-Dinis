@@ -4,6 +4,7 @@ import { notes } from '@/data/notes'
 import { profile, projects } from '@/data/portfolio'
 import { techCategories } from '@/data/technologies'
 import { type Lang, translations } from '@/i18n/translations'
+import { flattenNoteBody } from '@/lib/note-blocks'
 
 export type PortfolioSearchResult = {
   page: NotionPageId
@@ -138,7 +139,7 @@ function buildSearchIndex(lang: Lang): SearchEntry[] {
       noteId: note.id,
       title: note.title[lang],
       subtitle: note.summary[lang],
-      terms: [note.title[lang], note.summary[lang], ...note.tags, ...note.body[lang].slice(0, 2)],
+      terms: [note.title[lang], note.summary[lang], ...note.tags, flattenNoteBody(note.body[lang])],
       weight: 8,
     })
   }

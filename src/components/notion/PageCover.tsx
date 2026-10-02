@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import type { CSSProperties } from 'react'
 import {
   getProjectCover,
   type PageCoverImage,
@@ -56,18 +57,25 @@ function CoverPicture({
 export function PageCover({
   variant,
   projectId,
+  cover,
   className,
+  accent,
 }: {
   variant?: PageCoverVariant
   projectId?: string
+  cover?: PageCoverImage
   className?: string
+  accent?: string
 }) {
   const reduce = useMotionDisabled()
-  const cover = projectId
-    ? (getProjectCover(projectId) ?? pageCoverImages.projects)
-    : pageCoverImages[variant ?? 'about']
-  const eager = Boolean(projectId) || variant === 'about' || variant === 'projects'
-  const hasDark = Boolean(cover.srcDark)
+  const resolved =
+    cover ??
+    (projectId
+      ? (getProjectCover(projectId) ?? pageCoverImages.projects)
+      : pageCoverImages[variant ?? 'about'])
+  const eager =
+    Boolean(projectId) || Boolean(cover) || variant === 'about' || variant === 'projects'
+  const hasDark = Boolean(resolved.srcDark)
 
   return (
     <motion.div
@@ -75,6 +83,7 @@ export function PageCover({
         'page-cover pointer-events-none relative h-48 w-full overflow-hidden sm:h-60 md:h-72',
         className,
       )}
+      style={accent ? ({ '--note-accent': accent } as CSSProperties) : undefined}
       initial={reduce ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.45, ease: MOTION_EASE }}
@@ -87,18 +96,31 @@ export function PageCover({
       >
         {hasDark ? (
           <>
-            <CoverPicture cover={cover} mode="light" eager={eager} className="dark:hidden" />
-            <CoverPicture cover={cover} mode="dark" eager={eager} className="hidden dark:block" />
+            <CoverPicture cover={resolved} mode="light" eager={eager} className="dark:hidden" />
+            <CoverPicture
+              cover={resolved}
+              mode="dark"
+              eager={eager}
+              className="hidden dark:block"
+            />
           </>
         ) : (
-          <CoverPicture cover={cover} mode="single" eager={eager} />
+          <CoverPicture cover={resolved} mode="single" eager={eager} />
         )}
       </motion.div>
 
-      {/* Minimal scrim — photos stay readable in light + dark */}
-      <div className="absolute inset-0 z-[1] bg-transparent dark:bg-black/10" aria-hidden />
+      {accent ? (
+        <div
+          className="absolute inset-0 z-[1] opacity-35 mix-blend-multiply dark:opacity-25 dark:mix-blend-soft-light"
+          style={{
+            background: `linear-gradient(135deg, ${accent} 0%, transparent 55%)`,
+          }}
+          aria-hidden
+        />
+      ) : (
+        <div className="absolute inset-0 z-[1] bg-transparent dark:bg-black/10" aria-hidden />
+      )}
 
-      {/* Short fade into page — keep stack below page content */}
       <div
         className="absolute inset-x-0 bottom-0 z-[2] h-10 bg-gradient-to-t from-background via-background/35 to-transparent sm:h-12"
         aria-hidden

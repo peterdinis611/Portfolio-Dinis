@@ -120,8 +120,8 @@ export function setPortfolioPath(route: PortfolioRoute, mode: 'push' | 'replace'
   if (route.page === 'not-found') return
 
   const path = routeToPath(route)
-  const current = `${window.location.pathname}${window.location.search}${window.location.hash}`
-  if (current === path) return
+  // Keep existing search params when already on this path (e.g. /notes?q=…).
+  if (window.location.pathname === path) return
 
   if (mode === 'replace') {
     window.history.replaceState(null, '', path)
