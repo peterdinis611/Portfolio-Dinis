@@ -1,3 +1,6 @@
+import { Check, Link2, Share2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useToast } from '@/components/ui/Toast'
 import { getNote, getRelatedNotes } from '@/data/notes'
 import { getNoteCover } from '@/data/page-covers'
 import type { Lang } from '@/i18n/translations'
@@ -12,9 +15,32 @@ import { NoteToc } from '../notes/NoteToc'
 import { PageCover } from '../PageCover'
 import { NotFoundPage } from './NotFoundPage'
 
+function noteAbsoluteUrl(noteId: string, hash?: string) {
+  const path = noteHref(noteId)
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  return `${origin}${path}${hash ? `#${hash}` : ''}`
+}
+
 export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string }) {
   const ui = translations[lang].ui
+  const { toast } = useToast()
+  const [copied, setCopied] = useState(false)
   const note = getNote(noteId)
+
+  const blocks = note?.body[lang] ?? []
+  const toc = extractNoteToc(blocks)
+
+  useEffect(() => {
+    if (!note) return
+    const hash = window.location.hash.replace(/^#/, '')
+    if (!hash) return
+    const pane = document.getElementById('main-content')
+    const el = document.getElementById(hash)
+    if (!pane || !el) return
+    requestAnimationFrame(() => {
+      pane.scrollTo({ top: Math.max(0, el.offsetTop - 88), behavior: 'smooth' })
+    })
+  }, [note])
 
   if (!note) {
     return <NotFoundPage lang={lang} attemptedPath={`notes/${noteId}`} />
@@ -22,9 +48,36 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
 
   const { prev, next } = getAdjacentNotes(noteId)
   const related = getRelatedNotes(noteId, 3)
-  const blocks = note.body[lang]
-  const toc = extractNoteToc(blocks)
   const cover = getNoteCover(note.cover)
+  const activeHash = window.location.hash.replace(/^#/, '')
+  const shareUrl = noteAbsoluteUrl(noteId, activeHash || undefined)
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      toast({ title: ui.notesLinkCopied })
+      window.setTimeout(() => setCopied(false), 1600)
+    } catch {
+      toast({ title: ui.notesLinkCopyFailed })
+    }
+  }
+
+  const share = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: note.title[lang],
+          text: note.summary[lang],
+          url: shareUrl,
+        })
+        return
+      } catch {
+        /* cancelled */
+      }
+    }
+    await copyLink()
+  }
 
   return (
     <PageShell cover={<PageCover cover={cover} accent={note.accent} />}>
@@ -39,13 +92,35 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
               <time dateTime={note.date}>{note.date}</time>
               <span aria-hidden>·</span>
               <span>{ui.notesReading.replace('{min}', String(note.readingMinutes))}</span>
+              <span aria-hidden>·</span>
+              <span>{ui.notesWords.replace('{count}', String(note.wordCount))}</span>
             </span>
           }
           description={note.summary[lang]}
         >
           {note.title[lang]}
         </PageTitle>
-        <TagList tags={note.tags} />
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <TagList tags={note.tags} />
+          <div className="flex w-full items-center gap-1.5 sm:ml-auto sm:w-auto">
+            <button
+              type="button"
+              onClick={() => void copyLink()}
+              className="inline-flex h-8 items-center gap-1.5 rounded-[6px] border border-border px-2.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              {copied ? <Check className="h-3.5 w-3.5" /> : <Link2 className="h-3.5 w-3.5" />}
+              {ui.notesCopyLink}
+            </button>
+            <button
+              type="button"
+              onClick={() => void share()}
+              className="inline-flex h-8 items-center gap-1.5 rounded-[6px] border border-border px-2.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              {ui.notesShare}
+            </button>
+          </div>
+        </div>
       </MotionSection>
 
       <MotionSection delay={0.05} className="mt-6">

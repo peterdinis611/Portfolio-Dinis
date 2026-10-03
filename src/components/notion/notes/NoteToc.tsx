@@ -55,6 +55,8 @@ export function NoteToc({
                 if (!el || !pane) return
                 pane.scrollTo({ top: Math.max(0, el.offsetTop - 88), behavior: 'smooth' })
                 setActiveId(item.id)
+                const next = `${window.location.pathname}${window.location.search}#${item.id}`
+                window.history.replaceState(null, '', next)
               }}
               className={cn(
                 'block border-l-2 py-1 text-[12.5px] leading-snug transition-colors',

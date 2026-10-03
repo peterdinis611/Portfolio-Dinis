@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Peter Dinis — Blog</title>
+    <link>https://peterdinis.dev/notes</link>
+    <description>Tech articles from practice — design systems, React, API, a11y, mentoring.</description>
+    <language>en</language>
+    <lastBuildDate>Sat, 03 Oct 2026 14:23:23 GMT</lastBuildDate>
+    <item>
+      <title>React performance without premature optimization / React performance bez predčasnej optimalizácie</title>
+      <link>https://peterdinis.dev/notes/react-performance</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/react-performance</guid>
+      <pubDate>Fri, 20 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Profile before you memoize. Where render, network, and layout actually hurt — and what to fix last.</description>
+    </item>
+    <item>
+      <title>A design system the team actually ships with / Design systém, ktorý tím skutočne používa</title>
+      <link>https://peterdinis.dev/notes/design-systems</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/design-systems</guid>
+      <pubDate>Thu, 12 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Tokens, docs, and code review — what separates a component library from dead documentation.</description>
+    </item>
+    <item>
+      <title>Code review that teaches — not just blocks merge / Code review, ktoré učí — nie len blokuje merge</title>
+      <link>https://peterdinis.dev/notes/code-review-culture</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/code-review-culture</guid>
+      <pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate>
+      <description>What to comment on, what not to bike-shed in a PR, and how to turn review into coaching instead of gatekeeping.</description>
+    </item>
+    <item>
+      <title>XState for UI with real states — not just boolean flags / XState pre UI, ktoré má stavy — nie len boolean flagy</title>
+      <link>https://peterdinis.dev/notes/xstate-ui</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/xstate-ui</guid>
+      <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
+      <description>When loading/error/success isn’t enough and the flow has branches, a machine saves a month of debugging.</description>
+    </item>
+    <item>
+      <title>API boundaries product teams don’t route around / API hranice, ktoré produktový tím neobchádza</title>
+      <link>https://peterdinis.dev/notes/api-boundaries</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/api-boundaries</guid>
+      <pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate>
+      <description>Versions, errors, idempotency — and why “one quick extra endpoint” kills the platform.</description>
+    </item>
+    <item>
+      <title>Why Tauri for desktop tooling / Prečo Tauri na desktop nástroje</title>
+      <link>https://peterdinis.dev/notes/tauri-desktop</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/tauri-desktop</guid>
+      <pubDate>Wed, 04 Feb 2026 00:00:00 GMT</pubDate>
+      <description>Web stack + native shell — when a Postman-like client or notes app shouldn’t be an Electron monster.</description>
+    </item>
+    <item>
+      <title>Realtime without websocket spaghetti — Convex in practice / Realtime bez websocket spaghetti — Convex v praxi</title>
+      <link>https://peterdinis.dev/notes/convex-realtime</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/convex-realtime</guid>
+      <pubDate>Wed, 28 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Boom Scope: projects, notes, and canvas on live data — when backend-as-a-product pays off.</description>
+    </item>
+    <item>
+      <title>Accessibility in enterprise UI isn’t a nice-to-have / Prístupnosť v enterprise UI nie je „nice to have“</title>
+      <link>https://peterdinis.dev/notes/a11y-enterprise</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/a11y-enterprise</guid>
+      <pubDate>Wed, 28 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Keyboard, focus, contrast — and why Fluent/SharePoint without a11y isn’t a finished product.</description>
+    </item>
+    <item>
+      <title>TypeScript end-to-end without the magic / TypeScript end-to-end bez magie</title>
+      <link>https://peterdinis.dev/notes/typescript-end-to-end</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/typescript-end-to-end</guid>
+      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Shared types, boundary validation, and why `any` in the API layer hurts later.</description>
+    </item>
+    <item>
+      <title>Mentoring juniors without micromanagement / Mentoring juniorov bez micromanagementu</title>
+      <link>https://peterdinis.dev/notes/mentoring-juniors</link>
+      <guid isPermaLink="true">https://peterdinis.dev/notes/mentoring-juniors</guid>
+      <pubDate>Wed, 10 Dec 2025 00:00:00 GMT</pubDate>
+      <description>Code review as coaching, small ownerships, and how to measure growth — not PR comment count.</description>
+    </item>
+  </channel>
+</rss>

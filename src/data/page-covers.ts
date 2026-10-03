@@ -25,24 +25,36 @@ export const pageCoverImages: Record<PageCoverVariant, PageCoverImage> = {
   tech: {
     src: '/covers/experience.jpg',
     srcWebp: '/covers/experience.webp',
+    srcDark: '/covers/about.jpg',
+    srcDarkWebp: '/covers/about.webp',
     alt: 'Developers collaborating at a laptop',
     objectPosition: 'center 42%',
+    objectPositionDark: 'center 40%',
   },
   experience: {
     src: '/covers/experience.jpg',
     srcWebp: '/covers/experience.webp',
+    srcDark: '/covers/about.jpg',
+    srcDarkWebp: '/covers/about.webp',
     alt: 'Developers collaborating at a laptop',
+    objectPositionDark: 'center 40%',
   },
   projects: {
     src: '/covers/about.jpg',
     srcWebp: '/covers/about.webp',
+    srcDark: '/covers/about.jpg',
+    srcDarkWebp: '/covers/about.webp',
     alt: 'Developer workspace',
     objectPosition: 'center 40%',
+    objectPositionDark: 'center 35%',
   },
   contact: {
     src: '/covers/contact.jpg',
     srcWebp: '/covers/contact.webp',
+    srcDark: '/covers/about.jpg',
+    srcDarkWebp: '/covers/about.webp',
     alt: 'Developer workspace with laptop',
+    objectPositionDark: 'center 40%',
   },
 }
 
@@ -69,8 +81,12 @@ export const projectCoverImages: Record<string, PageCoverImage> = {
   'pulse-apiclient': {
     src: '/covers/pulse-apiclient.jpg',
     srcWebp: '/covers/pulse-apiclient.webp',
+    // Terminal/code crop sinks into dark chrome — brighter workspace in dark mode.
+    srcDark: '/covers/about.jpg',
+    srcDarkWebp: '/covers/about.webp',
     alt: 'Code terminal and API — Pulse API Client',
     objectPosition: 'center 30%',
+    objectPositionDark: 'center 40%',
   },
   'spst-kniznica': {
     src: '/covers/spst-kniznica.jpg',
@@ -88,8 +104,12 @@ const extraCovers: Record<string, PageCoverImage> = {
   code: {
     src: '/covers/code.jpg',
     srcWebp: '/covers/code.webp',
+    // code.jpg is too dark on dark UI — fall back to brighter workspace.
+    srcDark: '/covers/about.jpg',
+    srcDarkWebp: '/covers/about.webp',
     alt: 'Code editor on laptop screen',
     objectPosition: 'center 35%',
+    objectPositionDark: 'center 40%',
   },
 }
 

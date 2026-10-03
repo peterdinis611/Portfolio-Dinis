@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { HighlightedText } from '@/components/ui/HighlightedText'
 import { useToast } from '@/components/ui/Toast'
 import { notes } from '@/data/notes'
 import { projects } from '@/data/portfolio'
@@ -37,6 +38,7 @@ type CommandItem = {
   icon: ReactNode
   title: string
   subtitle?: string
+  query?: string
   run: () => void
 }
 
@@ -185,6 +187,7 @@ export function NotionSearchDialog({
             icon: <span aria-hidden>{result.pageIcon}</span>,
             title: result.title,
             subtitle: result.subtitle,
+            query: result.query,
             run: () =>
               go({
                 page: result.page,
@@ -297,11 +300,11 @@ export function NotionSearchDialog({
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[14px] text-foreground">
-                          {item.title}
+                          <HighlightedText text={item.title} query={item.query} />
                         </span>
                         {item.subtitle ? (
                           <span className="block truncate text-[12px] text-muted-foreground">
-                            {item.subtitle}
+                            <HighlightedText text={item.subtitle} query={item.query} />
                           </span>
                         ) : null}
                       </span>

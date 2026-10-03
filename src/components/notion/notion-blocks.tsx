@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import { Children, isValidElement, type ReactNode } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { BrandIcon } from '@/components/icons/BrandIcon'
 import { cn } from '@/lib/utils'
 
 const calloutVariantMeta = {
@@ -227,6 +228,16 @@ function bookmarkDomain(href: string): string {
   }
 }
 
+function bookmarkBrandSlug(domain: string): string | null {
+  const host = domain.toLowerCase()
+  if (host === 'github.com' || host.endsWith('.github.io')) return 'github'
+  if (host === 'vercel.app' || host.endsWith('.vercel.app') || host === 'vercel.com')
+    return 'vercel'
+  if (host.includes('linkedin.com')) return 'linkedin'
+  if (host.includes('supabase.')) return 'supabase'
+  return null
+}
+
 export function BlockBookmark({
   href,
   title,
@@ -239,6 +250,7 @@ export function BlockBookmark({
   external?: boolean
 }) {
   const domain = bookmarkDomain(href)
+  const brand = bookmarkBrandSlug(domain)
 
   return (
     <a
@@ -254,7 +266,11 @@ export function BlockBookmark({
         </span>
         <span className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
           <span className="flex h-4 w-4 items-center justify-center rounded-[2px] bg-[rgba(55,53,47,0.08)] text-[9px] dark:bg-[rgba(255,255,255,0.08)]">
-            {domain.slice(0, 1).toUpperCase()}
+            {brand ? (
+              <BrandIcon slug={brand} size={12} className="block" label={domain} />
+            ) : (
+              domain.slice(0, 1).toUpperCase()
+            )}
           </span>
           {domain}
         </span>

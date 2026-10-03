@@ -3,11 +3,18 @@ import type { Note } from '@/data/notes'
 import { getNotesByTag, notes } from '@/data/notes'
 import type { Lang } from '@/i18n/translations'
 import { flattenNoteBody } from '@/lib/note-blocks'
+import { normalizeSearch } from '@/lib/search-utils'
 
 export type NotesQuery = {
   lang: Lang
   query?: string
   tag?: string | null
+}
+
+export type NoteSearchHit = {
+  note: Note
+  score: number
+  query: string
 }
 
 type NoteSearchDoc = {
@@ -19,10 +26,7 @@ type NoteSearchDoc = {
   note: Note
 }
 
-/** Diacritics-insensitive lowercase for SK/EN search. */
-export function normalizeSearch(value: string): string {
-  return value.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '')
-}
+export { normalizeSearch }
 
 const fuseByLang = new Map<Lang, Fuse<NoteSearchDoc>>()
 
@@ -44,7 +48,6 @@ function getNotesFuse(lang: Lang): Fuse<NoteSearchDoc> {
   const fuse = new Fuse(buildDocs(lang), {
     includeScore: true,
     ignoreLocation: true,
-    // Slightly fuzzy — good for typos + SK/EN fragments.
     threshold: 0.38,
     distance: 120,
     minMatchCharLength: 2,
@@ -60,10 +63,6 @@ function getNotesFuse(lang: Lang): Fuse<NoteSearchDoc> {
   return fuse
 }
 
-/**
- * Fuse score is 0 (best) → 1 (worst). Convert to higher-is-better ~0–100.
- * Exact-ish hits land near 100; weak fuzzy matches stay low.
- */
 export function scoreNote(note: Note, lang: Lang, query: string): number {
   const trimmed = query.trim()
   if (!trimmed) return 1
@@ -74,23 +73,30 @@ export function scoreNote(note: Note, lang: Lang, query: string): number {
   return Math.round((1 - hit.score) * 100)
 }
 
-/**
- * Filter + rank blog notes via Fuse.js (optional tag pre-filter).
- * Empty query returns date-sorted (or tag-filtered) list.
- */
 export function filterNotes({ lang, query, tag = null }: NotesQuery): Note[] {
+  return searchNotes({ lang, query, tag }).map((hit) => hit.note)
+}
+
+/** Fuse-ranked notes with query retained for highlight rendering. */
+export function searchNotes({ lang, query, tag = null }: NotesQuery): NoteSearchHit[] {
   const base = getNotesByTag(tag)
   const trimmed = query?.trim() ?? ''
-  if (!trimmed) return base
+  if (!trimmed) {
+    return base.map((note) => ({ note, score: 1, query: '' }))
+  }
 
   const allowed = new Set(base.map((note) => note.id))
   const fuse = getNotesFuse(lang)
-  const results = fuse.search(normalizeSearch(trimmed))
-
-  return results.filter((result) => allowed.has(result.item.id)).map((result) => result.item.note)
+  return fuse
+    .search(normalizeSearch(trimmed))
+    .filter((result) => allowed.has(result.item.id))
+    .map((result) => ({
+      note: result.item.note,
+      score: Math.round((1 - (result.score ?? 1)) * 100),
+      query: trimmed,
+    }))
 }
 
-/** Test helper — clear Fuse caches between suites if needed. */
 export function resetNotesSearchCache() {
   fuseByLang.clear()
 }

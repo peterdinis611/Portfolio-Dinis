@@ -91,7 +91,7 @@ export function BioTagPills({ items, className }: { items: string[]; className?:
             )}
           >
             {meta.icon ? (
-              <BrandIcon slug={meta.icon} size={12} className="opacity-95" label={item} />
+              <BrandIcon slug={meta.icon} size={14} className="shrink-0" label={item} />
             ) : null}
             <span>{item}</span>
           </li>
@@ -628,7 +628,7 @@ export function TagList({ tags }: { tags: string[] }) {
             )}
           >
             {meta.icon ? (
-              <BrandIcon slug={meta.icon} size={12} className="opacity-95" label={tag} />
+              <BrandIcon slug={meta.icon} size={14} className="shrink-0" label={tag} />
             ) : null}
             <span>{tag}</span>
           </li>

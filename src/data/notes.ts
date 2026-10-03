@@ -1,11 +1,15 @@
 import type { NoteBlock, NoteCoverId } from '@/lib/note-blocks'
+import { flattenNoteBody } from '@/lib/note-blocks'
+import { countWords, estimateReadingMinutes } from '@/lib/search-utils'
 import { type NoteDraft, upgradeBody } from './upgrade-note-body'
 
 export type Note = {
   id: string
   icon: string
   date: string
+  /** Synced from body word count (~220 wpm). */
   readingMinutes: number
+  wordCount: number
   tags: string[]
   title: { sk: string; en: string }
   summary: { sk: string; en: string }
@@ -544,10 +548,15 @@ createMachine({
 ]
 
 function finalizeNote(draft: NoteDraft): Note {
-  const { outline, extras, body, ...rest } = draft
+  const { outline, extras, body, readingMinutes: _ignored, ...rest } = draft
+  const resolved = upgradeBody(body, outline, extras)
+  // Prefer SK for counting (primary locale); EN is parallel content.
+  const wordCount = countWords(flattenNoteBody(resolved.sk))
   return {
     ...rest,
-    body: upgradeBody(body, outline, extras),
+    body: resolved,
+    wordCount,
+    readingMinutes: estimateReadingMinutes(wordCount),
   }
 }
 

@@ -83,6 +83,12 @@ const customBrandIcons: Record<string, BrandIconData> = {
     hex: '412991',
     path: 'M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.844-3.369L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.78-2.742a.766.766 0 0 0-.783 0L9.41 9.27V6.938a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5Z',
   },
+  // Auth.js (not Auth0) — shield mark; simple-icons has no Auth.js entry.
+  authjs: {
+    title: 'Auth.js',
+    hex: '8315FD',
+    path: 'M12 1.2c2.9 0 5.9.65 8.05 1.3.85.26 1.45 1.05 1.45 1.95v6.15c0 5.25-3.35 9.85-9.05 12.15a1.2 1.2 0 0 1-.9 0C5.85 20.45 2.5 15.85 2.5 10.6V4.45c0-.9.6-1.69 1.45-1.95C6.1 1.85 9.1 1.2 12 1.2z',
+  },
 }
 
 const packageBrandIcons: Record<string, BrandIconData> = {
@@ -96,7 +102,8 @@ const packageBrandIcons: Record<string, BrandIconData> = {
   nextdotjs: siNextdotjs,
   tailwindcss: siTailwindcss,
   reactquery: siReactquery,
-  tanstack: siTanstack,
+  // Official TanStack mark is cream (#ECE8D1) for dark UIs — use ink hex so light tags stay readable.
+  tanstack: { title: siTanstack.title, path: siTanstack.path, hex: '1C1917' },
   less: siLess,
   nodedotjs: siNodedotjs,
   mongodb: siMongodb,
@@ -115,7 +122,8 @@ const packageBrandIcons: Record<string, BrandIconData> = {
   tauri: siTauri,
   rust: siRust,
   sqlite: siSqlite,
-  drizzle: siDrizzle,
+  // Keep real Drizzle /// path; darker brand ink for light-on-tint tags.
+  drizzle: { title: siDrizzle.title, path: siDrizzle.path, hex: '3F6212' },
   clerk: siClerk,
   convex: siConvex,
   xstate: siXstate,
@@ -144,20 +152,52 @@ function hexLuminance(hex: string): number {
   return (r * 299 + g * 587 + b * 114) / 1000
 }
 
+function darkenHex(hex: string, factor = 0.72): string {
+  const normalized = hex.replace('#', '')
+  const channel = (start: number) =>
+    Math.max(
+      0,
+      Math.min(255, Math.round(Number.parseInt(normalized.slice(start, start + 2), 16) * factor)),
+    )
+      .toString(16)
+      .padStart(2, '0')
+  return `${channel(0)}${channel(2)}${channel(4)}`
+}
+
+/** Ensure brand fills stay legible on tinted Notion tags / light chips. */
+function contrastAwareHex(hex: string, theme: 'light' | 'dark'): string {
+  let current = hex.replace('#', '')
+  let lum = hexLuminance(current)
+
+  if (theme === 'dark' && lum < 90) {
+    return 'currentColor'
+  }
+
+  // Only very pale brand fills (cream / lime / yellow) disappear on light tags.
+  // Leave mid-light brand colors alone (e.g. React #61DAFB).
+  if (theme === 'light' && lum > 200) {
+    let guard = 0
+    while (lum > 155 && guard < 6) {
+      current = darkenHex(current, 0.7)
+      lum = hexLuminance(current)
+      guard += 1
+    }
+  }
+
+  return `#${current}`
+}
+
 export function brandIconColor(
   slug: string,
   override?: string,
   options?: { theme?: 'light' | 'dark' },
 ): string {
   if (override === 'currentColor') return 'currentColor'
+  // Explicit chip colors (e.g. white on solid brand tiles) must stay as-is.
   if (override) return override.startsWith('#') ? override : `#${override.replace('#', '')}`
 
   const icon = getBrandIcon(slug)
   if (!icon) return 'currentColor'
 
-  if (options?.theme === 'dark' && hexLuminance(icon.hex) < 90) {
-    return 'currentColor'
-  }
-
-  return `#${icon.hex}`
+  return contrastAwareHex(icon.hex, options?.theme ?? 'light')
 }

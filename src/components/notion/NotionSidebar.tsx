@@ -171,14 +171,27 @@ export function NotionSidebar({
 
       <div className="px-2.5 pb-2.5">
         {onOpenSearch ? (
-          <button type="button" onClick={onOpenSearch} className="notion-quick-find group/find">
-            <span className="notion-quick-find-icon" aria-hidden>
+          <button
+            type="button"
+            onClick={onOpenSearch}
+            className="notion-quick-find group/find flex h-[2.35rem] w-full items-center gap-2 rounded-lg border border-[rgba(55,53,47,0.12)] px-2 pl-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_1px_2px_rgba(15,15,15,0.04)] transition-[border-color,box-shadow] hover:border-[color-mix(in_srgb,var(--primary)_35%,rgba(55,53,47,0.16))] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_0_0_3px_color-mix(in_srgb,var(--primary)_12%,transparent)] dark:border-[rgba(255,255,255,0.1)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_1px_2px_rgba(0,0,0,0.2)]"
+            style={{
+              background:
+                'linear-gradient(180deg, color-mix(in srgb, var(--editor-surface) 92%, var(--primary)) 0%, color-mix(in srgb, var(--muted) 55%, transparent) 100%)',
+            }}
+          >
+            <span
+              className="notion-quick-find-icon grid h-[1.55rem] w-[1.55rem] shrink-0 place-items-center rounded-md bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[color-mix(in_srgb,var(--primary)_75%,var(--muted-foreground))]"
+              aria-hidden
+            >
               <Search className="h-3.5 w-3.5" strokeWidth={2} />
             </span>
             <span className="min-w-0 flex-1 truncate text-left text-[13px] text-muted-foreground transition-colors group-hover/find:text-foreground">
               {ui.notionQuickFind}
             </span>
-            <kbd className="notion-quick-find-kbd">⌘K</kbd>
+            <kbd className="notion-quick-find-kbd shrink-0 rounded-[5px] border border-[rgba(55,53,47,0.1)] bg-[color-mix(in_srgb,var(--editor-surface)_88%,transparent)] px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-muted-foreground shadow-[0_1px_0_rgba(55,53,47,0.06)] dark:border-[rgba(255,255,255,0.1)] dark:shadow-[0_1px_0_rgba(0,0,0,0.25)]">
+              ⌘K
+            </kbd>
           </button>
         ) : null}
       </div>

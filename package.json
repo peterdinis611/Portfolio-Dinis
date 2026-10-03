@@ -16,7 +16,7 @@
     "check:fix": "biome check --write .",
     "check:staged": "biome check --staged --write --no-errors-on-unmatched",
     "biome:ci": "biome ci .",
-    "seo:generate": "node scripts/generate-seo.mjs && node scripts/generate-og.mjs",
+    "seo:generate": "node scripts/generate-seo.mjs && node scripts/generate-og.mjs && node scripts/generate-feed.mjs",
     "og:generate": "node scripts/generate-og.mjs",
     "verify": "tsc -b && biome ci . && vitest run",
     "test": "vitest run",

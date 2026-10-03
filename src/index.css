@@ -285,7 +285,7 @@
   }
 
   .dark .page-cover-img {
-    filter: brightness(1.18) contrast(1.05) saturate(1.05);
+    filter: brightness(1.32) contrast(1.07) saturate(1.1);
   }
 
   /* Back link above title — don't pull icon over the link */
@@ -664,6 +664,46 @@
     background: rgba(255, 255, 255, 0.06);
   }
 
+  .notes-view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border-radius: 999px;
+    border: 1px solid rgba(55, 53, 47, 0.12);
+    background: rgba(55, 53, 47, 0.04);
+  }
+
+  .dark .notes-view-toggle {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .notes-view-btn {
+    display: grid;
+    place-items: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 999px;
+    color: var(--muted-foreground);
+  }
+
+  .notes-view-btn.is-active {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .notes-list {
+    border: 1px solid rgba(55, 53, 47, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--editor-surface) 96%, var(--primary));
+  }
+
+  .dark .notes-list {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
   .notes-featured .page-cover {
     border-radius: 0;
   }
@@ -890,20 +930,41 @@ html.has-custom-cursor [contenteditable="true"] {
 }
 
 @keyframes notes-search-icon-keyed {
-  0% { transform: scale(1) rotate(0deg); }
-  35% { transform: scale(1.14) rotate(-8deg); }
-  70% { transform: scale(1.04) rotate(4deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  35% {
+    transform: scale(1.14) rotate(-8deg);
+  }
+  70% {
+    transform: scale(1.04) rotate(4deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 @keyframes notes-search-listening {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.08); opacity: 0.82; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.82;
+  }
 }
 
 @keyframes notes-search-meta-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

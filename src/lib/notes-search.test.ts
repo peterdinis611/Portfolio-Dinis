@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { getNote, getNotesByTag, getNoteTags, isNoteId, notes } from '@/data/notes'
 import { filterNotes, normalizeSearch, scoreNote } from '@/lib/notes-search'
 import { searchPortfolio } from '@/lib/portfolio-search'
+import { countWords, estimateReadingMinutes, highlightParts } from '@/lib/search-utils'
 
 describe('notes data', () => {
   it('keeps unique ids and newest-first order', () => {
@@ -24,7 +25,8 @@ describe('notes data', () => {
       expect(note.body.en.length).toBe(note.body.sk.length)
       expect(note.body.sk.some((block) => block.type === 'h2')).toBe(true)
       expect(note.tags.length).toBeGreaterThan(0)
-      expect(note.readingMinutes).toBeGreaterThan(0)
+      expect(note.wordCount).toBeGreaterThan(50)
+      expect(note.readingMinutes).toBe(estimateReadingMinutes(note.wordCount))
       expect(note.cover).toBeTruthy()
     }
   })
@@ -99,5 +101,24 @@ describe('portfolio search notes index', () => {
 
     const byBody = searchPortfolio('sk', 'idempotencia', 10)
     expect(byBody.some((result) => result.noteId === 'api-boundaries')).toBe(true)
+  })
+
+  it('keeps the query on hits for highlight rendering', () => {
+    const hits = searchPortfolio('en', 'design system', 5)
+    expect(hits.length).toBeGreaterThan(0)
+    expect(hits.every((hit) => hit.query === 'design system')).toBe(true)
+  })
+})
+
+describe('search highlight helpers', () => {
+  it('marks diacritics-insensitive matches', () => {
+    const parts = highlightParts('Prístupnosť v enterprise', 'pristupnost')
+    expect(parts.some((part) => part.match && /Prístupnosť/i.test(part.text))).toBe(true)
+  })
+
+  it('counts words and estimates reading time', () => {
+    expect(countWords('one two three')).toBe(3)
+    expect(estimateReadingMinutes(220)).toBe(1)
+    expect(estimateReadingMinutes(440)).toBe(2)
   })
 })
