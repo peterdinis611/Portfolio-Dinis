@@ -23,7 +23,7 @@ export class PortfolioErrorBoundary extends Component<
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.props.onError(enrichPortfolioError(error, info))
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV === 'development') {
       console.error('[PortfolioErrorBoundary]', error, info.componentStack)
     }
   }

@@ -1,6 +1,6 @@
 # Peter Dinis — Notion Portfolio
 
-Interactive portfolio with a Notion-like layout: sidebar, document pages, path URLs, SK/EN language toggle, and light/dark theme. Content is authored in React.
+Interactive portfolio with a Notion-like layout: sidebar, document pages, locale URLs (`/sk`, `/en`), SK/EN toggle, and light/dark theme. Built with **Next.js App Router** and authored in React.
 
 ## Preview
 
@@ -20,13 +20,13 @@ Interactive portfolio with a Notion-like layout: sidebar, document pages, path U
 
 | Layer | Tools |
 |-------|--------|
-| UI | React 19, TypeScript, Vite 8 |
+| Framework | Next.js 16 (App Router), React 19, TypeScript |
 | Styling | Tailwind CSS v4, shadcn/ui (Radix primitives) |
-| Fonts | Instrument Serif (display), DM Sans (body) |
-| Motion | Framer Motion |
-| State | XState (`@xstate/react`) |
+| Fonts | Instrument Serif (display), DM Sans (body) via `next/font` |
+| Motion | Framer Motion (`MOTION_EASE`, `useEnterMotionReady` for SSR-safe enters) |
+| State | XState (`@xstate/react`) — theme / animations |
 | Icons | [simple-icons](https://simpleicons.org/) + Lucide |
-| Quality | Biome (lint + format) |
+| Quality | Biome, Vitest, Storybook |
 
 ## Getting started
 
@@ -34,100 +34,101 @@ Interactive portfolio with a Notion-like layout: sidebar, document pages, path U
 
 ```bash
 npm install
+cp .env.example .env   # optional
 npm run dev
 ```
 
-Open the URL shown in the terminal (usually `http://localhost:5173`).
+Open [http://localhost:3000](http://localhost:3000) — middleware redirects `/` → `/sk` (or `/en` from cookie / `Accept-Language`).
 
-### Production build
+### Production
 
 ```bash
 npm run build
-npm run preview
+npm start
 ```
 
 ## How to use
 
 | Input | Action |
 |-------|--------|
-| Sidebar links | Navigate between pages (`/`, `/tech`, `/projects`, …) |
-| Search | Filter pages in the sidebar |
-| Header controls | Switch SK / EN and light / dark theme |
-| Mobile menu | Open sidebar sheet |
+| Sidebar / ⌘K | Navigate or quick-find pages, projects, notes, actions |
+| ⌘\ | Collapse / expand sidebar (desktop) or open sheet (mobile) |
+| Topbar | Search, SK/EN, animations on/off, theme |
+| Locale URLs | `/sk/...` and `/en/...` (lang switch updates the path) |
 
-Language and theme preferences are stored in `localStorage` (`portfolio-lang`, `portfolio-theme`).
+Theme and animations persist in `localStorage` (`portfolio-theme`, `portfolio-animations`). Language lives in the URL (+ `NEXT_LOCALE` cookie).
 
 ## Pages
 
-| Page | Content |
-|------|---------|
-| About (`/`) | Bio, interests, services |
-| Technologies (`/tech`) | Stack (frontend, backend, cloud, mobile) |
-| Experience (`/experience`) | Job history with collapsible roles |
-| Projects (`/projects`) | Selected work with descriptions |
-| Contact (`/contact`) | Email, phone, location, social links |
+| Route | Content |
+|-------|---------|
+| `/[locale]` | About — bio, interests, services |
+| `/[locale]/tech` | Stack |
+| `/[locale]/experience` | Roles |
+| `/[locale]/projects` | Project gallery |
+| `/[locale]/projects/:id` | Project detail |
+| `/[locale]/notes` | Blog list (`?q=&tag=&sort=&view=`) |
+| `/[locale]/notes/:id` | Article |
+| `/[locale]/cv` | Printable CV |
+| `/[locale]/contact` | Contact |
 
 ## Project structure
 
 ```
+app/
+├── [locale]/          # Locale-prefixed routes + layout shell
+├── feed.xml/          # Static RSS
+├── sitemap.ts
+└── robots.ts
 src/
-├── components/notion/   # Shell, pages, blocks
-├── components/ui/         # shadcn/ui primitives
-├── context/               # XState providers
-├── data/                  # portfolio.ts, technologies.ts
-├── i18n/translations.ts   # SK / EN copy
-├── lib/                   # utils, SEO, routing
-├── machines/              # settingsMachine
-└── index.css              # Tailwind + theme tokens
+├── components/notion/ # Shell, pages, blocks, motion
+├── components/ui/     # shadcn primitives
+├── context/           # AppProviders (XState)
+├── data/              # portfolio, notes, technologies
+├── i18n/              # SK / EN copy
+├── lib/               # seo, routing, locale
+└── machines/          # settingsMachine (theme / animations)
 ```
+
+## Motion conventions (DX)
+
+- **`MOTION_EASE`** — `[0.22, 1, 0.36, 1]` soft expo (Notion-like, not bouncy).
+- **`useEnterMotionReady()`** — keep enter `initial` as `false` until after mount so prerendered HTML stays visible (no `opacity: 0` in SSG).
+- **`data-motion-ready`** on `.notion-app-shell` — gates CSS gallery rise animations the same way.
+- Respect **`useMotionDisabled()`** (OS reduced-motion or user toggle).
 
 ## Customize content
 
 | What | Where |
 |------|--------|
 | Profile, projects, socials | `src/data/portfolio.ts` |
+| Notes / blog | `src/data/notes.ts` |
 | Tech stack | `src/data/technologies.ts` |
-| All UI copy (SK / EN) | `src/i18n/translations.ts` |
-| Page components | `src/components/notion/pages/` |
-| Sidebar / nav | `src/components/notion/nav.ts` |
+| UI copy (SK / EN) | `src/i18n/translations.ts` |
+| Pages | `src/components/notion/pages/` |
+| Nav | `src/components/notion/nav.ts` |
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Typecheck + production build |
-| `npm run preview` | Preview production build |
-| `npm run verify` | `tsc` + Biome CI |
+| `npm run dev` | Next.js dev server |
+| `npm run build` | OG images + `next build` (SSG) |
+| `npm start` | Production server |
+| `npm run verify` | `tsc` + Biome CI + Vitest |
+| `npm run storybook` | Component stories (Vite) |
+| `npm run og:generate` | Regenerate `public/og/*.svg` |
 
 ## SEO
 
-Meta tags, Open Graph, Twitter cards, canonical URLs, breadcrumbs JSON-LD and `Person` / `ProfilePage` schema update when **language** or **page** (`/`, `/tech`, …) changes.
-
-| File | Purpose |
-|------|---------|
-| `index.html` | Default SK meta (crawlers without JS) |
-| `src/lib/seo.ts` | Dynamic SEO per page + language |
-| `src/components/SeoManager.tsx` | Syncs SEO on navigation |
-| `public/robots.txt` | Crawler rules |
-| `public/sitemap.xml` | All portfolio sections |
-| `public/og-image.jpg` | Social preview image |
-
-### Deploy setup
+- Per-route `generateMetadata` + hreflang alternates (`/sk` ↔ `/en`)
+- JSON-LD in prerendered HTML (`JsonLd`)
+- `app/sitemap.ts`, `app/robots.ts`, `/feed.xml`
 
 ```bash
 cp .env.example .env
-# Set your production domain:
-# VITE_SITE_URL=https://your-domain.com
+# NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
-
-Regenerate `robots.txt` and `sitemap.xml` from `.env`:
-
-```bash
-npm run seo:generate
-```
-
-`npm run build` runs this automatically before the Vite build.
 
 ## License
 

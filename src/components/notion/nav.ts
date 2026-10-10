@@ -12,14 +12,11 @@ export {
   isProjectId,
   isProjectListId,
   noteHref,
-  pageFromHash,
   pageHref,
   parsePortfolioRoute,
   projectHref,
   projectListHref,
-  setPageHash,
-  setPortfolioHash,
-  setPortfolioPath,
+  routeToPath,
 } from '../../lib/portfolio-route'
 
 export function getNotionPages(lang: Lang): NotionPageDef[] {
@@ -40,12 +37,12 @@ export function getProjectListLabel(lang: Lang, listId: ProjectListId): string {
   return listId === 'my-projects' ? ui.myProjects : ui.projects
 }
 
-export function getProjectNavItems() {
+export function getProjectNavItems(lang: Lang) {
   return projects.map((project) => ({
     id: project.id,
     name: project.name,
     icon: projectMeta[project.id]?.icon ?? '📄',
-    href: projectHref(project.id),
+    href: projectHref(lang, project.id),
   }))
 }
 
@@ -57,7 +54,7 @@ export function getProjectNavGroups(lang: Lang) {
       id: 'my-projects' as const,
       label: ui.myProjects,
       icon: '🛠️',
-      items: getProjectNavItems(),
+      items: getProjectNavItems(lang),
     },
   ]
 }

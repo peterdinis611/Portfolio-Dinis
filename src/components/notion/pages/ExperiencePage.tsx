@@ -1,3 +1,5 @@
+'use client'
+
 import { ChevronRight } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'

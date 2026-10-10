@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import { MailtoLink } from '@/components/ui/MailtoLink'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
@@ -168,7 +170,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
               </p>
               <PageNavPills
                 items={navPages.map((page) => ({
-                  href: pageHref(page.id),
+                  href: pageHref(lang, page.id),
                   icon: page.icon,
                   label: page.label,
                 }))}

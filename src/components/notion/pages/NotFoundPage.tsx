@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import { type Lang, translations } from '@/i18n/translations'
 import { pageHref } from '@/lib/portfolio-route'
@@ -8,45 +10,51 @@ import {
   AnimatedExploreLinks,
   StatusBackLink,
   StatusDetail,
+  StatusPageRoot,
   staggerContainer,
   staggerItem,
 } from './status-page-parts'
 
 export function NotFoundPage({ lang, attemptedPath }: { lang: Lang; attemptedPath?: string }) {
   const ui = translations[lang].ui
-  const pages = getNotionPages(lang)
+  const pages = getNotionPages(lang).map((page) => ({
+    ...page,
+    href: pageHref(lang, page.id),
+  }))
 
   return (
     <PageShell>
-      <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-        <motion.div variants={staggerItem}>
-          <StatusBackLink href={pageHref('about')}>{ui.notionBackHome}</StatusBackLink>
+      <StatusPageRoot watermark={ui.notionNotFoundWatermark} watermarkVariant="not-found">
+        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div variants={staggerItem}>
+            <StatusBackLink href={pageHref(lang, 'about')}>{ui.notionBackHome}</StatusBackLink>
+          </motion.div>
+
+          <motion.div variants={staggerItem}>
+            <PageTitle icon="🔎">{ui.notionNotFoundHeading}</PageTitle>
+          </motion.div>
+
+          <motion.div variants={staggerItem}>
+            <BlockText>{ui.notionNotFoundBody}</BlockText>
+          </motion.div>
+
+          {attemptedPath ? (
+            <StatusDetail label={ui.notionNotFoundPathLabel} value={`/${attemptedPath}`} />
+          ) : null}
+
+          <motion.div variants={staggerItem} className="mt-6">
+            <BlockQuote>{ui.notionNotFoundQuote}</BlockQuote>
+          </motion.div>
+
+          <motion.div variants={staggerItem} className="mt-4">
+            <BlockCalloutRich title={ui.notionNotFoundTipTitle} variant="idea">
+              {ui.notionNotFoundTipBody}
+            </BlockCalloutRich>
+          </motion.div>
         </motion.div>
 
-        <motion.div variants={staggerItem}>
-          <PageTitle icon="🔎">{ui.notionNotFoundHeading}</PageTitle>
-        </motion.div>
-
-        <motion.div variants={staggerItem}>
-          <BlockText>{ui.notionNotFoundBody}</BlockText>
-        </motion.div>
-
-        {attemptedPath ? (
-          <StatusDetail label={ui.notionNotFoundPathLabel} value={`/${attemptedPath}`} />
-        ) : null}
-
-        <motion.div variants={staggerItem} className="mt-6">
-          <BlockQuote>{ui.notionNotFoundQuote}</BlockQuote>
-        </motion.div>
-
-        <motion.div variants={staggerItem} className="mt-4">
-          <BlockCalloutRich title={ui.notionNotFoundTipTitle} variant="idea">
-            {ui.notionNotFoundTipBody}
-          </BlockCalloutRich>
-        </motion.div>
-      </motion.div>
-
-      <AnimatedExploreLinks title={ui.notionNotFoundExplore} pages={pages} />
+        <AnimatedExploreLinks title={ui.notionNotFoundExplore} pages={pages} />
+      </StatusPageRoot>
     </PageShell>
   )
 }

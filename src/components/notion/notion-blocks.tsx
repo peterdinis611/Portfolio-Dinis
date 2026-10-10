@@ -1,7 +1,10 @@
+'use client'
+
 import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 import { Children, isValidElement, type ReactNode } from 'react'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { BrandIcon } from '@/components/icons/BrandIcon'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
 
 const calloutVariantMeta = {
@@ -403,9 +406,9 @@ export function BlockGallery({
                 {body}
               </button>
             ) : (
-              <a href={item.href} className={className}>
+              <Link href={item.href} prefetch className={className}>
                 {body}
-              </a>
+              </Link>
             )}
           </li>
         )

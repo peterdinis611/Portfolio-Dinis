@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import { getProjectsForList, type Project, type ProjectListId, projects } from '@/data/portfolio'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'
@@ -25,7 +27,7 @@ function buildRows(lang: Lang, items: Project[]) {
     const meta = projectMeta[lang][project.id]
     return {
       id: project.id,
-      href: projectHref(project.id),
+      href: projectHref(lang, project.id),
       icon: <ProjectIcon projectId={project.id} size="sm" />,
       cells: [project.name, meta?.type ?? '', project.tech] as [string, string, string],
     }
@@ -41,7 +43,7 @@ function buildGalleryItems(lang: Lang, items: Project[]) {
     const meta = projectMeta[lang][project.id]
     return {
       id: project.id,
-      href: projectHref(project.id),
+      href: projectHref(lang, project.id),
       icon: <ProjectIcon projectId={project.id} size="md" />,
       title: project.name,
       subtitle: descriptions[project.id] ?? '',

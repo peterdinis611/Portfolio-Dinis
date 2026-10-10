@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import { type Lang, translations } from '@/i18n/translations'
 import { pageHref } from '@/lib/portfolio-route'
@@ -10,6 +12,7 @@ import {
   createDemoPortfolioError,
   StatusBackLink,
   StatusDetail,
+  StatusPageRoot,
   StatusRetryButton,
   StatusStackTrace,
   staggerContainer,
@@ -25,47 +28,61 @@ type ErrorPageProps = {
 
 export function ErrorPage({ lang, error, demo = false, onRetry }: ErrorPageProps) {
   const ui = translations[lang].ui
-  const pages = getNotionPages(lang)
+  const pages = getNotionPages(lang).map((page) => ({
+    ...page,
+    href: pageHref(lang, page.id),
+  }))
   const resolvedError = error ?? (demo ? createDemoPortfolioError() : undefined)
   const detail = resolvedError?.message ?? (demo ? ui.notionErrorDemoDetail : undefined)
+  const handleRetry =
+    onRetry ??
+    (demo
+      ? () => {
+          if (typeof window !== 'undefined') window.location.reload()
+        }
+      : undefined)
 
   return (
     <PageShell>
-      <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-        <motion.div variants={staggerItem}>
-          <StatusBackLink href={pageHref('about')}>{ui.notionBackHome}</StatusBackLink>
+      <StatusPageRoot watermark={ui.notionErrorWatermark} watermarkVariant="error">
+        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div variants={staggerItem}>
+            <StatusBackLink href={pageHref(lang, 'about')}>{ui.notionBackHome}</StatusBackLink>
+          </motion.div>
+
+          <motion.div variants={staggerItem}>
+            <PageTitle icon="🧭">{ui.notionErrorHeading}</PageTitle>
+          </motion.div>
+
+          <motion.div variants={staggerItem}>
+            <BlockText>{ui.notionErrorBody}</BlockText>
+          </motion.div>
+
+          {detail ? <StatusDetail label={ui.notionErrorDetailLabel} value={detail} /> : null}
+
+          <motion.div variants={staggerItem} className="mt-6">
+            <BlockQuote>{ui.notionErrorQuote}</BlockQuote>
+          </motion.div>
+
+          {handleRetry ? (
+            <div className="mt-5">
+              <StatusRetryButton label={ui.notionErrorRetry} onClick={handleRetry} />
+            </div>
+          ) : null}
+
+          <motion.div variants={staggerItem} className="mt-4">
+            <BlockCalloutRich title={ui.notionErrorTipTitle} variant="warning">
+              {ui.notionErrorTipBody}
+            </BlockCalloutRich>
+          </motion.div>
+
+          {resolvedError ? (
+            <StatusStackTrace title={ui.notionErrorStackTitle} error={resolvedError} />
+          ) : null}
         </motion.div>
 
-        <motion.div variants={staggerItem}>
-          <PageTitle icon="🧭">{ui.notionErrorHeading}</PageTitle>
-        </motion.div>
-
-        <motion.div variants={staggerItem}>
-          <BlockText>{ui.notionErrorBody}</BlockText>
-        </motion.div>
-
-        {detail ? <StatusDetail label={ui.notionErrorDetailLabel} value={detail} /> : null}
-
-        <motion.div variants={staggerItem} className="mt-6">
-          <BlockQuote>{ui.notionErrorQuote}</BlockQuote>
-        </motion.div>
-
-        <div className="mt-5">
-          <StatusRetryButton label={ui.notionErrorRetry} onClick={onRetry} />
-        </div>
-
-        <motion.div variants={staggerItem} className="mt-4">
-          <BlockCalloutRich title={ui.notionErrorTipTitle} variant="warning">
-            {ui.notionErrorTipBody}
-          </BlockCalloutRich>
-        </motion.div>
-
-        {resolvedError ? (
-          <StatusStackTrace title={ui.notionErrorStackTitle} error={resolvedError} />
-        ) : null}
-      </motion.div>
-
-      <AnimatedExploreLinks title={ui.notionNotFoundExplore} pages={pages} />
+        <AnimatedExploreLinks title={ui.notionNotFoundExplore} pages={pages} />
+      </StatusPageRoot>
     </PageShell>
   )
 }

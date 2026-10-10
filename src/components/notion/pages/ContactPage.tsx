@@ -1,3 +1,5 @@
+'use client'
+
 import type { ReactNode } from 'react'
 import { BrandIcon } from '@/components/icons/BrandIcon'
 import { Button } from '@/components/ui/button'
@@ -155,7 +157,7 @@ export function ContactPage({ lang }: { lang: Lang }) {
         {navPages.map((page) => (
           <BlockPageLink
             key={page.id}
-            href={pageHref(page.id)}
+            href={pageHref(lang, page.id)}
             icon={page.icon}
             label={page.label}
           />

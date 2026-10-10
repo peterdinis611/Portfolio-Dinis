@@ -1,3 +1,5 @@
+'use client'
+
 import { type ComponentPropsWithoutRef, type MouseEvent, type ReactNode, useCallback } from 'react'
 import { buildMailtoHref, decodeEmail, type MailtoOptions, openMailto } from '@/lib/email'
 

@@ -1,3 +1,5 @@
+'use client'
+
 import { Check, Link2, Share2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useToast } from '@/components/ui/Toast'
@@ -15,8 +17,8 @@ import { NoteToc } from '../notes/NoteToc'
 import { PageCover } from '../PageCover'
 import { NotFoundPage } from './NotFoundPage'
 
-function noteAbsoluteUrl(noteId: string, hash?: string) {
-  const path = noteHref(noteId)
+function noteAbsoluteUrl(lang: Lang, noteId: string, hash?: string) {
+  const path = noteHref(lang, noteId)
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
   return `${origin}${path}${hash ? `#${hash}` : ''}`
 }
@@ -49,8 +51,8 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
   const { prev, next } = getAdjacentNotes(noteId)
   const related = getRelatedNotes(noteId, 3)
   const cover = getNoteCover(note.cover)
-  const activeHash = window.location.hash.replace(/^#/, '')
-  const shareUrl = noteAbsoluteUrl(noteId, activeHash || undefined)
+  const activeHash = typeof window !== 'undefined' ? window.location.hash.replace(/^#/, '') : ''
+  const shareUrl = noteAbsoluteUrl(lang, noteId, activeHash || undefined)
 
   const copyLink = async () => {
     try {
@@ -84,7 +86,7 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
       <NoteReadingProgress accent={note.accent} />
 
       <MotionSection>
-        <BackLink href={pageHref('notes')}>{ui.notesBack}</BackLink>
+        <BackLink href={pageHref(lang, 'notes')}>{ui.notesBack}</BackLink>
         <PageTitle
           icon={note.icon}
           meta={
@@ -146,7 +148,7 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
             {related.map((item) => (
               <li key={item.id}>
                 <a
-                  href={noteHref(item.id)}
+                  href={noteHref(lang, item.id)}
                   className="group flex h-full flex-col rounded-[10px] border border-border px-3 py-3 transition-colors hover:border-[color-mix(in_srgb,var(--primary)_40%,transparent)]"
                 >
                   <span className="mb-2 text-[18px]" aria-hidden>
@@ -172,7 +174,7 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
         >
           {prev ? (
             <a
-              href={noteHref(prev.id)}
+              href={noteHref(lang, prev.id)}
               className="rounded-[8px] border border-border px-3.5 py-3 text-[13px] text-muted-foreground transition-colors hover:border-[color-mix(in_srgb,var(--primary)_40%,transparent)] hover:text-foreground"
             >
               <span className="mb-1 block text-[11px] font-medium tracking-wide uppercase opacity-70">
@@ -185,7 +187,7 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
           )}
           {next ? (
             <a
-              href={noteHref(next.id)}
+              href={noteHref(lang, next.id)}
               className="rounded-[8px] border border-border px-3.5 py-3 text-right text-[13px] text-muted-foreground transition-colors hover:border-[color-mix(in_srgb,var(--primary)_40%,transparent)] hover:text-foreground"
             >
               <span className="mb-1 block text-[11px] font-medium tracking-wide uppercase opacity-70">

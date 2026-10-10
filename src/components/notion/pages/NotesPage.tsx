@@ -1,5 +1,8 @@
+'use client'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, LayoutGrid, List, Rss, Search, X } from 'lucide-react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { HighlightedText } from '@/components/ui/HighlightedText'
 import { getNoteTags, type Note, notes } from '@/data/notes'
@@ -18,41 +21,36 @@ import { PageCover } from '../PageCover'
 const SORTS: NotesSort[] = ['newest', 'reading', 'az']
 type NotesView = 'cards' | 'list'
 
-function readNotesParams(): {
+function parseNotesParams(searchParams: URLSearchParams): {
   q: string
   tag: string | null
   sort: NotesSort
   view: NotesView
 } {
-  const params = new URLSearchParams(window.location.search)
-  const sortParam = params.get('sort')
+  const sortParam = searchParams.get('sort')
   const sort = SORTS.includes(sortParam as NotesSort) ? (sortParam as NotesSort) : 'newest'
-  const view = params.get('view') === 'list' ? 'list' : 'cards'
+  const view = searchParams.get('view') === 'list' ? 'list' : 'cards'
   return {
-    q: params.get('q') ?? '',
-    tag: params.get('tag'),
+    q: searchParams.get('q') ?? '',
+    tag: searchParams.get('tag'),
     sort,
     view,
   }
 }
 
-function writeNotesParams(state: {
+function buildNotesQuery(state: {
   q: string
   tag: string | null
   sort: NotesSort
   view: NotesView
-}) {
+}): string {
   const params = new URLSearchParams()
   if (state.q.trim()) params.set('q', state.q.trim())
   if (state.tag) params.set('tag', state.tag)
   if (state.sort !== 'newest') params.set('sort', state.sort)
   if (state.view !== 'cards') params.set('view', state.view)
   const qs = params.toString()
-  const next = qs ? `/notes?${qs}` : '/notes'
-  const current = `${window.location.pathname}${window.location.search}`
-  if (current !== next) {
-    window.history.replaceState(null, '', next)
-  }
+  return qs ? `?${qs}` : ''
 }
 
 function NoteCard({
@@ -69,7 +67,7 @@ function NoteCard({
   const ui = translations[lang].ui
   return (
     <a
-      href={noteHref(note.id)}
+      href={noteHref(lang, note.id)}
       className="group flex h-full flex-col rounded-[12px] border border-[rgba(55,53,47,0.1)] bg-[color-mix(in_srgb,var(--editor-surface)_94%,var(--primary))] p-4 transition-colors hover:border-[color-mix(in_srgb,var(--primary)_42%,transparent)] hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)] dark:border-[rgba(255,255,255,0.1)]"
     >
       <span className="mb-3 flex items-start justify-between gap-2">
@@ -118,7 +116,7 @@ function NoteListRow({ note, lang, query }: { note: Note; lang: Lang; query?: st
   const ui = translations[lang].ui
   return (
     <a
-      href={noteHref(note.id)}
+      href={noteHref(lang, note.id)}
       className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-[8px] border border-transparent px-2 py-2.5 transition-colors hover:border-[rgba(55,53,47,0.1)] hover:bg-[rgba(55,53,47,0.04)] dark:hover:border-[rgba(255,255,255,0.1)] dark:hover:bg-[rgba(255,255,255,0.04)]"
     >
       <span className="text-[20px]" aria-hidden>
@@ -145,11 +143,21 @@ function NoteListRow({ note, lang, query }: { note: Note; lang: Lang; query?: st
 export function NotesPage({ lang }: { lang: Lang }) {
   const ui = translations[lang].ui
   const reduceMotion = useMotionDisabled()
-  const initial = useMemo(() => readNotesParams(), [])
-  const [query, setQuery] = useState(initial.q)
-  const [activeTag, setActiveTag] = useState<string | null>(initial.tag)
-  const [sort, setSort] = useState<NotesSort>(initial.sort)
-  const [view, setView] = useState<NotesView>(initial.view)
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [query, setQuery] = useState(
+    () => parseNotesParams(new URLSearchParams(searchParams.toString())).q,
+  )
+  const [activeTag, setActiveTag] = useState<string | null>(
+    () => parseNotesParams(new URLSearchParams(searchParams.toString())).tag,
+  )
+  const [sort, setSort] = useState<NotesSort>(
+    () => parseNotesParams(new URLSearchParams(searchParams.toString())).sort,
+  )
+  const [view, setView] = useState<NotesView>(
+    () => parseNotesParams(new URLSearchParams(searchParams.toString())).view,
+  )
   const [typeTick, setTypeTick] = useState(0)
   const deferredQuery = useDeferredValue(query)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -168,8 +176,13 @@ export function NotesPage({ lang }: { lang: Lang }) {
   const gridNotes = featured ? sorted.filter((note) => note.id !== featured.id) : sorted
 
   useEffect(() => {
-    writeNotesParams({ q: query, tag: activeTag, sort, view })
-  }, [query, activeTag, sort, view])
+    const qs = buildNotesQuery({ q: query, tag: activeTag, sort, view })
+    const next = `${pathname}${qs}`
+    const current = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+    if (current !== next) {
+      router.replace(next, { scroll: false })
+    }
+  }, [query, activeTag, sort, view, pathname, router, searchParams])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -358,7 +371,10 @@ export function NotesPage({ lang }: { lang: Lang }) {
             </div>
           </div>
 
-          <p className="notes-search-meta m-0 text-[12.5px] text-muted-foreground" aria-live="polite">
+          <p
+            className="notes-search-meta m-0 text-[12.5px] text-muted-foreground"
+            aria-live="polite"
+          >
             {isFiltering
               ? ui.notesResultsCount.replace('{count}', String(sorted.length))
               : ui.notesResultsAll.replace('{count}', String(notes.length))}
@@ -367,7 +383,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
 
         {featured ? (
           <a
-            href={noteHref(featured.id)}
+            href={noteHref(lang, featured.id)}
             className="notes-featured group mb-5 grid overflow-hidden rounded-[14px] border border-[rgba(55,53,47,0.1)] transition-colors hover:border-[color-mix(in_srgb,var(--primary)_45%,transparent)] dark:border-[rgba(255,255,255,0.1)] md:grid-cols-[1.15fr_1fr]"
           >
             <div className="relative min-h-[180px] overflow-hidden md:min-h-[240px]">

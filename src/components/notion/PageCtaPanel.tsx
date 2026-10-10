@@ -1,3 +1,5 @@
+'use client'
+
 import { BrandIcon } from '@/components/icons/BrandIcon'
 import { ExternalLink } from '@/components/ui/ExternalLink'
 import { MailtoLink } from '@/components/ui/MailtoLink'

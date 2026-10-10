@@ -1,3 +1,5 @@
+'use client'
+
 import { useReducedMotion } from 'framer-motion'
 import { SettingsContext } from '@/context/AppProviders'
 

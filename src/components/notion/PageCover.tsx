@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import type { CSSProperties } from 'react'
 import {
@@ -6,6 +8,7 @@ import {
   type PageCoverVariant,
   pageCoverImages,
 } from '@/data/page-covers'
+import { useEnterMotionReady } from '@/hooks/useEnterMotionReady'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import { cn } from '@/lib/utils'
 import { MOTION_EASE } from './motion'
@@ -68,6 +71,8 @@ export function PageCover({
   accent?: string
 }) {
   const reduce = useMotionDisabled()
+  const enterReady = useEnterMotionReady()
+  const skipEnter = reduce || !enterReady
   const resolved =
     cover ??
     (projectId
@@ -84,13 +89,13 @@ export function PageCover({
         className,
       )}
       style={accent ? ({ '--note-accent': accent } as CSSProperties) : undefined}
-      initial={reduce ? false : { opacity: 0 }}
+      initial={skipEnter ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.45, ease: MOTION_EASE }}
     >
       <motion.div
         className="absolute inset-0 z-0"
-        initial={reduce ? false : { scale: 1.06 }}
+        initial={skipEnter ? false : { scale: 1.06 }}
         animate={{ scale: 1 }}
         transition={{ duration: reduce ? 0 : 1.2, ease: MOTION_EASE }}
       >

@@ -42,6 +42,7 @@ function PortfolioShell({
           lang={lang}
           route={route}
           onNavigate={fn()}
+          onNavIntent={fn()}
           onOpenSearch={fn()}
           onCollapse={fn()}
         />

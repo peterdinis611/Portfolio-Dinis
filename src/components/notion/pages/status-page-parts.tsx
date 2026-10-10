@@ -1,5 +1,8 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
+import { useEnterMotionReady } from '@/hooks/useEnterMotionReady'
 import { cn } from '@/lib/utils'
 import { BackLink, BlockHeading } from '../blocks'
 import {
@@ -33,6 +36,8 @@ export function StatusPageRoot({
   watermarkVariant?: keyof typeof watermarkToneClass
   children: ReactNode
 }) {
+  const enterReady = useEnterMotionReady()
+
   return (
     <div className="relative">
       <motion.span
@@ -40,7 +45,7 @@ export function StatusPageRoot({
           'pointer-events-none absolute -right-1 top-0 z-0 select-none text-[clamp(4.5rem,20vw,8.5rem)] font-bold leading-none tracking-tighter sm:right-2',
           watermarkToneClass[watermarkVariant],
         )}
-        initial={{ opacity: 0 }}
+        initial={enterReady ? { opacity: 0 } : false}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2, ease: MOTION_EASE }}
         aria-hidden
@@ -160,11 +165,7 @@ export function AnimatedExploreLinks({
             whileHover={{ x: 4 }}
             transition={{ type: 'spring', stiffness: 380, damping: 24 }}
           >
-            <BlockPageLink
-              href={page.href ?? (page.id === 'about' ? '/' : `/${page.id}`)}
-              icon={page.icon}
-              label={page.label}
-            />
+            <BlockPageLink href={page.href ?? '#'} icon={page.icon} label={page.label} />
           </motion.div>
         ))}
       </motion.div>

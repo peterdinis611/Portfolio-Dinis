@@ -1,5 +1,15 @@
+'use client'
+
 import { AnimatePresence, motion } from 'framer-motion'
-import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react'
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import { cn } from '@/lib/utils'
@@ -25,7 +35,12 @@ let toastSeq = 0
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<ToastItem[]>([])
+  const [mounted, setMounted] = useState(false)
   const motionOff = useMotionDisabled()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const dismiss = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id))
@@ -55,7 +70,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      {typeof document !== 'undefined'
+      {mounted
         ? createPortal(
             <div
               className="pointer-events-none fixed inset-x-0 bottom-5 z-[2147483001] flex flex-col items-center gap-2 px-4 print:hidden"

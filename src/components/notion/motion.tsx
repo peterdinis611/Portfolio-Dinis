@@ -1,5 +1,8 @@
+'use client'
+
 import { motion, type Variants } from 'framer-motion'
 import type { ReactNode } from 'react'
+import { useEnterMotionReady } from '@/hooks/useEnterMotionReady'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 
 /** Soft expo — editorial, not bouncy */
@@ -42,6 +45,8 @@ export function MotionSection({
   id?: string
 }) {
   const disabled = useMotionDisabled()
+  const enterReady = useEnterMotionReady()
+  const skipEnter = disabled || !enterReady
 
   if (disabled) {
     return (
@@ -55,7 +60,7 @@ export function MotionSection({
     <motion.section
       id={id}
       className={className}
-      initial={{ opacity: 0, y: 16 }}
+      initial={skipEnter ? false : { opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.52, delay, ease: MOTION_EASE }}
     >
@@ -74,6 +79,8 @@ export function MotionItem({
   className?: string
 }) {
   const disabled = useMotionDisabled()
+  const enterReady = useEnterMotionReady()
+  const skipEnter = disabled || !enterReady
 
   if (disabled) {
     return <div className={className}>{children}</div>
@@ -82,7 +89,7 @@ export function MotionItem({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 14 }}
+      initial={skipEnter ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.48, delay, ease: MOTION_EASE }}
     >
@@ -101,6 +108,8 @@ export function MotionStagger({
   delay?: number
 }) {
   const disabled = useMotionDisabled()
+  const enterReady = useEnterMotionReady()
+  const skipEnter = disabled || !enterReady
 
   if (disabled) {
     return <div className={className}>{children}</div>
@@ -115,7 +124,7 @@ export function MotionStagger({
           transition: { staggerChildren: 0.06, delayChildren: 0.04 + delay },
         },
       }}
-      initial="hidden"
+      initial={skipEnter ? false : 'hidden'}
       animate="visible"
     >
       {children}

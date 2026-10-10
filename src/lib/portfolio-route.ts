@@ -6,6 +6,8 @@ import {
   type ProjectListId,
   projects,
 } from '@/data/portfolio'
+import type { Locale } from '@/lib/locale'
+import { DEFAULT_LOCALE, isLocale } from '@/lib/locale'
 
 export type { ProjectListId } from '@/data/portfolio'
 
@@ -34,15 +36,14 @@ export function isNotionPageId(value: string): value is NotionPageId {
   return ['about', 'tech', 'experience', 'projects', 'notes', 'cv', 'contact'].includes(value)
 }
 
-/** Prefer pathname; fall back to hash for legacy URLs during migration. */
-function getRoutePath(location: Pick<Location, 'hash' | 'pathname'>): string {
-  const pathname = location.pathname.replace(/^\/+|\/+$/g, '')
-  if (pathname && pathname !== 'index.html') return pathname
-
-  const hashPath = location.hash.replace(/^#\/?/, '').trim()
-  if (hashPath) return hashPath
-
-  return ''
+/** Strip leading locale segment from a pathname. */
+export function stripLocaleFromPath(pathname: string): { locale: Locale; path: string } {
+  const cleaned = pathname.replace(/^\/+|\/+$/g, '')
+  const segments = cleaned.split('/').filter(Boolean)
+  if (segments[0] && isLocale(segments[0])) {
+    return { locale: segments[0], path: segments.slice(1).join('/') }
+  }
+  return { locale: DEFAULT_LOCALE, path: cleaned }
 }
 
 function parseRoutePath(path: string): PortfolioRoute {
@@ -91,10 +92,9 @@ function parseRoutePath(path: string): PortfolioRoute {
   return { page: 'not-found', attemptedPath: path }
 }
 
-export function parsePortfolioRoute(
-  location: Pick<Location, 'hash' | 'pathname'> = window.location,
-): PortfolioRoute {
-  return parseRoutePath(getRoutePath(location))
+export function parsePortfolioRoute(pathname: string): PortfolioRoute {
+  const { path } = stripLocaleFromPath(pathname)
+  return parseRoutePath(path)
 }
 
 export function portfolioRouteEquals(a: PortfolioRoute, b: PortfolioRoute): boolean {
@@ -107,59 +107,13 @@ export function portfolioRouteEquals(a: PortfolioRoute, b: PortfolioRoute): bool
   )
 }
 
-export function routeToPath(route: PortfolioRoute): string {
-  if (route.page === 'not-found') return '/'
-  if (route.projectId) return `/projects/${route.projectId}`
-  if (route.projectList) return `/projects/${route.projectList}`
-  if (route.noteId) return `/notes/${route.noteId}`
-  if (route.page === 'about') return '/'
-  return `/${route.page}`
-}
-
-export function setPortfolioPath(route: PortfolioRoute, mode: 'push' | 'replace' = 'push') {
-  if (route.page === 'not-found') return
-
-  const path = routeToPath(route)
-  // Keep existing search params when already on this path (e.g. /notes?q=…).
-  if (window.location.pathname === path) return
-
-  if (mode === 'replace') {
-    window.history.replaceState(null, '', path)
-  } else {
-    window.history.pushState(null, '', path)
-  }
-  window.dispatchEvent(new Event('portfolio:navigate'))
-}
-
-/** Migrate legacy `#about` / `#projects/foo` hashes to path URLs. */
-export function migrateHashToPath() {
-  const hashPath = window.location.hash.replace(/^#\/?/, '').trim()
-  if (!hashPath) return
-
-  const route = parseRoutePath(hashPath)
-  if (route.page === 'not-found') {
-    window.history.replaceState(null, '', `/${hashPath}`)
-    return
-  }
-
-  setPortfolioPath(route, 'replace')
-}
-
-/** @deprecated Use parsePortfolioRoute().page */
-export function pageFromHash(): NotionPageId {
-  const route = parsePortfolioRoute()
-  if (route.page === 'not-found' || route.page === 'error') return 'about'
-  return route.page
-}
-
-/** @deprecated Use setPortfolioPath */
-export function setPageHash(page: NotionPageId) {
-  setPortfolioPath({ page })
-}
-
-/** @deprecated Use setPortfolioPath */
-export function setPortfolioHash(route: PortfolioRoute) {
-  setPortfolioPath(route)
+export function routeToPath(locale: Locale, route: PortfolioRoute): string {
+  if (route.page === 'not-found') return `/${locale}`
+  if (route.projectId) return `/${locale}/projects/${route.projectId}`
+  if (route.projectList) return `/${locale}/projects/${route.projectList}`
+  if (route.noteId) return `/${locale}/notes/${route.noteId}`
+  if (route.page === 'about') return `/${locale}`
+  return `/${locale}/${route.page}`
 }
 
 export function getProjectName(projectId: string): string | undefined {
@@ -170,20 +124,20 @@ export function getNoteTitle(noteId: string, lang: 'sk' | 'en'): string | undefi
   return getNote(noteId)?.title[lang]
 }
 
-export function pageHref(page: NotionPageId | 'error'): string {
-  return page === 'about' ? '/' : `/${page}`
+export function pageHref(locale: Locale, page: NotionPageId | 'error'): string {
+  return page === 'about' ? `/${locale}` : `/${locale}/${page}`
 }
 
-export function projectHref(projectId: string): string {
-  return `/projects/${projectId}`
+export function projectHref(locale: Locale, projectId: string): string {
+  return `/${locale}/projects/${projectId}`
 }
 
-export function projectListHref(listId: ProjectListId): string {
-  return `/projects/${listId}`
+export function projectListHref(locale: Locale, listId: ProjectListId): string {
+  return `/${locale}/projects/${listId}`
 }
 
-export function noteHref(noteId: string): string {
-  return `/notes/${noteId}`
+export function noteHref(locale: Locale, noteId: string): string {
+  return `/${locale}/notes/${noteId}`
 }
 
 export function getAdjacentProjects(projectId: string) {

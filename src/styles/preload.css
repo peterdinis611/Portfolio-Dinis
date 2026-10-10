@@ -1,24 +1,24 @@
 [data-theme="light"] {
-  --preload-bg: #ffffff;
-  --preload-text: #37352f;
-  --preload-muted: #787774;
-  --preload-bar: #f1f1ef;
-  --preload-accent: #18747a;
-  --preload-panel: #f7f6f3;
-  --preload-panel-border: rgba(55, 53, 47, 0.12);
-  --preload-ring: rgba(24, 116, 122, 0.22);
+  --preload-bg: var(--background, #ffffff);
+  --preload-text: var(--foreground, #37352f);
+  --preload-muted: var(--muted-foreground, #787774);
+  --preload-bar: var(--secondary, #f1f1ef);
+  --preload-accent: var(--primary, #18747a);
+  --preload-panel: var(--muted, #f7f6f3);
+  --preload-panel-border: var(--border, rgba(55, 53, 47, 0.09));
+  --preload-ring: color-mix(in srgb, var(--primary, #18747a) 28%, transparent);
   --preload-dot: rgba(55, 53, 47, 0.04);
 }
 
 [data-theme="dark"] {
-  --preload-bg: #191919;
-  --preload-text: rgba(255, 255, 255, 0.9);
-  --preload-muted: rgba(255, 255, 255, 0.5);
-  --preload-bar: #2a2a2a;
-  --preload-accent: #7ec8cf;
-  --preload-panel: #202020;
-  --preload-panel-border: rgba(255, 255, 255, 0.1);
-  --preload-ring: rgba(126, 200, 207, 0.28);
+  --preload-bg: var(--background, #191919);
+  --preload-text: var(--foreground, rgba(255, 255, 255, 0.9));
+  --preload-muted: var(--muted-foreground, rgba(255, 255, 255, 0.5));
+  --preload-bar: var(--secondary, #2a2a2a);
+  --preload-accent: var(--primary, #7ec8cf);
+  --preload-panel: var(--sidebar, #202020);
+  --preload-panel-border: var(--border, rgba(255, 255, 255, 0.08));
+  --preload-ring: color-mix(in srgb, var(--primary, #7ec8cf) 32%, transparent);
   --preload-dot: rgba(255, 255, 255, 0.03);
 }
 
@@ -149,6 +149,13 @@
   height: 100%;
   border-radius: inherit;
   background: var(--preload-accent);
+}
+
+.preload-spinner-wrap {
+  display: grid;
+  place-items: center;
+  min-height: 2rem;
+  padding-top: 0.35rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Copy,
   FileText,
@@ -60,6 +62,7 @@ export function NotionSearchDialog({
   const ui = translations[lang].ui
   const { toast } = useToast()
   const inputRef = useRef<HTMLInputElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
   const [copied, setCopied] = useState(false)
@@ -215,6 +218,12 @@ export function NotionSearchDialog({
     return () => window.clearTimeout(id)
   }, [open])
 
+  useEffect(() => {
+    if (!open) return
+    const active = listRef.current?.querySelector<HTMLElement>(`[data-cmd-index="${safeIndex}"]`)
+    active?.scrollIntoView({ block: 'nearest' })
+  }, [open, safeIndex])
+
   const groupLabel = (group: CommandItem['group']) => {
     if (group === 'pages') return ui.notionSearchPages
     if (group === 'projects') return ui.cmdProjects
@@ -260,7 +269,7 @@ export function NotionSearchDialog({
           </kbd>
         </div>
 
-        <div className="max-h-[min(28rem,55vh)] overflow-y-auto p-2">
+        <div ref={listRef} className="max-h-[min(28rem,55vh)] overflow-y-auto p-2">
           {trimmed && items.length === 0 ? (
             <div className="flex flex-col items-center px-4 py-8 text-center">
               <div className="mb-3 flex h-10 w-10 items-center justify-center border border-border bg-muted/40 text-muted-foreground">
@@ -288,8 +297,10 @@ export function NotionSearchDialog({
                     <button
                       type="button"
                       id={`cmd-${item.id}`}
+                      data-cmd-index={index}
+                      data-active={index === safeIndex ? 'true' : undefined}
                       className={cn(
-                        'group flex w-full items-start gap-2.5 rounded-[6px] px-2 py-1.5 text-left transition-colors',
+                        'notion-cmd-item group flex w-full items-start gap-2.5 rounded-[6px] px-2 py-1.5 text-left',
                         index === safeIndex ? 'bg-muted/90' : 'hover:bg-muted/70',
                       )}
                       onMouseEnter={() => setActiveIndex(index)}

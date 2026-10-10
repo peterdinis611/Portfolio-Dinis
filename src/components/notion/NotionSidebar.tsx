@@ -1,8 +1,12 @@
+'use client'
+
 import { ChevronRight, PanelLeftClose, Search } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { type Lang, translations } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
+import { routeToPath } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
 import { getNotionPages, getProjectNavItems, isProjectsOverviewActive } from './nav'
 import { ProjectIcon } from './ProjectIcon'
@@ -12,6 +16,8 @@ type NotionSidebarProps = {
   lang: Lang
   route: PortfolioRoute
   onNavigate: (route: PortfolioRoute) => void
+  /** Called when a Link handles routing — close sheet / clear errors only. */
+  onNavIntent?: () => void
   onOpenSearch?: () => void
   onCollapse?: () => void
   className?: string
@@ -24,16 +30,20 @@ function navActive(active: boolean) {
 export function NotionSidebar({
   lang,
   route,
-  onNavigate,
+  onNavigate: _onNavigate,
+  onNavIntent,
   onOpenSearch,
   onCollapse,
   className,
 }: NotionSidebarProps) {
+  // `_onNavigate` kept for Storybook / callers; Links use `onNavIntent` for side effects only.
+  void _onNavigate
+  const afterLink = onNavIntent ?? (() => {})
   const ui = translations[lang].ui
   const pages = getNotionPages(lang)
   const mainPages = pages.filter((page) => page.id !== 'contact' && page.id !== 'cv')
   const footerPages = pages.filter((page) => page.id === 'cv' || page.id === 'contact')
-  const projectItems = useMemo(() => getProjectNavItems(), [])
+  const projectItems = useMemo(() => getProjectNavItems(lang), [lang])
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(['projects']))
 
   useEffect(() => {
@@ -82,32 +92,34 @@ export function NotionSidebar({
                 )}
               />
             </button>
-            <button
-              type="button"
+            <Link
+              href={routeToPath(lang, { page: 'projects' })}
+              prefetch
               className="notion-nav-item min-w-0 flex-1"
               {...navActive(isProjectsOverviewActive(route))}
-              onClick={() => onNavigate({ page: 'projects' })}
+              onClick={afterLink}
             >
               <span className="text-[15px] leading-none" aria-hidden>
                 {item.icon}
               </span>
               <span className="truncate">{item.label}</span>
-            </button>
+            </Link>
           </div>
 
           {projectsOpen ? (
             <ul className="mt-1 space-y-0.5 pl-5">
               {projectItems.map((project) => (
                 <li key={project.id}>
-                  <button
-                    type="button"
+                  <Link
+                    href={routeToPath(lang, { page: 'projects', projectId: project.id })}
+                    prefetch
                     className="notion-nav-item text-[13px] text-sidebar-foreground/85"
                     {...navActive(route.projectId === project.id)}
-                    onClick={() => onNavigate({ page: 'projects', projectId: project.id })}
+                    onClick={afterLink}
                   >
                     <ProjectIcon projectId={project.id} size="xs" />
                     <span className="truncate">{project.name}</span>
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -119,17 +131,18 @@ export function NotionSidebar({
     return (
       <div className="flex items-center gap-1">
         <span className="w-5 shrink-0" aria-hidden />
-        <button
-          type="button"
+        <Link
+          href={routeToPath(lang, { page: item.id as NotionPageId })}
+          prefetch
           className="notion-nav-item min-w-0 flex-1"
           {...navActive(pageActive)}
-          onClick={() => onNavigate({ page: item.id as NotionPageId })}
+          onClick={afterLink}
         >
           <span className="text-[15px] leading-none" aria-hidden>
             {item.icon}
           </span>
           <span className="truncate">{item.label}</span>
-        </button>
+        </Link>
       </div>
     )
   }
@@ -143,10 +156,11 @@ export function NotionSidebar({
       aria-label={ui.notionSidebar}
     >
       <div className="group/workspace flex items-center gap-1 px-2.5 pt-3 pb-1.5">
-        <button
-          type="button"
+        <Link
+          href={routeToPath(lang, { page: 'about' })}
+          prefetch
           className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent"
-          onClick={() => onNavigate({ page: 'about' })}
+          onClick={afterLink}
         >
           <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-[10px] leading-none font-bold text-primary-foreground">
             P
@@ -154,7 +168,7 @@ export function NotionSidebar({
           <span className="min-w-0 flex-1 truncate text-[14px] font-medium tracking-[-0.01em]">
             {ui.notionWorkspace}
           </span>
-        </button>
+        </Link>
 
         {onCollapse ? (
           <button

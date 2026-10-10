@@ -1,5 +1,8 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
+import { NotionBounceSpinner } from '@/components/ui/NotionBounceSpinner'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import { type Lang, translations } from '@/i18n/translations'
 
@@ -22,8 +25,9 @@ export function PreloadScreen({ progress = 0, lang }: PreloadScreenProps) {
   const pct = Math.round(Math.min(1, Math.max(0, progress)) * 100)
   const hasProgress = progress > 0
   const reduce = useMotionDisabled()
+  const done = pct >= 100
 
-  const label = pct >= 100 ? ui.preloadDone : ui.preloadLoading
+  const label = done ? ui.preloadDone : ui.preloadLoading
 
   return (
     <div className="preload" role="status" aria-live="polite" aria-label={ui.preloadAria}>
@@ -52,18 +56,20 @@ export function PreloadScreen({ progress = 0, lang }: PreloadScreenProps) {
             ) : null}
           </div>
 
-          <div className="preload-bar" aria-hidden>
-            <motion.div
-              className="preload-bar-fill"
-              initial={{ width: '0%' }}
-              animate={{ width: hasProgress ? `${pct}%` : reduce ? '42%' : '36%' }}
-              transition={
-                hasProgress || reduce
-                  ? { duration: 0.35, ease: [0.22, 1, 0.36, 1] }
-                  : { duration: 1.4, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }
-              }
-            />
-          </div>
+          {hasProgress ? (
+            <div className="preload-bar" aria-hidden>
+              <motion.div
+                className="preload-bar-fill"
+                initial={{ width: '0%' }}
+                animate={{ width: `${pct}%` }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+          ) : (
+            <div className="preload-spinner-wrap">
+              <NotionBounceSpinner size="md" label={ui.preloadAria} />
+            </div>
+          )}
         </div>
       </motion.div>
     </div>

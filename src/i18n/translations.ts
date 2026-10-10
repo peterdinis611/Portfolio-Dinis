@@ -297,6 +297,7 @@ export const translations = {
       notionSearchEmpty: 'Nič sme nenašli.',
       notionDescription: 'Popis',
       notionNotFoundTitle: 'Stránka sa nenašla',
+      notionNotFoundWatermark: '404',
       notionNotFoundHeading: 'Táto stránka neexistuje',
       notionNotFoundBody:
         'Možno bola presunutá, premenovaná alebo URL nie je správne. Skús jednu z dostupných stránok nižšie.',
@@ -635,6 +636,7 @@ export const translations = {
       notionSearchEmptyBody: 'Try another keyword or pick a page below.',
       notionSearchEmpty: 'No results found.',
       notionNotFoundTitle: 'Page not found',
+      notionNotFoundWatermark: '404',
       notionNotFoundHeading: 'This page doesn’t exist',
       notionNotFoundBody:
         'It may have been moved, renamed, or the URL is incorrect. Try one of the available pages below.',

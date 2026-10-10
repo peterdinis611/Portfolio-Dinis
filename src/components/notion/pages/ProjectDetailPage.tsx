@@ -21,10 +21,12 @@ import { PageCtaPanel } from '../PageCtaPanel'
 import { ProjectIcon } from '../ProjectIcon'
 
 function AdjacentProjectLink({
+  lang,
   project,
   label,
   direction,
 }: {
+  lang: Lang
   project: Project
   label: string
   direction: 'prev' | 'next'
@@ -33,7 +35,7 @@ function AdjacentProjectLink({
 
   return (
     <a
-      href={projectHref(project.id)}
+      href={projectHref(lang, project.id)}
       className={cn(
         'group notion-adjacent flex w-full min-w-0 items-center gap-3 rounded-[10px] border border-[rgba(55,53,47,0.1)] px-4 py-3.5 dark:border-[rgba(255,255,255,0.1)]',
         isNext && 'flex-row-reverse text-right',
@@ -75,7 +77,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   if (!project || !meta) {
     return (
       <PageShell>
-        <BackLink href={pageHref('projects')}>{pageUi.backToProjects}</BackLink>
+        <BackLink href={pageHref(lang, 'projects')}>{pageUi.backToProjects}</BackLink>
         <BlockText>Project not found.</BlockText>
       </PageShell>
     )
@@ -87,7 +89,7 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
   return (
     <PageShell cover={<PageCover projectId={projectId} />}>
       <MotionSection>
-        <BackLink href={pageHref('projects')}>{pageUi.backToProjects}</BackLink>
+        <BackLink href={pageHref(lang, 'projects')}>{pageUi.backToProjects}</BackLink>
         <PageTitle
           icon={<ProjectIcon projectId={projectId} size="lg" />}
           meta={
@@ -151,12 +153,22 @@ export function ProjectDetailPage({ lang, projectId }: { lang: Lang; projectId: 
             aria-label={pageUi.nextProject}
           >
             {prev ? (
-              <AdjacentProjectLink project={prev} label={pageUi.previousProject} direction="prev" />
+              <AdjacentProjectLink
+                lang={lang}
+                project={prev}
+                label={pageUi.previousProject}
+                direction="prev"
+              />
             ) : (
               <span className="hidden sm:block" aria-hidden />
             )}
             {next ? (
-              <AdjacentProjectLink project={next} label={pageUi.nextProject} direction="next" />
+              <AdjacentProjectLink
+                lang={lang}
+                project={next}
+                label={pageUi.nextProject}
+                direction="next"
+              />
             ) : null}
           </nav>
         </MotionSection>

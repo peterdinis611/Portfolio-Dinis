@@ -1,4 +1,7 @@
-import { Menu, PanelLeft, Sparkles } from 'lucide-react'
+'use client'
+
+import { Menu, PanelLeft, Search, Sparkles } from 'lucide-react'
+import Link from 'next/link'
 import { ThemeToggleIcon } from '@/components/icons/ThemeToggleIcon'
 import { Button } from '@/components/ui/button'
 import { type Lang, type Theme, translations } from '@/i18n/translations'
@@ -32,6 +35,7 @@ export function NotionTopbar({
   sidebarCollapsed = false,
   onMenu,
   onOpenSidebar,
+  onOpenSearch,
   onLang,
   onTheme,
   onAnimations,
@@ -71,12 +75,12 @@ export function NotionTopbar({
           className="flex min-w-0 items-center gap-1 text-[14px]"
           aria-label={ui.notionBreadcrumb}
         >
-          <a
-            href={pageHref('about')}
+          <Link
+            href={pageHref(lang, 'about')}
             className="hidden max-w-[10rem] truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground transition-colors hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground sm:inline dark:hover:bg-[rgba(255,255,255,0.055)]"
           >
             {ui.notionWorkspace}
-          </a>
+          </Link>
           <span
             className="hidden px-0.5 text-[rgba(55,53,47,0.35)] sm:inline dark:text-[rgba(255,255,255,0.3)]"
             aria-hidden
@@ -97,6 +101,18 @@ export function NotionTopbar({
       </div>
 
       <div className="flex items-center gap-0.5">
+        <button
+          type="button"
+          className="notion-topbar-find"
+          onClick={onOpenSearch}
+          aria-label={ui.notionQuickFind}
+          title={`${ui.notionQuickFind} (⌘K)`}
+        >
+          <Search className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+          <span className="hidden max-w-[7rem] truncate sm:inline">{ui.notionQuickFind}</span>
+          <kbd className="notion-topbar-find__kbd">⌘K</kbd>
+        </button>
+
         <div className="mx-0.5 flex items-center">
           {(['sk', 'en'] as const).map((code) => (
             <button

@@ -1,4 +1,7 @@
+'use client'
+
 import { AnimatePresence, motion } from 'framer-motion'
+import { useEnterMotionReady } from '@/hooks/useEnterMotionReady'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import type { Lang } from '@/i18n/translations'
 import type { PortfolioRoute } from '@/lib/portfolio-route'
@@ -72,15 +75,17 @@ function FallbackPage({
 export function NotionPageView({ lang, route }: NotionPageViewProps) {
   const { page, projectId, projectList, noteId, attemptedPath } = route
   const reduce = useMotionDisabled()
+  const enterReady = useEnterMotionReady()
+  const skipEnter = reduce || !enterReady
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${noteId ?? ''}-${attemptedPath ?? ''}`}
-        initial={reduce ? false : { opacity: 0, y: 14, filter: 'blur(4px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={reduce ? undefined : { opacity: 0, y: -10, filter: 'blur(3px)' }}
-        transition={{ duration: reduce ? 0 : 0.38, ease: MOTION_EASE }}
+        initial={skipEnter ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={reduce ? undefined : { opacity: 0, y: -6 }}
+        transition={{ duration: reduce ? 0 : 0.32, ease: MOTION_EASE }}
       >
         <FallbackPage
           lang={lang}

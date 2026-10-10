@@ -1,21 +1,22 @@
+import type { Metadata } from 'next'
 import type { NotionPageId } from '@/components/notion/types'
 import { getNote, notes } from '@/data/notes'
 import { type ProjectListId, profile, projects, socials } from '@/data/portfolio'
 import { type Lang, translations } from '@/i18n/translations'
+import type { Locale } from '@/lib/locale'
+import { LOCALES } from '@/lib/locale'
 import {
   getNoteTitle,
   getProjectName,
   noteHref,
   type PortfolioRoute,
   pageHref,
-  parsePortfolioRoute,
   projectHref,
   projectListHref,
 } from '@/lib/portfolio-route'
 import { decodeEmail } from './email'
 
 const SITE_NAME = 'Peter Dinis — Portfolio'
-const JSON_LD_ID = 'portfolio-jsonld'
 const DEFAULT_PAGE: NotionPageId = 'about'
 
 type PageSeo = {
@@ -150,21 +151,6 @@ const errorSeoCopy: Record<Lang, PageSeo> = {
   },
 }
 
-export function getSiteUrl(): string {
-  const envUrl = import.meta.env.VITE_SITE_URL as string | undefined
-  if (envUrl) return envUrl.replace(/\/$/, '')
-  if (typeof window !== 'undefined') return window.location.origin
-  return ''
-}
-
-function getStoredLang(): Lang {
-  try {
-    return localStorage.getItem('portfolio-lang') === 'en' ? 'en' : 'sk'
-  } catch {
-    return 'sk'
-  }
-}
-
 const projectListSeoCopy: Record<Lang, Record<ProjectListId, PageSeo>> = {
   sk: {
     'my-projects': {
@@ -182,7 +168,19 @@ const projectListSeoCopy: Record<Lang, Record<ProjectListId, PageSeo>> = {
   },
 }
 
-function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
+export function getSiteUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_SITE_URL
+  if (envUrl) return envUrl.replace(/\/$/, '')
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`.replace(/\/$/, '')
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`.replace(/\/$/, '')
+  }
+  return 'https://peterdinis.dev'
+}
+
+export function resolveRouteSeo(lang: Lang, route: PortfolioRoute): PageSeo {
   if (route.page === 'not-found') return notFoundSeoCopy[lang]
   if (route.page === 'error') return errorSeoCopy[lang]
 
@@ -233,80 +231,42 @@ export function ogImagePathForRoute(route: PortfolioRoute): string {
   return `/og/${route.page}.svg`
 }
 
-function pageUrl(siteUrl: string, page: NotionPageId): string {
-  const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-  if (!base) return ''
-  const path = pageHref(page)
-  return path === '/' ? base : `${base}${path}`
+function pageUrl(siteUrl: string, locale: Locale, page: NotionPageId): string {
+  return `${siteUrl}${pageHref(locale, page)}`
 }
 
-function projectUrl(siteUrl: string, projectId: string): string {
-  const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-  if (!base) return ''
-  return `${base}${projectHref(projectId)}`
-}
-
-function routeUrl(siteUrl: string, route: PortfolioRoute): string {
+function routeUrl(siteUrl: string, locale: Locale, route: PortfolioRoute): string {
   if (route.page === 'not-found' && route.attemptedPath) {
-    const origin = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-    return origin ? `${origin}/${route.attemptedPath}` : ''
+    return `${siteUrl}/${locale}/${route.attemptedPath}`
   }
 
   if (route.page === 'error') {
-    const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-    return base ? `${base}/error` : ''
+    return `${siteUrl}${pageHref(locale, 'error')}`
   }
 
   if (route.page === 'projects' && route.projectId) {
-    return projectUrl(siteUrl, route.projectId)
+    return `${siteUrl}${projectHref(locale, route.projectId)}`
   }
 
   if (route.page === 'notes' && route.noteId) {
-    const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-    return base ? `${base}${noteHref(route.noteId)}` : ''
+    return `${siteUrl}${noteHref(locale, route.noteId)}`
   }
 
   if (route.page === 'projects' && route.projectList) {
-    const base = siteUrl || (typeof window !== 'undefined' ? window.location.origin : '')
-    return base ? `${base}${projectListHref(route.projectList)}` : ''
+    return `${siteUrl}${projectListHref(locale, route.projectList)}`
   }
 
-  if (route.page === 'not-found') return pageUrl(siteUrl, DEFAULT_PAGE)
-  return pageUrl(siteUrl, route.page)
+  if (route.page === 'not-found') return pageUrl(siteUrl, locale, DEFAULT_PAGE)
+  return pageUrl(siteUrl, locale, route.page)
 }
 
-function setMeta(name: string, content: string, property = false) {
-  const attr = property ? 'property' : 'name'
-  let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`)
-  if (!el) {
-    el = document.createElement('meta')
-    el.setAttribute(attr, name)
-    document.head.appendChild(el)
-  }
-  el.content = content
-}
-
-function setLink(rel: string, href: string, hreflang?: string) {
-  const selector = hreflang
-    ? `link[rel="${rel}"][hreflang="${hreflang}"]`
-    : `link[rel="${rel}"]:not([hreflang])`
-  let el = document.head.querySelector<HTMLLinkElement>(selector)
-  if (!el) {
-    el = document.createElement('link')
-    el.rel = rel
-    if (hreflang) el.hreflang = hreflang
-    document.head.appendChild(el)
-  }
-  el.href = href
-}
-
-function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
+export function buildJsonLd(lang: Lang, locale: Locale, route: PortfolioRoute, siteUrl: string) {
   if (route.page === 'not-found' || route.page === 'error') return null
 
   const copy = resolveRouteSeo(lang, route)
   const isProjectDetail = route.page === 'projects' && Boolean(route.projectId)
   const isNoteDetail = route.page === 'notes' && Boolean(route.noteId)
-  const currentUrl = routeUrl(siteUrl, route)
+  const currentUrl = routeUrl(siteUrl, locale, route)
   const projectsLabel = lang === 'sk' ? 'Projekty' : 'Projects'
   const notesLabel = lang === 'sk' ? 'Blog' : 'Blog'
   const pageLabel = isProjectDetail
@@ -320,7 +280,7 @@ function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
       '@type': 'ListItem',
       position: 1,
       name: SITE_NAME,
-      item: siteUrl,
+      item: `${siteUrl}/${locale}`,
     },
   ]
 
@@ -330,7 +290,7 @@ function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
         '@type': 'ListItem',
         position: 2,
         name: projectsLabel,
-        item: pageUrl(siteUrl, 'projects'),
+        item: pageUrl(siteUrl, locale, 'projects'),
       },
       {
         '@type': 'ListItem',
@@ -345,7 +305,7 @@ function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
         '@type': 'ListItem',
         position: 2,
         name: notesLabel,
-        item: pageUrl(siteUrl, 'notes'),
+        item: pageUrl(siteUrl, locale, 'notes'),
       },
       {
         '@type': 'ListItem',
@@ -427,76 +387,51 @@ function buildJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
   }
 }
 
-function setJsonLd(lang: Lang, route: PortfolioRoute, siteUrl: string) {
-  const data = buildJsonLd(lang, route, siteUrl)
-  let script = document.getElementById(JSON_LD_ID) as HTMLScriptElement | null
-
-  if (!data) {
-    script?.remove()
-    return
-  }
-
-  if (!script) {
-    script = document.createElement('script')
-    script.id = JSON_LD_ID
-    script.type = 'application/ld+json'
-    document.head.appendChild(script)
-  }
-  script.textContent = JSON.stringify(data)
-}
-
-export function applySeo(lang: Lang, route: PortfolioRoute = { page: DEFAULT_PAGE }) {
+export function buildMetadata(locale: Locale, route: PortfolioRoute): Metadata {
+  const lang = locale
   const site = seoCopy[lang]
   const copy = resolveRouteSeo(lang, route)
   const siteUrl = getSiteUrl()
-  const canonical = routeUrl(siteUrl, route)
+  const canonical = routeUrl(siteUrl, locale, route)
   const ogPath = ogImagePathForRoute(route)
-  const ogImage = siteUrl ? `${siteUrl}${ogPath}` : ogPath
+  const ogImage = `${siteUrl}${ogPath}`
+  const noIndex = route.page === 'not-found' || route.page === 'error'
 
-  document.documentElement.lang = lang
-  document.title = copy.title
-
-  setMeta('description', copy.description)
-  setMeta('keywords', site.keywords)
-  setMeta('author', profile.name)
-  setMeta(
-    'robots',
-    route.page === 'not-found' || route.page === 'error'
-      ? 'noindex, follow'
-      : 'index, follow, max-image-preview:large',
-  )
-  setMeta('googlebot', 'index, follow')
-
-  setMeta('og:title', copy.title, true)
-  setMeta('og:description', copy.description, true)
-  setMeta('og:type', 'website', true)
-  setMeta('og:site_name', SITE_NAME, true)
-  setMeta('og:locale', site.ogLocale, true)
-  setMeta('og:locale:alternate', lang === 'sk' ? 'en_US' : 'sk_SK', true)
-  setMeta('og:image', ogImage, true)
-  setMeta('og:image:alt', copy.title, true)
-  if (canonical) setMeta('og:url', canonical, true)
-
-  setMeta('twitter:card', 'summary_large_image')
-  setMeta('twitter:title', copy.title)
-  setMeta('twitter:description', copy.description)
-  setMeta('twitter:image', ogImage)
-  setMeta('twitter:image:alt', copy.title)
-
-  if (canonical) {
-    setLink('canonical', canonical)
-    setLink('alternate', canonical, 'sk')
-    setLink('alternate', canonical, 'en')
-    setLink('alternate', canonical, 'x-default')
+  const languages: Record<string, string> = {}
+  for (const loc of LOCALES) {
+    languages[loc] = routeUrl(siteUrl, loc, route)
   }
+  languages['x-default'] = routeUrl(siteUrl, 'sk', route)
 
-  if (siteUrl) setJsonLd(lang, route, siteUrl)
-}
-
-/** Run once before React mounts — uses stored language and current path. */
-export function initSeo() {
-  const route = typeof window !== 'undefined' ? parsePortfolioRoute() : { page: DEFAULT_PAGE }
-  applySeo(getStoredLang(), route)
+  return {
+    title: copy.title,
+    description: copy.description,
+    keywords: site.keywords.split(', '),
+    authors: [{ name: profile.name }],
+    robots: noIndex
+      ? { index: false, follow: true }
+      : { index: true, follow: true, googleBot: { index: true, follow: true } },
+    alternates: {
+      canonical,
+      languages,
+    },
+    openGraph: {
+      title: copy.title,
+      description: copy.description,
+      type: 'website',
+      siteName: SITE_NAME,
+      locale: site.ogLocale,
+      alternateLocale: [lang === 'sk' ? 'en_US' : 'sk_SK'],
+      url: canonical,
+      images: [{ url: ogImage, alt: copy.title, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: copy.title,
+      description: copy.description,
+      images: [ogImage],
+    },
+  }
 }
 
 export const notionPagesForSitemap: NotionPageId[] = [

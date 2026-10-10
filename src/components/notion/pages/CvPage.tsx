@@ -1,3 +1,5 @@
+'use client'
+
 import { Download, Printer } from 'lucide-react'
 import { AvailabilityBanner } from '@/components/notion/AvailabilityBanner'
 import { EmailDisplay } from '@/components/ui/EmailDisplay'
@@ -204,7 +206,7 @@ export function CvPage({ lang }: { lang: Lang }) {
                 return (
                   <li key={project.id}>
                     <a
-                      href={projectHref(project.id)}
+                      href={projectHref(lang, project.id)}
                       className="notion-gallery-card group flex h-full flex-col rounded-[8px] border border-[rgba(55,53,47,0.09)] p-3 transition-colors hover:bg-[rgba(55,53,47,0.04)] dark:border-[rgba(255,255,255,0.09)] dark:hover:bg-[rgba(255,255,255,0.04)]"
                     >
                       <span className="text-[15px] font-semibold text-foreground group-hover:text-[var(--link)]">
@@ -227,13 +229,13 @@ export function CvPage({ lang }: { lang: Lang }) {
             <div className="print:hidden mt-8">
               <BlockHeading className="mt-0">{ui.cvMore}</BlockHeading>
               <div className="flex flex-wrap gap-2">
-                <a href={pageHref('notes')} className="notion-page-link">
+                <a href={pageHref(lang, 'notes')} className="notion-page-link">
                   ✍️ {ui.notes}
                 </a>
-                <a href={pageHref('contact')} className="notion-page-link">
+                <a href={pageHref(lang, 'contact')} className="notion-page-link">
                   ✉️ {ui.contact}
                 </a>
-                <a href={noteHref('mentoring-juniors')} className="notion-page-link">
+                <a href={noteHref(lang, 'mentoring-juniors')} className="notion-page-link">
                   🧭 {ui.cvLeadership}
                 </a>
               </div>
@@ -323,7 +325,7 @@ export function CvPage({ lang }: { lang: Lang }) {
                 {t.profile.bio}
               </p>
               <a
-                href={pageHref('contact')}
+                href={pageHref(lang, 'contact')}
                 className="mt-2 inline-flex text-[14px] font-medium text-[var(--link)] hover:underline"
               >
                 {ui.getInTouch} →

@@ -1,3 +1,5 @@
+'use client'
+
 import { TechIconChip } from '@/components/notion/TechIconChip'
 import { techCategories } from '@/data/technologies'
 import { notionPageBlocks } from '@/i18n/notion-blocks-content'

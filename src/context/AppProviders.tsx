@@ -1,20 +1,32 @@
+'use client'
+
 import { createActorContext } from '@xstate/react'
-import type { ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { PortfolioCursor } from '@/components/PortfolioCursor'
-import { SeoManager } from '@/components/SeoManager'
 import { ToastProvider } from '@/components/ui/Toast'
 import { settingsMachine } from '@/machines/settingsMachine'
 
 export const SettingsContext = createActorContext(settingsMachine)
 
+function SettingsHydrator({ children }: { children: ReactNode }) {
+  const actor = SettingsContext.useActorRef()
+
+  useEffect(() => {
+    actor.send({ type: 'HYDRATE' })
+  }, [actor])
+
+  return children
+}
+
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <SettingsContext.Provider>
-      <ToastProvider>
-        <SeoManager />
-        <PortfolioCursor />
-        {children}
-      </ToastProvider>
+      <SettingsHydrator>
+        <ToastProvider>
+          <PortfolioCursor />
+          {children}
+        </ToastProvider>
+      </SettingsHydrator>
     </SettingsContext.Provider>
   )
 }
