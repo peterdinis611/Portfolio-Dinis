@@ -167,10 +167,10 @@
   .notion-nav-item {
     @apply relative flex w-full items-center gap-2 rounded-[6px] px-2.5 py-[7px] text-[14px] leading-[1.25] text-sidebar-foreground;
     transition:
-      background-color 160ms ease,
-      color 160ms ease,
-      box-shadow 200ms ease,
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      background-color 140ms ease,
+      color 140ms ease,
+      box-shadow 180ms ease,
+      transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .notion-nav-item:hover {
@@ -193,7 +193,7 @@
     background: var(--primary);
     transform: translateY(-50%) scaleY(0);
     transform-origin: center;
-    animation: notion-nav-pipe 380ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: notion-nav-pipe 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes notion-nav-pipe {
@@ -262,6 +262,10 @@
 
   .notion-page.cv-page {
     max-width: min(100%, 58rem);
+  }
+
+  .notion-page.notes-page {
+    max-width: min(100%, 54rem);
   }
 
   .notion-page-title h1 {
@@ -381,8 +385,8 @@
 
   :root[data-animations="on"] .notion-app-shell[data-motion-ready="true"] .notion-gallery-item {
     opacity: 0;
-    transform: translateY(10px);
-    animation: notion-rise 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform: translateY(6px);
+    animation: notion-rise 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes notion-rise {
@@ -394,17 +398,17 @@
 
   .notion-gallery-card {
     transition:
-      transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 220ms ease,
-      background-color 220ms ease,
-      box-shadow 280ms ease;
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 160ms ease,
+      background-color 160ms ease,
+      box-shadow 220ms ease;
   }
 
   .notion-gallery-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     border-color: rgba(55, 53, 47, 0.18);
     background: rgba(55, 53, 47, 0.03);
-    box-shadow: 0 10px 24px -16px rgba(15, 15, 15, 0.28);
+    box-shadow: 0 8px 20px -16px rgba(15, 15, 15, 0.26);
   }
 
   .dark .notion-gallery-card:hover {
@@ -420,12 +424,12 @@
 
   .notion-cmd-item {
     transition:
-      background-color 140ms ease,
-      transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+      background-color 120ms ease,
+      transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .notion-cmd-item:active {
-    transform: scale(0.99);
+    transform: scale(0.985);
   }
 
   .tech-chip {
@@ -475,64 +479,6 @@
     box-shadow: 0 10px 24px -16px color-mix(in srgb, var(--primary) 50%, transparent);
   }
 
-  /* Notion bouncing dots — staggered spring bounce */
-  .notion-bounce-spinner {
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 0.35em;
-    height: 1.35em;
-    color: var(--primary);
-  }
-
-  .notion-bounce-spinner--sm {
-    font-size: 6px;
-  }
-
-  .notion-bounce-spinner--md {
-    font-size: 8px;
-  }
-
-  .notion-bounce-spinner--lg {
-    font-size: 10px;
-  }
-
-  .notion-bounce-spinner__dot {
-    display: block;
-    width: 1em;
-    height: 1em;
-    border-radius: 999px;
-    background: currentColor;
-    transform-origin: center bottom;
-    animation: notion-bounce-dot 720ms cubic-bezier(0.33, 1.4, 0.48, 1) infinite;
-  }
-
-  .notion-bounce-spinner__dot:nth-child(2) {
-    animation-delay: 110ms;
-    opacity: 0.85;
-  }
-
-  .notion-bounce-spinner__dot:nth-child(3) {
-    animation-delay: 220ms;
-    opacity: 0.7;
-  }
-
-  @keyframes notion-bounce-dot {
-    0%,
-    100% {
-      transform: translateY(0) scale(1);
-    }
-    35% {
-      transform: translateY(-0.85em) scale(1.08);
-    }
-    55% {
-      transform: translateY(0) scale(0.92);
-    }
-    70% {
-      transform: translateY(-0.18em) scale(1.02);
-    }
-  }
-
   .notion-route-loading {
     display: grid;
     place-items: center;
@@ -540,7 +486,8 @@
     padding: 3rem 1.25rem;
   }
 
-  .notion-route-loading__card {
+  .notion-route-loading__card,
+  .notion-route-pending__card {
     display: grid;
     justify-items: center;
     gap: 0.85rem;
@@ -551,25 +498,27 @@
     box-shadow:
       0 1px 0 color-mix(in srgb, var(--foreground) 4%, transparent),
       0 18px 40px -28px color-mix(in srgb, var(--foreground) 35%, transparent);
-    animation: notion-route-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: notion-route-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .notion-route-loading__label {
+  .notion-route-loading__label,
+  .notion-route-pending__label {
     margin: 0;
     font-size: 0.8125rem;
     letter-spacing: 0.01em;
     color: var(--muted-foreground);
   }
 
-  @keyframes notion-route-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+  .notion-route-pending {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    display: grid;
+    place-items: center;
+    padding: 2rem 1.25rem;
+    background: color-mix(in srgb, var(--editor-surface) 78%, transparent);
+    backdrop-filter: blur(3px);
+    animation: notion-route-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .notion-nav-progress {
@@ -649,11 +598,13 @@
   /* Notes blog search — keep in @layer so Tailwind/lightningcss ships it */
   .notes-search {
     display: grid;
+    width: 100%;
     gap: 0.85rem;
   }
 
   .notes-search-field {
     display: grid;
+    width: 100%;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.65rem;
@@ -777,44 +728,78 @@
     border-color: rgba(255, 255, 255, 0.12);
   }
 
+  .notes-toolbar {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
   .notes-search-tags {
     display: flex;
+    width: 100%;
     flex-wrap: wrap;
-    gap: 0.4rem;
-    flex: 1 1 auto;
+    gap: 0.35rem;
     min-width: 0;
+  }
+
+  .notes-toolbar-controls {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    border-radius: 10px;
+    border: 1px solid rgba(55, 53, 47, 0.1);
+    background: color-mix(in srgb, var(--editor-surface) 88%, var(--primary));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+
+  .dark .notes-toolbar-controls {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .notes-tag {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    min-height: 1.85rem;
-    padding: 0.2rem 0.7rem;
-    border-radius: 999px;
+    min-height: 1.75rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 6px;
     border: 1px solid transparent;
-    background: rgba(55, 53, 47, 0.06);
+    background: rgba(55, 53, 47, 0.05);
     color: var(--muted-foreground);
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 550;
     letter-spacing: -0.01em;
     line-height: 1.2;
     white-space: nowrap;
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease,
+      transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .notes-tag:active {
+    transform: scale(0.97);
   }
 
   .dark .notes-tag {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
   }
 
   .notes-tag:hover {
     color: var(--foreground);
     border-color: rgba(55, 53, 47, 0.1);
-    background: rgba(55, 53, 47, 0.09);
+    background: rgba(55, 53, 47, 0.08);
   }
 
   .dark .notes-tag:hover {
     border-color: rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .notes-tag.is-active {
@@ -824,7 +809,7 @@
   }
 
   .notes-tag.is-active.is-tag {
-    background: color-mix(in srgb, var(--primary) 16%, transparent);
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
     color: var(--primary);
     border-color: color-mix(in srgb, var(--primary) 28%, transparent);
   }
@@ -832,10 +817,10 @@
   .notes-tag-count {
     display: inline-grid;
     place-items: center;
-    min-width: 1.15rem;
-    height: 1.15rem;
-    padding: 0 0.3rem;
-    border-radius: 999px;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    padding: 0 0.28rem;
+    border-radius: 4px;
     background: color-mix(in srgb, var(--primary-foreground) 22%, transparent);
     font-size: 10px;
     font-weight: 700;
@@ -852,59 +837,68 @@
   }
 
   .notes-search-meta {
-    margin: 0;
-    font-size: 12.5px;
+    margin: 0.15rem 0 0;
+    font-size: 12px;
     color: var(--muted-foreground);
   }
 
-  .notes-sort {
-    flex-shrink: 0;
+  .notes-sort-trigger.notion-select-trigger,
+  .notes-sort-trigger {
+    height: 1.75rem !important;
+    min-height: 1.75rem;
+    min-width: 9.5rem;
+    margin-left: auto;
+    border-radius: 6px !important;
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-inline: 0.55rem !important;
+    font-weight: 550;
   }
 
-  .notes-sort-select {
-    height: 1.85rem;
-    border-radius: 999px;
-    border: 1px solid rgba(55, 53, 47, 0.12);
-    background: rgba(55, 53, 47, 0.04);
-    padding: 0 0.75rem;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--foreground);
-    outline: none;
+  .notes-sort-trigger:hover,
+  .notes-sort-trigger[data-state='open'] {
+    background: rgba(55, 53, 47, 0.08) !important;
   }
 
-  .dark .notes-sort-select {
-    border-color: rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.06);
+  .dark .notes-sort-trigger:hover,
+  .dark .notes-sort-trigger[data-state='open'] {
+    background: rgba(255, 255, 255, 0.1) !important;
   }
 
   .notes-view-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 2px;
-    padding: 2px;
-    border-radius: 999px;
-    border: 1px solid rgba(55, 53, 47, 0.12);
-    background: rgba(55, 53, 47, 0.04);
-  }
-
-  .dark .notes-view-toggle {
-    border-color: rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.06);
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    border: 0;
   }
 
   .notes-view-btn {
     display: grid;
     place-items: center;
-    width: 1.7rem;
-    height: 1.7rem;
-    border-radius: 999px;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 6px;
     color: var(--muted-foreground);
+    transition:
+      background-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .notes-view-btn:hover {
+    background: rgba(55, 53, 47, 0.08);
+    color: var(--foreground);
+  }
+
+  .dark .notes-view-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .notes-view-btn.is-active {
-    background: var(--primary);
-    color: var(--primary-foreground);
+    background: color-mix(in srgb, var(--primary) 16%, transparent);
+    color: var(--primary);
   }
 
   .notes-list {
@@ -928,12 +922,97 @@
   }
 }
 
+/* shadcn Spinner → Notion bouncing dots (outside @layer for reliable keyframes) */
+.notion-spinner {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  height: 22px;
+  color: var(--primary);
+}
+
+.notion-spinner--sm {
+  gap: 4px;
+  height: 16px;
+}
+
+.notion-spinner--sm .notion-spinner__dot {
+  width: 7px;
+  height: 7px;
+}
+
+.notion-spinner--md .notion-spinner__dot {
+  width: 9px;
+  height: 9px;
+}
+
+.notion-spinner--lg {
+  gap: 6px;
+  height: 28px;
+}
+
+.notion-spinner--lg .notion-spinner__dot {
+  width: 11px;
+  height: 11px;
+}
+
+.notion-spinner__dot {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: center bottom;
+  will-change: transform;
+  animation: notion-spinner-bounce 720ms cubic-bezier(0.33, 1.45, 0.48, 1) infinite;
+}
+
+.notion-spinner__dot:nth-child(2) {
+  animation-delay: 120ms;
+  opacity: 0.88;
+}
+
+.notion-spinner__dot:nth-child(3) {
+  animation-delay: 240ms;
+  opacity: 0.72;
+}
+
+@keyframes notion-spinner-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-10px) scale(1.1);
+  }
+  55% {
+    transform: translateY(0) scale(0.9);
+  }
+  70% {
+    transform: translateY(-3px) scale(1.04);
+  }
+}
+
+@keyframes notion-route-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-cover-shine,
   .notion-gallery-item,
   .notion-nav-item[data-active="true"]::before,
-  .notion-bounce-spinner__dot,
+  .notion-spinner__dot,
   .notion-route-loading__card,
+  .notion-route-pending__card,
+  .notion-route-pending,
   .notion-nav-progress__bar {
     animation: none;
   }
@@ -950,7 +1029,7 @@
     transform: none;
   }
 
-  .notion-bounce-spinner__dot {
+  .notion-spinner__dot {
     opacity: 0.75;
   }
 
@@ -968,13 +1047,15 @@
 :root[data-animations="off"] .page-cover-shine,
 :root[data-animations="off"] .notion-gallery-item,
 :root[data-animations="off"] .notion-nav-item[data-active="true"]::before,
-:root[data-animations="off"] .notion-bounce-spinner__dot,
+:root[data-animations="off"] .notion-spinner__dot,
 :root[data-animations="off"] .notion-route-loading__card,
+:root[data-animations="off"] .notion-route-pending__card,
+:root[data-animations="off"] .notion-route-pending,
 :root[data-animations="off"] .notion-nav-progress__bar {
   animation: none;
 }
 
-:root[data-animations="off"] .notion-bounce-spinner__dot {
+:root[data-animations="off"] .notion-spinner__dot {
   opacity: 0.75;
 }
 

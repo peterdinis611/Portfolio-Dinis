@@ -5,31 +5,42 @@ import type { ReactNode } from 'react'
 import { useEnterMotionReady } from '@/hooks/useEnterMotionReady'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 
-/** Soft expo — editorial, not bouncy */
-export const MOTION_EASE = [0.22, 1, 0.36, 1] as const
+/** Notion-soft: quick settle, almost no bounce */
+export const MOTION_EASE = [0.25, 0.1, 0.25, 1] as const
+
+/** Slightly springier for micro-hovers only */
+export const MOTION_EASE_OUT = [0.16, 1, 0.3, 1] as const
+
+export const MOTION = {
+  page: { duration: 0.22 },
+  section: { duration: 0.38 },
+  item: { duration: 0.32 },
+  stagger: 0.045,
+  staggerDelay: 0.04,
+} as const
 
 export const staggerContainer: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.07, delayChildren: 0.06 },
+    transition: { staggerChildren: MOTION.stagger, delayChildren: MOTION.staggerDelay },
   },
 }
 
 export const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 8 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.45, ease: MOTION_EASE },
+    transition: { duration: MOTION.item.duration, ease: MOTION_EASE_OUT },
   },
 }
 
 export const staggerItemLeft: Variants = {
-  hidden: { opacity: 0, x: -14 },
+  hidden: { opacity: 0, x: -8 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.45, ease: MOTION_EASE },
+    transition: { duration: MOTION.item.duration, ease: MOTION_EASE_OUT },
   },
 }
 
@@ -60,9 +71,9 @@ export function MotionSection({
     <motion.section
       id={id}
       className={className}
-      initial={skipEnter ? false : { opacity: 0, y: 16 }}
+      initial={skipEnter ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.52, delay, ease: MOTION_EASE }}
+      transition={{ duration: MOTION.section.duration, delay, ease: MOTION_EASE_OUT }}
     >
       {children}
     </motion.section>
@@ -89,9 +100,9 @@ export function MotionItem({
   return (
     <motion.div
       className={className}
-      initial={skipEnter ? false : { opacity: 0, y: 14 }}
+      initial={skipEnter ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.48, delay, ease: MOTION_EASE }}
+      transition={{ duration: MOTION.item.duration, delay, ease: MOTION_EASE_OUT }}
     >
       {children}
     </motion.div>
@@ -121,7 +132,10 @@ export function MotionStagger({
       variants={{
         hidden: {},
         visible: {
-          transition: { staggerChildren: 0.06, delayChildren: 0.04 + delay },
+          transition: {
+            staggerChildren: MOTION.stagger,
+            delayChildren: MOTION.staggerDelay + delay,
+          },
         },
       }}
       initial={skipEnter ? false : 'hidden'}

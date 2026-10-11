@@ -1,11 +1,11 @@
 'use client'
 
 import { ChevronRight } from 'lucide-react'
-import Link from 'next/link'
 import { Children, isValidElement, type ReactNode } from 'react'
 import { BrandIcon } from '@/components/icons/BrandIcon'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
+import { NotionLink } from './NotionLink'
 
 const calloutVariantMeta = {
   default: {
@@ -292,14 +292,14 @@ export function BlockPageLink({
   label: string
 }) {
   return (
-    <a href={href} className="notion-page-mention">
+    <NotionLink href={href} className="notion-page-mention">
       <span className="text-[1em]" aria-hidden>
         {icon}
       </span>
       <span className="underline decoration-[rgba(55,53,47,0.25)] underline-offset-2 dark:decoration-[rgba(255,255,255,0.25)]">
         {label}
       </span>
-    </a>
+    </NotionLink>
   )
 }
 
@@ -406,9 +406,9 @@ export function BlockGallery({
                 {body}
               </button>
             ) : (
-              <Link href={item.href} prefetch className={className}>
+              <NotionLink href={item.href} className={className}>
                 {body}
-              </Link>
+              </NotionLink>
             )}
           </li>
         )

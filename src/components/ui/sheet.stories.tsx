@@ -31,7 +31,6 @@ export const MobileSidebar: Story = {
               lang="en"
               route={{ page: 'projects' }}
               onNavigate={fn()}
-              onOpenSearch={fn()}
               className="w-full border-0"
             />
           </SheetContent>

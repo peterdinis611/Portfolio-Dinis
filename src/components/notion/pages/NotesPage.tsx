@@ -5,6 +5,13 @@ import { ArrowUpRight, LayoutGrid, List, Rss, Search, X } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { HighlightedText } from '@/components/ui/HighlightedText'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { getNoteTags, type Note, notes } from '@/data/notes'
 import { getNoteCover } from '@/data/page-covers'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
@@ -16,6 +23,7 @@ import { noteHref } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
 import { PageShell, PageTitle } from '../blocks'
 import { MOTION_EASE, MotionSection } from '../motion'
+import { NotionLink } from '../NotionLink'
 import { PageCover } from '../PageCover'
 
 const SORTS: NotesSort[] = ['newest', 'reading', 'az']
@@ -66,7 +74,7 @@ function NoteCard({
 }) {
   const ui = translations[lang].ui
   return (
-    <a
+    <NotionLink
       href={noteHref(lang, note.id)}
       className="group flex h-full flex-col rounded-[12px] border border-[rgba(55,53,47,0.1)] bg-[color-mix(in_srgb,var(--editor-surface)_94%,var(--primary))] p-4 transition-colors hover:border-[color-mix(in_srgb,var(--primary)_42%,transparent)] hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)] dark:border-[rgba(255,255,255,0.1)]"
     >
@@ -108,14 +116,14 @@ function NoteCard({
           </span>
         ))}
       </span>
-    </a>
+    </NotionLink>
   )
 }
 
 function NoteListRow({ note, lang, query }: { note: Note; lang: Lang; query?: string }) {
   const ui = translations[lang].ui
   return (
-    <a
+    <NotionLink
       href={noteHref(lang, note.id)}
       className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-[8px] border border-transparent px-2 py-2.5 transition-colors hover:border-[rgba(55,53,47,0.1)] hover:bg-[rgba(55,53,47,0.04)] dark:hover:border-[rgba(255,255,255,0.1)] dark:hover:bg-[rgba(255,255,255,0.04)]"
     >
@@ -136,7 +144,7 @@ function NoteListRow({ note, lang, query }: { note: Note; lang: Lang; query?: st
           {ui.notesReading.replace('{min}', String(note.readingMinutes))}
         </span>
       </span>
-    </a>
+    </NotionLink>
   )
 }
 
@@ -222,7 +230,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
   }
 
   return (
-    <PageShell cover={<PageCover variant="tech" />}>
+    <PageShell className="notes-page" cover={<PageCover variant="tech" />}>
       <MotionSection>
         <PageTitle icon="✍️" description={ui.notesIntro}>
           {ui.notes}
@@ -285,96 +293,69 @@ export function NotesPage({ lang }: { lang: Lang }) {
             )}
           </label>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="notes-search-tags flex min-w-0 flex-1 flex-wrap gap-1.5">
-              <button
-                type="button"
-                onClick={() => setActiveTag(null)}
-                className={cn(
-                  'notes-tag inline-flex min-h-[1.85rem] items-center gap-1.5 whitespace-nowrap rounded-full border border-transparent px-2.5 py-0.5 text-[12px] font-semibold tracking-[-0.01em] leading-tight',
-                  activeTag === null
-                    ? 'is-active bg-primary text-primary-foreground'
-                    : 'bg-[rgba(55,53,47,0.06)] text-muted-foreground hover:border-[rgba(55,53,47,0.1)] hover:bg-[rgba(55,53,47,0.09)] hover:text-foreground dark:bg-[rgba(255,255,255,0.08)] dark:hover:border-[rgba(255,255,255,0.12)] dark:hover:bg-[rgba(255,255,255,0.12)]',
-                )}
-              >
-                {ui.notesAll}
-                <span
-                  className={cn(
-                    'notes-tag-count inline-grid h-[1.15rem] min-w-[1.15rem] place-items-center rounded-full px-1 text-[10px] font-bold leading-none',
-                    activeTag === null
-                      ? 'bg-[color-mix(in_srgb,var(--primary-foreground)_22%,transparent)]'
-                      : 'bg-[rgba(55,53,47,0.1)] text-muted-foreground dark:bg-[rgba(255,255,255,0.12)]',
-                  )}
-                >
-                  {notes.length}
-                </span>
-              </button>
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => setActiveTag((prev) => (prev === tag ? null : tag))}
-                  className={cn(
-                    'notes-tag inline-flex min-h-[1.85rem] items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[12px] font-semibold tracking-[-0.01em] leading-tight',
-                    activeTag === tag
-                      ? 'is-active is-tag border-[color-mix(in_srgb,var(--primary)_28%,transparent)] bg-[color-mix(in_srgb,var(--primary)_16%,transparent)] text-primary'
-                      : 'border-transparent bg-[rgba(55,53,47,0.06)] text-muted-foreground hover:border-[rgba(55,53,47,0.1)] hover:bg-[rgba(55,53,47,0.09)] hover:text-foreground dark:bg-[rgba(255,255,255,0.08)] dark:hover:border-[rgba(255,255,255,0.12)] dark:hover:bg-[rgba(255,255,255,0.12)]',
-                  )}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex shrink-0 items-center gap-1.5">
-              <fieldset className="notes-view-toggle m-0 inline-flex items-center gap-0.5 rounded-full border border-[rgba(55,53,47,0.12)] bg-[rgba(55,53,47,0.04)] p-0.5 dark:border-[rgba(255,255,255,0.12)] dark:bg-[rgba(255,255,255,0.06)]">
+          <div className="notes-toolbar">
+            <div className="notes-toolbar-controls">
+              <fieldset className="notes-view-toggle m-0">
                 <legend className="sr-only">{ui.notesView}</legend>
                 <button
                   type="button"
-                  className={cn(
-                    'notes-view-btn grid h-[1.7rem] w-[1.7rem] place-items-center rounded-full text-muted-foreground',
-                    view === 'cards' && 'is-active bg-primary text-primary-foreground',
-                  )}
+                  className={cn('notes-view-btn', view === 'cards' && 'is-active')}
                   onClick={() => setView('cards')}
                   aria-pressed={view === 'cards'}
+                  aria-label={ui.notesViewCards}
                   title={ui.notesViewCards}
                 >
                   <LayoutGrid className="h-3.5 w-3.5" strokeWidth={2} />
                 </button>
                 <button
                   type="button"
-                  className={cn(
-                    'notes-view-btn grid h-[1.7rem] w-[1.7rem] place-items-center rounded-full text-muted-foreground',
-                    view === 'list' && 'is-active bg-primary text-primary-foreground',
-                  )}
+                  className={cn('notes-view-btn', view === 'list' && 'is-active')}
                   onClick={() => setView('list')}
                   aria-pressed={view === 'list'}
+                  aria-label={ui.notesViewList}
                   title={ui.notesViewList}
                 >
                   <List className="h-3.5 w-3.5" strokeWidth={2} />
                 </button>
               </fieldset>
-              <label className="notes-sort self-start">
-                <span className="sr-only">{ui.notesSort}</span>
-                <select
-                  value={sort}
-                  onChange={(event) => setSort(event.target.value as NotesSort)}
-                  className="notes-sort-select h-[1.85rem] rounded-full border border-[rgba(55,53,47,0.12)] bg-[rgba(55,53,47,0.04)] px-3 text-[12px] font-semibold text-foreground outline-none dark:border-[rgba(255,255,255,0.12)] dark:bg-[rgba(255,255,255,0.06)]"
-                >
+
+              <Select value={sort} onValueChange={(value) => setSort(value as NotesSort)}>
+                <SelectTrigger className="notes-sort-trigger" aria-label={ui.notesSort}>
+                  <SelectValue placeholder={ui.notesSort} />
+                </SelectTrigger>
+                <SelectContent align="end" className="min-w-[10.5rem]">
                   {SORTS.map((value) => (
-                    <option key={value} value={value}>
+                    <SelectItem key={value} value={value}>
                       {sortLabel(value)}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-              </label>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="notes-search-tags" role="group" aria-label={ui.notes}>
+              <button
+                type="button"
+                onClick={() => setActiveTag(null)}
+                className={cn('notes-tag', activeTag === null && 'is-active')}
+              >
+                {ui.notesAll}
+                <span className="notes-tag-count">{notes.length}</span>
+              </button>
+              {tags.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => setActiveTag((prev) => (prev === tag ? null : tag))}
+                  className={cn('notes-tag', activeTag === tag && 'is-active is-tag')}
+                >
+                  {tag}
+                </button>
+              ))}
             </div>
           </div>
 
-          <p
-            className="notes-search-meta m-0 text-[12.5px] text-muted-foreground"
-            aria-live="polite"
-          >
+          <p className="notes-search-meta" aria-live="polite">
             {isFiltering
               ? ui.notesResultsCount.replace('{count}', String(sorted.length))
               : ui.notesResultsAll.replace('{count}', String(notes.length))}
@@ -382,7 +363,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
         </div>
 
         {featured ? (
-          <a
+          <NotionLink
             href={noteHref(lang, featured.id)}
             className="notes-featured group mb-5 grid overflow-hidden rounded-[14px] border border-[rgba(55,53,47,0.1)] transition-colors hover:border-[color-mix(in_srgb,var(--primary)_45%,transparent)] dark:border-[rgba(255,255,255,0.1)] md:grid-cols-[1.15fr_1fr]"
           >
@@ -416,7 +397,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
                 </span>
               </span>
             </div>
-          </a>
+          </NotionLink>
         ) : null}
 
         <AnimatePresence mode="popLayout" initial={false}>
@@ -454,14 +435,14 @@ export function NotesPage({ lang }: { lang: Lang }) {
               )}
               initial="hidden"
               animate="show"
-              exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-              transition={{ duration: 0.22, ease: MOTION_EASE }}
+              exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: MOTION_EASE }}
               variants={{
                 hidden: {},
                 show: {
                   transition: {
-                    staggerChildren: reduceMotion ? 0 : 0.035,
-                    delayChildren: reduceMotion ? 0 : 0.02,
+                    staggerChildren: reduceMotion ? 0 : 0.028,
+                    delayChildren: reduceMotion ? 0 : 0.015,
                   },
                 },
               }}
@@ -472,10 +453,10 @@ export function NotesPage({ lang }: { lang: Lang }) {
                   variants={{
                     hidden: reduceMotion
                       ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: 12, scale: 0.98 },
-                    show: { opacity: 1, y: 0, scale: 1 },
+                      : { opacity: 0, y: 6 },
+                    show: { opacity: 1, y: 0 },
                   }}
-                  transition={{ duration: 0.32, ease: MOTION_EASE }}
+                  transition={{ duration: 0.26, ease: MOTION_EASE }}
                 >
                   {view === 'list' ? (
                     <NoteListRow note={note} lang={lang} query={deferredQuery} />

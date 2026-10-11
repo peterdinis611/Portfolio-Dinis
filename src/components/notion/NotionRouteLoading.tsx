@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { NotionBounceSpinner } from '@/components/ui/NotionBounceSpinner'
+import { Spinner } from '@/components/ui/spinner'
 import type { Lang } from '@/i18n/translations'
 import { translations } from '@/i18n/translations'
 import { isLocale } from '@/lib/locale'
@@ -16,7 +16,7 @@ export function NotionRouteLoading({ lang }: { lang?: Lang } = {}) {
   return (
     <div className="notion-route-loading" role="status" aria-live="polite" aria-label={label}>
       <div className="notion-route-loading__card">
-        <NotionBounceSpinner size="lg" label={label} />
+        <Spinner size="lg" label={label} />
         <p className="notion-route-loading__label">{label}</p>
       </div>
     </div>

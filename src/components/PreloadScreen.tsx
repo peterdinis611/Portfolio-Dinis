@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto'
-import { NotionBounceSpinner } from '@/components/ui/NotionBounceSpinner'
+import { Spinner } from '@/components/ui/spinner'
 import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import { type Lang, translations } from '@/i18n/translations'
 
@@ -67,7 +67,7 @@ export function PreloadScreen({ progress = 0, lang }: PreloadScreenProps) {
             </div>
           ) : (
             <div className="preload-spinner-wrap">
-              <NotionBounceSpinner size="md" label={ui.preloadAria} />
+              <Spinner size="default" label={ui.preloadAria} />
             </div>
           )}
         </div>

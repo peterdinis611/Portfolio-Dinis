@@ -8,7 +8,7 @@ import type { Locale } from '@/lib/locale'
 import { swapLocalePath } from '@/lib/locale'
 import { type PortfolioRoute, parsePortfolioRoute, routeToPath } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
-import { NotionNavProgress } from './NotionNavProgress'
+import { NotionRoutePending } from './NotionRoutePending'
 import { NotionSearchDialog } from './NotionSearchDialog'
 import { NotionSidebar } from './NotionSidebar'
 import { NotionTopbar } from './NotionTopbar'
@@ -16,6 +16,7 @@ import { PageMotion } from './PageMotion'
 import { PortfolioErrorBoundary } from './PortfolioErrorBoundary'
 import { ErrorPage } from './pages/ErrorPage'
 import type { PortfolioError } from './portfolio-error'
+import { RoutePendingProvider, useRoutePending } from './RoutePending'
 import { ScrollToTop } from './ScrollToTop'
 
 const SIDEBAR_COLLAPSED_KEY = 'portfolio-sidebar-collapsed'
@@ -35,11 +36,20 @@ type NotionShellProps = {
 }
 
 export function NotionShell({ locale, children }: NotionShellProps) {
+  return (
+    <RoutePendingProvider>
+      <NotionShellInner locale={locale}>{children}</NotionShellInner>
+    </RoutePendingProvider>
+  )
+}
+
+function NotionShellInner({ locale, children }: NotionShellProps) {
   const settingsActor = SettingsContext.useActorRef()
   const theme = SettingsContext.useSelector((s) => s.context.theme)
   const animations = SettingsContext.useSelector((s) => s.context.animations)
   const pathname = usePathname()
   const router = useRouter()
+  const { showSpinner, begin: beginPending } = useRoutePending()
 
   const route = useMemo(() => parsePortfolioRoute(pathname), [pathname])
 
@@ -113,12 +123,13 @@ export function NotionShell({ locale, children }: NotionShellProps) {
     (next: PortfolioRoute) => {
       setRuntimeError(null)
       setMobileSidebarOpen(false)
+      beginPending()
       router.push(routeToPath(locale, next))
     },
-    [locale, router],
+    [beginPending, locale, router],
   )
 
-  /** Side effects after Link navigation from the sidebar. */
+  /** Side effects after NotionLink navigation — spinner is handled by the link. */
   const onNavIntent = useCallback(() => {
     setRuntimeError(null)
     setMobileSidebarOpen(false)
@@ -135,9 +146,10 @@ export function NotionShell({ locale, children }: NotionShellProps) {
 
   const switchLang = useCallback(
     (next: Locale) => {
+      beginPending()
       router.replace(swapLocalePath(pathname, next))
     },
-    [pathname, router],
+    [beginPending, pathname, router],
   )
 
   useEffect(() => {
@@ -191,7 +203,6 @@ export function NotionShell({ locale, children }: NotionShellProps) {
             route={route}
             onNavigate={navigate}
             onNavIntent={onNavIntent}
-            onOpenSearch={() => setSearchOpen(true)}
             onCollapse={() => persistCollapsed(true)}
           />
         </PortfolioErrorBoundary>
@@ -208,10 +219,6 @@ export function NotionShell({ locale, children }: NotionShellProps) {
               route={route}
               onNavigate={navigate}
               onNavIntent={onNavIntent}
-              onOpenSearch={() => {
-                setMobileSidebarOpen(false)
-                setSearchOpen(true)
-              }}
               className="w-full border-0"
             />
           </PortfolioErrorBoundary>
@@ -233,31 +240,30 @@ export function NotionShell({ locale, children }: NotionShellProps) {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="relative">
-          <NotionTopbar
-            lang={locale}
-            theme={theme}
-            animations={animations}
-            route={topbarRoute}
-            sidebarCollapsed={sidebarCollapsed}
-            onMenu={() => setMobileSidebarOpen(true)}
-            onOpenSidebar={() => persistCollapsed(false)}
-            onOpenSearch={() => setSearchOpen(true)}
-            onLang={switchLang}
-            onTheme={() => settingsActor.send({ type: 'TOGGLE_THEME' })}
-            onAnimations={() => settingsActor.send({ type: 'TOGGLE_ANIMATIONS' })}
-          />
-          <NotionNavProgress />
-        </div>
+        <NotionTopbar
+          lang={locale}
+          theme={theme}
+          animations={animations}
+          route={topbarRoute}
+          sidebarCollapsed={sidebarCollapsed}
+          onMenu={() => setMobileSidebarOpen(true)}
+          onOpenSidebar={() => persistCollapsed(false)}
+          onOpenSearch={() => setSearchOpen(true)}
+          onLang={switchLang}
+          onTheme={() => settingsActor.send({ type: 'TOGGLE_THEME' })}
+          onAnimations={() => settingsActor.send({ type: 'TOGGLE_ANIMATIONS' })}
+        />
 
         <main
           className={cn(
-            'notion-page-pane flex-1 overflow-y-auto',
+            'notion-page-pane relative flex-1 overflow-y-auto',
             animations === 'on' && 'scroll-smooth',
           )}
           id="main-content"
+          aria-busy={showSpinner || undefined}
         >
           {mainContent}
+          <NotionRoutePending lang={locale} active={showSpinner} />
         </main>
         <ScrollToTop lang={locale} />
       </div>

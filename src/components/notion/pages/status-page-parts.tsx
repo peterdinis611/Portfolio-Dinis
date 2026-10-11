@@ -18,7 +18,7 @@ import type { PortfolioError } from '../portfolio-error'
 export const pageLinkStagger = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.055, delayChildren: 0.12 },
+    transition: { staggerChildren: 0.04, delayChildren: 0.08 },
   },
 }
 
@@ -162,8 +162,8 @@ export function AnimatedExploreLinks({
           <motion.div
             key={page.id}
             variants={staggerItemLeft}
-            whileHover={{ x: 4 }}
-            transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+            whileHover={{ x: 3 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 28 }}
           >
             <BlockPageLink href={page.href ?? '#'} icon={page.icon} label={page.label} />
           </motion.div>

@@ -17,6 +17,7 @@ import {
 import { MotionSection } from '../motion'
 import { BlockBookmark } from '../notion-blocks'
 import { PageCover } from '../PageCover'
+import { NotionLink } from '../NotionLink'
 import { PageCtaPanel } from '../PageCtaPanel'
 import { ProjectIcon } from '../ProjectIcon'
 
@@ -34,7 +35,7 @@ function AdjacentProjectLink({
   const isNext = direction === 'next'
 
   return (
-    <a
+    <NotionLink
       href={projectHref(lang, project.id)}
       className={cn(
         'group notion-adjacent flex w-full min-w-0 items-center gap-3 rounded-[10px] border border-[rgba(55,53,47,0.1)] px-4 py-3.5 dark:border-[rgba(255,255,255,0.1)]',
@@ -64,7 +65,7 @@ function AdjacentProjectLink({
           {isNext ? <ProjectIcon projectId={project.id} size="xs" /> : null}
         </span>
       </span>
-    </a>
+    </NotionLink>
   )
 }
 

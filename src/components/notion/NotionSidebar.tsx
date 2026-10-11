@@ -1,7 +1,6 @@
 'use client'
 
-import { ChevronRight, PanelLeftClose, Search } from 'lucide-react'
-import Link from 'next/link'
+import { ChevronRight, PanelLeftClose } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { type Lang, translations } from '@/i18n/translations'
@@ -9,6 +8,7 @@ import type { PortfolioRoute } from '@/lib/portfolio-route'
 import { routeToPath } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
 import { getNotionPages, getProjectNavItems, isProjectsOverviewActive } from './nav'
+import { NotionLink } from './NotionLink'
 import { ProjectIcon } from './ProjectIcon'
 import type { NotionPageId } from './types'
 
@@ -18,7 +18,6 @@ type NotionSidebarProps = {
   onNavigate: (route: PortfolioRoute) => void
   /** Called when a Link handles routing — close sheet / clear errors only. */
   onNavIntent?: () => void
-  onOpenSearch?: () => void
   onCollapse?: () => void
   className?: string
 }
@@ -32,7 +31,6 @@ export function NotionSidebar({
   route,
   onNavigate: _onNavigate,
   onNavIntent,
-  onOpenSearch,
   onCollapse,
   className,
 }: NotionSidebarProps) {
@@ -92,9 +90,8 @@ export function NotionSidebar({
                 )}
               />
             </button>
-            <Link
+            <NotionLink
               href={routeToPath(lang, { page: 'projects' })}
-              prefetch
               className="notion-nav-item min-w-0 flex-1"
               {...navActive(isProjectsOverviewActive(route))}
               onClick={afterLink}
@@ -103,23 +100,22 @@ export function NotionSidebar({
                 {item.icon}
               </span>
               <span className="truncate">{item.label}</span>
-            </Link>
+            </NotionLink>
           </div>
 
           {projectsOpen ? (
             <ul className="mt-1 space-y-0.5 pl-5">
               {projectItems.map((project) => (
                 <li key={project.id}>
-                  <Link
+                  <NotionLink
                     href={routeToPath(lang, { page: 'projects', projectId: project.id })}
-                    prefetch
                     className="notion-nav-item text-[13px] text-sidebar-foreground/85"
                     {...navActive(route.projectId === project.id)}
                     onClick={afterLink}
                   >
                     <ProjectIcon projectId={project.id} size="xs" />
                     <span className="truncate">{project.name}</span>
-                  </Link>
+                  </NotionLink>
                 </li>
               ))}
             </ul>
@@ -131,9 +127,8 @@ export function NotionSidebar({
     return (
       <div className="flex items-center gap-1">
         <span className="w-5 shrink-0" aria-hidden />
-        <Link
+        <NotionLink
           href={routeToPath(lang, { page: item.id as NotionPageId })}
-          prefetch
           className="notion-nav-item min-w-0 flex-1"
           {...navActive(pageActive)}
           onClick={afterLink}
@@ -142,7 +137,7 @@ export function NotionSidebar({
             {item.icon}
           </span>
           <span className="truncate">{item.label}</span>
-        </Link>
+        </NotionLink>
       </div>
     )
   }
@@ -156,9 +151,8 @@ export function NotionSidebar({
       aria-label={ui.notionSidebar}
     >
       <div className="group/workspace flex items-center gap-1 px-2.5 pt-3 pb-1.5">
-        <Link
+        <NotionLink
           href={routeToPath(lang, { page: 'about' })}
-          prefetch
           className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent"
           onClick={afterLink}
         >
@@ -168,7 +162,7 @@ export function NotionSidebar({
           <span className="min-w-0 flex-1 truncate text-[14px] font-medium tracking-[-0.01em]">
             {ui.notionWorkspace}
           </span>
-        </Link>
+        </NotionLink>
 
         {onCollapse ? (
           <button
@@ -183,35 +177,8 @@ export function NotionSidebar({
         ) : null}
       </div>
 
-      <div className="px-2.5 pb-2.5">
-        {onOpenSearch ? (
-          <button
-            type="button"
-            onClick={onOpenSearch}
-            className="notion-quick-find group/find flex h-[2.35rem] w-full items-center gap-2 rounded-lg border border-[rgba(55,53,47,0.12)] px-2 pl-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_1px_2px_rgba(15,15,15,0.04)] transition-[border-color,box-shadow] hover:border-[color-mix(in_srgb,var(--primary)_35%,rgba(55,53,47,0.16))] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_0_0_3px_color-mix(in_srgb,var(--primary)_12%,transparent)] dark:border-[rgba(255,255,255,0.1)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_1px_2px_rgba(0,0,0,0.2)]"
-            style={{
-              background:
-                'linear-gradient(180deg, color-mix(in srgb, var(--editor-surface) 92%, var(--primary)) 0%, color-mix(in srgb, var(--muted) 55%, transparent) 100%)',
-            }}
-          >
-            <span
-              className="notion-quick-find-icon grid h-[1.55rem] w-[1.55rem] shrink-0 place-items-center rounded-md bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[color-mix(in_srgb,var(--primary)_75%,var(--muted-foreground))]"
-              aria-hidden
-            >
-              <Search className="h-3.5 w-3.5" strokeWidth={2} />
-            </span>
-            <span className="min-w-0 flex-1 truncate text-left text-[13px] text-muted-foreground transition-colors group-hover/find:text-foreground">
-              {ui.notionQuickFind}
-            </span>
-            <kbd className="notion-quick-find-kbd shrink-0 rounded-[5px] border border-[rgba(55,53,47,0.1)] bg-[color-mix(in_srgb,var(--editor-surface)_88%,transparent)] px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-muted-foreground shadow-[0_1px_0_rgba(55,53,47,0.06)] dark:border-[rgba(255,255,255,0.1)] dark:shadow-[0_1px_0_rgba(0,0,0,0.25)]">
-              ⌘K
-            </kbd>
-          </button>
-        ) : null}
-      </div>
-
       <ScrollArea className="min-h-0 flex-1 px-2.5">
-        <p className="mb-2 px-2.5 pt-1.5 text-[11px] font-medium tracking-wide text-muted-foreground/70 uppercase">
+        <p className="mb-2 px-2.5 pt-2.5 text-[11px] font-medium tracking-wide text-muted-foreground/70 uppercase">
           {ui.notionPages}
         </p>
         <ul className="space-y-0.5 pb-3">

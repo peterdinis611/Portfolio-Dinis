@@ -13,7 +13,6 @@ const meta = {
     lang: 'en',
     route: { page: 'about' } satisfies PortfolioRoute,
     onNavigate: fn(),
-    onOpenSearch: fn(),
     onCollapse: fn(),
   },
   decorators: [

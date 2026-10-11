@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { BrandIcon } from '@/components/icons/BrandIcon'
 import { getNotionTagMeta, notionTagClass } from '@/lib/notion-tags'
 import { cn } from '@/lib/utils'
+import { NotionLink } from './NotionLink'
 
 export type InfoFactTone = 'rose' | 'yellow' | 'blue' | 'sky'
 
@@ -379,7 +380,7 @@ export function CaseStudySection({
 
 export function BackLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <a
+    <NotionLink
       href={href}
       className="notion-back-link group relative z-[2] mb-3 inline-flex items-center gap-2 rounded-[10px] py-1 pr-2.5 pl-1 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] hover:text-[var(--link)]"
     >
@@ -392,7 +393,7 @@ export function BackLink({ href, children }: { href: string; children: ReactNode
       <span className="underline decoration-transparent underline-offset-[3px] transition-[text-decoration-color] group-hover:decoration-[color-mix(in_srgb,var(--primary)_45%,transparent)]">
         {children}
       </span>
-    </a>
+    </NotionLink>
   )
 }
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { Menu, PanelLeft, Search, Sparkles } from 'lucide-react'
-import Link from 'next/link'
 import { ThemeToggleIcon } from '@/components/icons/ThemeToggleIcon'
 import { Button } from '@/components/ui/button'
 import { type Lang, type Theme, translations } from '@/i18n/translations'
@@ -11,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { routeToVaultLabel } from '@/lib/vault-path'
 import type { AnimationsPref } from '@/machines/settingsMachine'
 import { getNotionPages } from './nav'
+import { NotionLink } from './NotionLink'
 import { ProjectIcon } from './ProjectIcon'
 
 type NotionTopbarProps = {
@@ -75,12 +75,12 @@ export function NotionTopbar({
           className="flex min-w-0 items-center gap-1 text-[14px]"
           aria-label={ui.notionBreadcrumb}
         >
-          <Link
+          <NotionLink
             href={pageHref(lang, 'about')}
             className="hidden max-w-[10rem] truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground transition-colors hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground sm:inline dark:hover:bg-[rgba(255,255,255,0.055)]"
           >
             {ui.notionWorkspace}
-          </Link>
+          </NotionLink>
           <span
             className="hidden px-0.5 text-[rgba(55,53,47,0.35)] sm:inline dark:text-[rgba(255,255,255,0.3)]"
             aria-hidden
