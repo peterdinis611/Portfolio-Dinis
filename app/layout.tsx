@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { DM_Sans, Instrument_Serif } from 'next/font/google'
 import Script from 'next/script'
 import '@/index.css'
-import '@/styles/preload.css'
 import { getSiteUrl, seoCopy } from '@/lib/seo'
 
 const dmSans = DM_Sans({
@@ -15,7 +14,7 @@ const dmSans = DM_Sans({
 const instrumentSerif = Instrument_Serif({
   subsets: ['latin', 'latin-ext'],
   weight: ['400'],
-  style: ['normal', 'italic'],
+  style: ['normal'],
   variable: '--font-instrument-serif',
   display: 'swap',
 })

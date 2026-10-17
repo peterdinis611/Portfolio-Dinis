@@ -1,19 +1,18 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import type { CSSProperties } from 'react'
+import { type CSSProperties, useRef } from 'react'
 import {
   getProjectCover,
   type PageCoverImage,
   type PageCoverVariant,
   pageCoverImages,
 } from '@/data/page-covers'
-import { useEnterMotionReady } from '@/hooks/useEnterMotionReady'
-import { useMotionDisabled } from '@/hooks/useMotionDisabled'
 import { cn } from '@/lib/utils'
-import { MOTION_EASE } from './motion'
 
 export type { PageCoverVariant }
+
+/** Shine once per cover URL per session — remounts must not look like a reload. */
+const shoneCovers = new Set<string>()
 
 function CoverPicture({
   cover,
@@ -70,9 +69,6 @@ export function PageCover({
   className?: string
   accent?: string
 }) {
-  const reduce = useMotionDisabled()
-  const enterReady = useEnterMotionReady()
-  const skipEnter = reduce || !enterReady
   const resolved =
     cover ??
     (projectId
@@ -81,24 +77,24 @@ export function PageCover({
   const eager =
     Boolean(projectId) || Boolean(cover) || variant === 'about' || variant === 'projects'
   const hasDark = Boolean(resolved.srcDark)
+  const shineKey = `${resolved.src}|${resolved.srcDark ?? ''}`
+  const playShineRef = useRef<boolean | null>(null)
+  if (playShineRef.current === null) {
+    const first = !shoneCovers.has(shineKey)
+    if (first) shoneCovers.add(shineKey)
+    playShineRef.current = first
+  }
+  const playShine = playShineRef.current
 
   return (
-    <motion.div
+    <div
       className={cn(
         'page-cover pointer-events-none relative h-48 w-full overflow-hidden sm:h-60 md:h-72',
         className,
       )}
       style={accent ? ({ '--note-accent': accent } as CSSProperties) : undefined}
-      initial={skipEnter ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.45, ease: MOTION_EASE }}
     >
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={skipEnter ? false : { scale: 1.06 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: reduce ? 0 : 1.2, ease: MOTION_EASE }}
-      >
+      <div className="absolute inset-0 z-0">
         {hasDark ? (
           <>
             <CoverPicture cover={resolved} mode="light" eager={eager} className="dark:hidden" />
@@ -112,7 +108,7 @@ export function PageCover({
         ) : (
           <CoverPicture cover={resolved} mode="single" eager={eager} />
         )}
-      </motion.div>
+      </div>
 
       {accent ? (
         <div
@@ -130,7 +126,10 @@ export function PageCover({
         className="absolute inset-x-0 bottom-0 z-[2] h-10 bg-gradient-to-t from-background via-background/35 to-transparent sm:h-12"
         aria-hidden
       />
-      <div className="page-cover-shine z-[3]" aria-hidden />
-    </motion.div>
+      <div
+        className={cn('page-cover-shine z-[3]', !playShine && 'page-cover-shine--static')}
+        aria-hidden
+      />
+    </div>
   )
 }

@@ -82,9 +82,9 @@ export function NotionPageView({ lang, route }: NotionPageViewProps) {
     <AnimatePresence mode="wait">
       <motion.div
         key={`${lang}-${page}-${projectId ?? 'root'}-${projectList ?? ''}-${noteId ?? ''}-${attemptedPath ?? ''}`}
-        initial={skipEnter ? false : { opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={reduce ? undefined : { opacity: 0, y: -6 }}
+        initial={skipEnter ? false : { y: 6 }}
+        animate={{ y: 0 }}
+        exit={reduce ? undefined : { y: -4 }}
         transition={{ duration: reduce ? 0 : 0.32, ease: MOTION_EASE }}
       >
         <FallbackPage

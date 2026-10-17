@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { usePathname, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
@@ -10,7 +11,6 @@ import { swapLocalePath } from '@/lib/locale'
 import { type PortfolioRoute, parsePortfolioRoute, routeToPath } from '@/lib/portfolio-route'
 import { cn } from '@/lib/utils'
 import { NotionRoutePending } from './NotionRoutePending'
-import { NotionSearchDialog } from './NotionSearchDialog'
 import { NotionSidebar } from './NotionSidebar'
 import { NotionTopbar } from './NotionTopbar'
 import { PageMotion } from './PageMotion'
@@ -21,6 +21,12 @@ import { RoutePendingProvider, useRoutePending } from './RoutePending'
 import { ScrollToTop } from './ScrollToTop'
 
 const SIDEBAR_COLLAPSED_KEY = 'portfolio-sidebar-collapsed'
+
+/** Fuse/notes/confetti stay out of the initial shell chunk until ⌘K opens. */
+const NotionSearchDialog = dynamic(
+  () => import('./NotionSearchDialog').then((mod) => mod.NotionSearchDialog),
+  { ssr: false },
+)
 
 function readSidebarCollapsed() {
   if (typeof window === 'undefined') return false
@@ -233,19 +239,21 @@ function NotionShellInner({ locale, children }: NotionShellProps) {
         </SheetContent>
       </Sheet>
 
-      <NotionSearchDialog
-        lang={locale}
-        open={searchOpen}
-        onOpenChange={setSearchOpen}
-        onNavigate={navigate}
-        actions={{
-          theme,
-          animations,
-          onToggleTheme: () => settingsActor.send({ type: 'TOGGLE_THEME' }),
-          onToggleLang: () => switchLang(locale === 'sk' ? 'en' : 'sk'),
-          onToggleAnimations: () => settingsActor.send({ type: 'TOGGLE_ANIMATIONS' }),
-        }}
-      />
+      {searchOpen ? (
+        <NotionSearchDialog
+          lang={locale}
+          open={searchOpen}
+          onOpenChange={setSearchOpen}
+          onNavigate={navigate}
+          actions={{
+            theme,
+            animations,
+            onToggleTheme: () => settingsActor.send({ type: 'TOGGLE_THEME' }),
+            onToggleLang: () => switchLang(locale === 'sk' ? 'en' : 'sk'),
+            onToggleAnimations: () => settingsActor.send({ type: 'TOGGLE_ANIMATIONS' }),
+          }}
+        />
+      ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col">
         <NotionTopbar

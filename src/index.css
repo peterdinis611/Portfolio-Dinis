@@ -371,6 +371,11 @@
     animation: page-cover-shine 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
   }
 
+  .page-cover-shine--static {
+    animation: none;
+    opacity: 0;
+  }
+
   @keyframes page-cover-shine {
     to {
       transform: translateX(120%);

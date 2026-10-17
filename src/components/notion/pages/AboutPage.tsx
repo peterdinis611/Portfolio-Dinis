@@ -60,10 +60,7 @@ export function AboutPage({ lang }: { lang: Lang }) {
         <AvailabilityBanner lang={lang} />
 
         <div className="mb-5 flex items-start gap-5 sm:gap-6">
-          <ProfilePhoto
-            className="h-[120px] w-[120px] shrink-0 overflow-hidden rounded-[6px] bg-white ring-1 ring-[rgba(55,53,47,0.1)] sm:h-[148px] sm:w-[148px] dark:ring-[rgba(255,255,255,0.12)]"
-            priority
-          />
+          <ProfilePhoto className="h-[120px] w-[120px] shrink-0 overflow-hidden rounded-[6px] bg-white ring-1 ring-[rgba(55,53,47,0.1)] sm:h-[148px] sm:w-[148px] dark:ring-[rgba(255,255,255,0.12)]" />
           <div className="min-w-0 flex-1 pt-1">
             <p className="text-[17px] font-semibold tracking-[-0.01em] text-foreground sm:text-[18px]">
               {t.profile.title}
