@@ -294,7 +294,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
           </label>
 
           <div className="notes-toolbar">
-            <div className="notes-toolbar-controls">
+            <div className="notes-toolbar-controls" role="group" aria-label={ui.notesView}>
               <fieldset className="notes-view-toggle m-0">
                 <legend className="sr-only">{ui.notesView}</legend>
                 <button
@@ -333,7 +333,7 @@ export function NotesPage({ lang }: { lang: Lang }) {
               </Select>
             </div>
 
-            <div className="notes-search-tags" role="group" aria-label={ui.notes}>
+            <div className="notes-search-tags" role="group" aria-label={ui.notesAll}>
               <button
                 type="button"
                 onClick={() => setActiveTag(null)}

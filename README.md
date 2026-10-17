@@ -38,7 +38,7 @@ cp .env.example .env   # optional
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — middleware redirects `/` → `/sk` (or `/en` from cookie / `Accept-Language`).
+Open [http://localhost:3000](http://localhost:3000) — `proxy.ts` redirects `/` → `/sk` (or `/en` from cookie / `Accept-Language`).
 
 ### Production
 

@@ -433,9 +433,9 @@ export function PageTitle({
       </h1>
       {meta ? <div className="mt-2.5 flex flex-wrap items-center gap-1.5">{meta}</div> : null}
       {description ? (
-        <div className="mt-3 max-w-2xl text-[16px] leading-[1.55] text-muted-foreground">
+        <p className="mt-3 max-w-2xl text-[16px] leading-[1.55] text-muted-foreground">
           {description}
-        </div>
+        </p>
       ) : null}
     </header>
   )

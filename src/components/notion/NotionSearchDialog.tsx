@@ -238,8 +238,8 @@ export function NotionSearchDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-lg">
         <DialogTitle className="sr-only">{ui.notionQuickFind}</DialogTitle>
-        <div className="flex items-center gap-2 border-b border-border px-3">
-          <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+        <div className="flex items-center gap-2 border-b border-border px-3" role="search">
+          <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
           <input
             ref={inputRef}
             value={query}
@@ -261,18 +261,28 @@ export function NotionSearchDialog({
             }}
             placeholder={ui.notionSearchHint}
             className="h-11 w-full bg-transparent text-[14px] outline-none placeholder:text-muted-foreground"
+            role="combobox"
             aria-label={ui.notionQuickFind}
+            aria-expanded={true}
+            aria-controls="notion-cmd-listbox"
+            aria-autocomplete="list"
             aria-activedescendant={items[safeIndex] ? `cmd-${items[safeIndex].id}` : undefined}
           />
-          <kbd className="hidden rounded-sm border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">
+          <kbd
+            className="hidden rounded-sm border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline"
+            aria-hidden
+          >
             Esc
           </kbd>
         </div>
 
         <div ref={listRef} className="max-h-[min(28rem,55vh)] overflow-y-auto p-2">
           {trimmed && items.length === 0 ? (
-            <div className="flex flex-col items-center px-4 py-8 text-center">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center border border-border bg-muted/40 text-muted-foreground">
+            <div className="flex flex-col items-center px-4 py-8 text-center" role="status">
+              <div
+                className="mb-3 flex h-10 w-10 items-center justify-center border border-border bg-muted/40 text-muted-foreground"
+                aria-hidden
+              >
                 <SearchX className="h-4 w-4" strokeWidth={1.75} />
               </div>
               <p className="text-[13px] font-semibold text-foreground">
@@ -283,30 +293,44 @@ export function NotionSearchDialog({
               </p>
             </div>
           ) : (
-            <ul className="space-y-px">
+            <ul
+              id="notion-cmd-listbox"
+              role="listbox"
+              aria-label={ui.notionQuickFind}
+              className="space-y-px"
+            >
               {items.map((item, index) => {
                 const showHeading = item.group !== lastGroup
                 lastGroup = item.group
+                const selected = index === safeIndex
                 return (
-                  <li key={item.id}>
+                  <li key={item.id} role="presentation">
                     {showHeading && !trimmed ? (
-                      <p className="px-2 pt-2 pb-1 text-[11px] font-medium text-muted-foreground">
+                      <p
+                        className="px-2 pt-2 pb-1 text-[11px] font-medium text-muted-foreground"
+                        role="presentation"
+                      >
                         {groupLabel(item.group)}
                       </p>
                     ) : null}
                     <button
                       type="button"
                       id={`cmd-${item.id}`}
+                      role="option"
+                      aria-selected={selected}
                       data-cmd-index={index}
-                      data-active={index === safeIndex ? 'true' : undefined}
+                      data-active={selected ? 'true' : undefined}
                       className={cn(
                         'notion-cmd-item group flex w-full items-start gap-2.5 rounded-[6px] px-2 py-1.5 text-left',
-                        index === safeIndex ? 'bg-muted/90' : 'hover:bg-muted/70',
+                        selected ? 'bg-muted/90' : 'hover:bg-muted/70',
                       )}
                       onMouseEnter={() => setActiveIndex(index)}
                       onClick={() => item.run()}
                     >
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-muted-foreground">
+                      <span
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-muted-foreground"
+                        aria-hidden
+                      >
                         {item.icon}
                       </span>
                       <span className="min-w-0 flex-1">
@@ -327,7 +351,7 @@ export function NotionSearchDialog({
           )}
 
           {!trimmed ? (
-            <p className="mt-2 px-2 pb-1 text-[11px] leading-relaxed text-muted-foreground">
+            <p className="mt-2 px-2 pb-1 text-[11px] leading-relaxed text-muted-foreground" id="notion-cmd-hint">
               {ui.notionSearchIntro}
             </p>
           ) : null}

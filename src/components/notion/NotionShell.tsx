@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { SettingsContext } from '@/context/AppProviders'
+import { translations } from '@/i18n/translations'
 import type { Locale } from '@/lib/locale'
 import { swapLocalePath } from '@/lib/locale'
 import { type PortfolioRoute, parsePortfolioRoute, routeToPath } from '@/lib/portfolio-route'
@@ -184,18 +185,25 @@ function NotionShellInner({ locale, children }: NotionShellProps) {
     </PortfolioErrorBoundary>
   )
 
+  const ui = translations[locale].ui
+
   return (
     <div
       className="notion-app-shell flex h-dvh overflow-hidden bg-background"
       data-motion-ready={motionReady ? 'true' : 'false'}
     >
+      <a href="#main-content" className="skip-link">
+        {ui.skipToContent}
+      </a>
+
       <div
         className={cn(
           'notion-sidebar-shell hidden overflow-hidden border-r border-sidebar-border md:block',
           sidebarCollapsed && 'border-transparent',
         )}
         data-collapsed={sidebarCollapsed ? 'true' : 'false'}
-        aria-hidden={sidebarCollapsed}
+        aria-hidden={sidebarCollapsed || undefined}
+        inert={sidebarCollapsed ? true : undefined}
       >
         <PortfolioErrorBoundary resetKey={errorResetKey} onError={handleRuntimeError}>
           <NotionSidebar
@@ -260,6 +268,8 @@ function NotionShellInner({ locale, children }: NotionShellProps) {
             animations === 'on' && 'scroll-smooth',
           )}
           id="main-content"
+          tabIndex={-1}
+          aria-label={ui.notionMain}
           aria-busy={showSpinner || undefined}
         >
           {mainContent}

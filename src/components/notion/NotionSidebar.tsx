@@ -23,7 +23,10 @@ type NotionSidebarProps = {
 }
 
 function navActive(active: boolean) {
-  return { 'data-active': active ? true : undefined }
+  return {
+    'data-active': active ? true : undefined,
+    'aria-current': active ? ('page' as const) : undefined,
+  }
 }
 
 export function NotionSidebar({
@@ -104,7 +107,7 @@ export function NotionSidebar({
           </div>
 
           {projectsOpen ? (
-            <ul className="mt-1 space-y-0.5 pl-5">
+            <ul className="mt-1 space-y-0.5 pl-5" aria-label={ui.notionProjectsNav}>
               {projectItems.map((project) => (
                 <li key={project.id}>
                   <NotionLink
@@ -150,13 +153,16 @@ export function NotionSidebar({
       )}
       aria-label={ui.notionSidebar}
     >
-      <div className="group/workspace flex items-center gap-1 px-2.5 pt-3 pb-1.5">
+      <header className="group/workspace flex items-center gap-1 px-2.5 pt-3 pb-1.5">
         <NotionLink
           href={routeToPath(lang, { page: 'about' })}
           className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent"
           onClick={afterLink}
         >
-          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-[10px] leading-none font-bold text-primary-foreground">
+          <span
+            className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-[10px] leading-none font-bold text-primary-foreground"
+            aria-hidden
+          >
             P
           </span>
           <span className="min-w-0 flex-1 truncate text-[14px] font-medium tracking-[-0.01em]">
@@ -172,28 +178,35 @@ export function NotionSidebar({
             aria-label={ui.notionCloseSidebar}
             title={`${ui.notionCloseSidebar} (⌘\\)`}
           >
-            <PanelLeftClose className="h-4 w-4" strokeWidth={1.75} />
+            <PanelLeftClose className="h-4 w-4" strokeWidth={1.75} aria-hidden />
           </button>
         ) : null}
-      </div>
+      </header>
 
       <ScrollArea className="min-h-0 flex-1 px-2.5">
-        <p className="mb-2 px-2.5 pt-2.5 text-[11px] font-medium tracking-wide text-muted-foreground/70 uppercase">
-          {ui.notionPages}
-        </p>
-        <ul className="space-y-0.5 pb-3">
-          {mainPages.map((item) => (
-            <li key={item.id}>{renderPageButton(item)}</li>
-          ))}
-        </ul>
+        <nav aria-label={ui.notionPages}>
+          <h2 className="mb-2 px-2.5 pt-2.5 text-[11px] font-medium tracking-wide text-muted-foreground/70 uppercase">
+            {ui.notionPages}
+          </h2>
+          <ul className="space-y-0.5 pb-3">
+            {mainPages.map((item) => (
+              <li key={item.id}>{renderPageButton(item)}</li>
+            ))}
+          </ul>
+        </nav>
       </ScrollArea>
 
       {footerPages.length > 0 ? (
-        <div className="space-y-0.5 border-t border-[rgba(55,53,47,0.06)] px-2.5 py-2.5 dark:border-[rgba(255,255,255,0.06)]">
-          {footerPages.map((page) => (
-            <div key={page.id}>{renderPageButton(page)}</div>
-          ))}
-        </div>
+        <nav
+          className="space-y-0.5 border-t border-[rgba(55,53,47,0.06)] px-2.5 py-2.5 dark:border-[rgba(255,255,255,0.06)]"
+          aria-label={ui.notionUtilityPages}
+        >
+          <ul className="space-y-0.5">
+            {footerPages.map((page) => (
+              <li key={page.id}>{renderPageButton(page)}</li>
+            ))}
+          </ul>
+        </nav>
       ) : null}
     </aside>
   )

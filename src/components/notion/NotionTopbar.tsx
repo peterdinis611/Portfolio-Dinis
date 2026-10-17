@@ -54,8 +54,9 @@ export function NotionTopbar({
           className="h-7 w-7 shrink-0 rounded-[4px] text-muted-foreground hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground md:hidden dark:hover:bg-[rgba(255,255,255,0.055)]"
           onClick={onMenu}
           aria-label={ui.notionMenu}
+          aria-haspopup="dialog"
         >
-          <Menu className="h-4 w-4" />
+          <Menu className="h-4 w-4" aria-hidden />
         </Button>
 
         {sidebarCollapsed && onOpenSidebar ? (
@@ -67,53 +68,63 @@ export function NotionTopbar({
             aria-label={ui.notionOpenSidebar}
             title={`${ui.notionOpenSidebar} (⌘\\)`}
           >
-            <PanelLeft className="h-4 w-4" strokeWidth={1.75} />
+            <PanelLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden />
           </Button>
         ) : null}
 
-        <nav
-          className="flex min-w-0 items-center gap-1 text-[14px]"
-          aria-label={ui.notionBreadcrumb}
-        >
-          <NotionLink
-            href={pageHref(lang, 'about')}
-            className="hidden max-w-[10rem] truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground transition-colors hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground sm:inline dark:hover:bg-[rgba(255,255,255,0.055)]"
-          >
-            {ui.notionWorkspace}
-          </NotionLink>
-          <span
-            className="hidden px-0.5 text-[rgba(55,53,47,0.35)] sm:inline dark:text-[rgba(255,255,255,0.3)]"
-            aria-hidden
-          >
-            /
-          </span>
-          <span className="inline-flex min-w-0 items-center gap-1.5 truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground">
-            {route.projectId ? (
-              <ProjectIcon projectId={route.projectId} size="xs" />
-            ) : (
-              <span className="shrink-0 text-[14px] leading-none" aria-hidden>
-                {pageEmoji}
+        <nav aria-label={ui.notionBreadcrumb}>
+          <ol className="flex min-w-0 items-center gap-1 text-[14px]">
+            <li className="hidden min-w-0 sm:block">
+              <NotionLink
+                href={pageHref(lang, 'about')}
+                className="max-w-[10rem] truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground transition-colors hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.055)]"
+              >
+                {ui.notionWorkspace}
+              </NotionLink>
+            </li>
+            <li
+              className="hidden px-0.5 text-[rgba(55,53,47,0.35)] sm:list-item dark:text-[rgba(255,255,255,0.3)]"
+              aria-hidden
+            >
+              /
+            </li>
+            <li className="inline-flex min-w-0 items-center gap-1.5 truncate rounded-[4px] px-1.5 py-0.5 text-muted-foreground">
+              <span aria-current="page" className="inline-flex min-w-0 items-center gap-1.5 truncate">
+                {route.projectId ? (
+                  <ProjectIcon projectId={route.projectId} size="xs" />
+                ) : (
+                  <span className="shrink-0 text-[14px] leading-none" aria-hidden>
+                    {pageEmoji}
+                  </span>
+                )}
+                <span className="truncate">{pageLabel}</span>
               </span>
-            )}
-            <span className="truncate">{pageLabel}</span>
-          </span>
+            </li>
+          </ol>
         </nav>
       </div>
 
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center gap-0.5" role="toolbar" aria-label={ui.notionToolbar}>
         <button
           type="button"
           className="notion-topbar-find"
           onClick={onOpenSearch}
           aria-label={ui.notionQuickFind}
+          aria-haspopup="dialog"
           title={`${ui.notionQuickFind} (⌘K)`}
         >
-          <Search className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+          <Search className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
           <span className="hidden max-w-[7rem] truncate sm:inline">{ui.notionQuickFind}</span>
-          <kbd className="notion-topbar-find__kbd">⌘K</kbd>
+          <kbd className="notion-topbar-find__kbd" aria-hidden>
+            ⌘K
+          </kbd>
         </button>
 
-        <div className="mx-0.5 flex items-center">
+        <div
+          className="mx-0.5 flex items-center"
+          role="group"
+          aria-label={ui.notionLang}
+        >
           {(['sk', 'en'] as const).map((code) => (
             <button
               key={code}
@@ -126,6 +137,7 @@ export function NotionTopbar({
                   : 'text-muted-foreground hover:bg-[rgba(55,53,47,0.06)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.055)]',
               )}
               aria-pressed={lang === code}
+              lang={code}
             >
               {code === 'sk' ? ui.langSk : ui.langEn}
             </button>
@@ -145,7 +157,7 @@ export function NotionTopbar({
           aria-pressed={animationsOn}
           title={animationsOn ? ui.animationsOff : ui.animationsOn}
         >
-          <Sparkles className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+          <Sparkles className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
           <span className="hidden whitespace-nowrap sm:inline">
             {animationsOn ? ui.animationsLabelOn : ui.animationsLabelOff}
           </span>
@@ -157,6 +169,7 @@ export function NotionTopbar({
           className="h-7 w-7 rounded-[4px] text-muted-foreground hover:bg-[rgba(55,53,47,0.08)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.055)]"
           onClick={onTheme}
           aria-label={theme === 'dark' ? ui.themeLight : ui.themeDark}
+          aria-pressed={theme === 'dark'}
         >
           <ThemeToggleIcon theme={theme} />
         </Button>
