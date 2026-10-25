@@ -17,10 +17,9 @@ import { NoteToc } from '../notes/NoteToc'
 import { PageCover } from '../PageCover'
 import { NotFoundPage } from './NotFoundPage'
 
-function noteAbsoluteUrl(lang: Lang, noteId: string, hash?: string) {
+function notePathUrl(lang: Lang, noteId: string, hash?: string) {
   const path = noteHref(lang, noteId)
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
-  return `${origin}${path}${hash ? `#${hash}` : ''}`
+  return `${path}${hash ? `#${hash}` : ''}`
 }
 
 export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string }) {
@@ -51,12 +50,16 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
   const { prev, next } = getAdjacentNotes(noteId)
   const related = getRelatedNotes(noteId, 3)
   const cover = getNoteCover(note.cover)
-  const activeHash = typeof window !== 'undefined' ? window.location.hash.replace(/^#/, '') : ''
-  const shareUrl = noteAbsoluteUrl(lang, noteId, activeHash || undefined)
+
+  const absoluteShareUrl = () => {
+    const hash = window.location.hash.replace(/^#/, '')
+    const path = notePathUrl(lang, noteId, hash || undefined)
+    return `${window.location.origin}${path}`
+  }
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(shareUrl)
+      await navigator.clipboard.writeText(absoluteShareUrl())
       setCopied(true)
       toast({ title: ui.notesLinkCopied })
       window.setTimeout(() => setCopied(false), 1600)
@@ -71,7 +74,7 @@ export function NoteDetailPage({ lang, noteId }: { lang: Lang; noteId: string })
         await navigator.share({
           title: note.title[lang],
           text: note.summary[lang],
-          url: shareUrl,
+          url: absoluteShareUrl(),
         })
         return
       } catch {

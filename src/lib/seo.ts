@@ -55,6 +55,20 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
       description:
         'Medior full-stack developer so zameraním na React, TypeScript, design systémy a produktové dodávky. Bio, služby a skúsenosti.',
     },
+    now: {
+      title: 'Teraz | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Aktuálny fokus: IBA.CZ, side projekty, mentoring a čo hľadám — živý snapshot dostupnosti.',
+    },
+    oss: {
+      title: 'Open source | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'GitHub repozitáre, komunita a priestor na talks — Docu-Nest, Pulse, Boom Scope a ďalšie.',
+    },
+    uses: {
+      title: 'Uses | Peter Dinis — Medior Full-Stack Developer',
+      description: 'Editor, denný stack a workflow — Cursor, React, TypeScript, GitHub.',
+    },
     tech: {
       title: 'Technológie | Peter Dinis — Medior Full-Stack Developer',
       description:
@@ -91,6 +105,20 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
       title: 'About | Peter Dinis — Medior Full-Stack Developer',
       description:
         'Medior full-stack developer focused on React, TypeScript, design systems, and product delivery. Bio, services, and experience.',
+    },
+    now: {
+      title: 'Now | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'Current focus: IBA.CZ, side projects, mentoring, and what I’m looking for — a living availability snapshot.',
+    },
+    oss: {
+      title: 'Open source | Peter Dinis — Medior Full-Stack Developer',
+      description:
+        'GitHub repos, community, and room for talks — Docu-Nest, Pulse, Boom Scope, and more.',
+    },
+    uses: {
+      title: 'Uses | Peter Dinis — Medior Full-Stack Developer',
+      description: 'Editor, daily stack, and workflow — Cursor, React, TypeScript, GitHub.',
     },
     tech: {
       title: 'Technologies | Peter Dinis — Medior Full-Stack Developer',
@@ -436,10 +464,13 @@ export function buildMetadata(locale: Locale, route: PortfolioRoute): Metadata {
 
 export const notionPagesForSitemap: NotionPageId[] = [
   'about',
+  'now',
   'tech',
   'experience',
   'projects',
   'notes',
+  'oss',
+  'uses',
   'cv',
   'contact',
 ]

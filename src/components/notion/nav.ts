@@ -23,10 +23,13 @@ export function getNotionPages(lang: Lang): NotionPageDef[] {
   const ui = translations[lang].ui
   return [
     { id: 'about', icon: '👋', label: ui.about },
+    { id: 'now', icon: '📡', label: ui.now },
     { id: 'tech', icon: '⚡', label: ui.tech },
     { id: 'experience', icon: '💼', label: ui.experience },
     { id: 'projects', icon: '🚀', label: ui.projects },
     { id: 'notes', icon: '✍️', label: ui.notes },
+    { id: 'oss', icon: '🌿', label: ui.oss },
+    { id: 'uses', icon: '🛠️', label: ui.uses },
     { id: 'cv', icon: '📄', label: ui.cv },
     { id: 'contact', icon: '✉️', label: ui.contact },
   ]

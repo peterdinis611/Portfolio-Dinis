@@ -14,9 +14,12 @@ import { ExperiencePage } from './pages/ExperiencePage'
 import { NoteDetailPage } from './pages/NoteDetailPage'
 import { NotesPage } from './pages/NotesPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { NowPage } from './pages/NowPage'
+import { OssPage } from './pages/OssPage'
 import { ProjectDetailPage } from './pages/ProjectDetailPage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { TechPage } from './pages/TechPage'
+import { UsesPage } from './pages/UsesPage'
 
 type NotionPageViewProps = {
   lang: Lang
@@ -57,6 +60,8 @@ function FallbackPage({
   switch (page) {
     case 'about':
       return <AboutPage lang={lang} />
+    case 'now':
+      return <NowPage lang={lang} />
     case 'tech':
       return <TechPage lang={lang} />
     case 'experience':
@@ -65,6 +70,10 @@ function FallbackPage({
       return <ProjectsPage lang={lang} projectList={projectList} />
     case 'notes':
       return <NotesPage lang={lang} />
+    case 'oss':
+      return <OssPage lang={lang} />
+    case 'uses':
+      return <UsesPage lang={lang} />
     case 'cv':
       return <CvPage lang={lang} />
     case 'contact':

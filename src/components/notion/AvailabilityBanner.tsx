@@ -39,12 +39,20 @@ export function AvailabilityBanner({ lang }: { lang: Lang }) {
           {availability.detail[lang]}
         </p>
       </div>
-      <NotionLink
-        href={pageHref(lang, 'contact')}
-        className="inline-flex shrink-0 items-center justify-center rounded-[6px] bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
-      >
-        {ui.getInTouch}
-      </NotionLink>
+      <div className="flex shrink-0 flex-col gap-2 sm:items-end">
+        <NotionLink
+          href={pageHref(lang, 'contact')}
+          className="inline-flex items-center justify-center rounded-[6px] bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          {ui.getInTouch}
+        </NotionLink>
+        <NotionLink
+          href={pageHref(lang, 'now')}
+          className="inline-flex items-center justify-center px-1 text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {ui.nowReadMore} →
+        </NotionLink>
+      </div>
     </aside>
   )
 }

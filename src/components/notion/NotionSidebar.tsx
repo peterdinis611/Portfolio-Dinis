@@ -42,8 +42,12 @@ export function NotionSidebar({
   const afterLink = onNavIntent ?? (() => {})
   const ui = translations[lang].ui
   const pages = getNotionPages(lang)
-  const mainPages = pages.filter((page) => page.id !== 'contact' && page.id !== 'cv')
-  const footerPages = pages.filter((page) => page.id === 'cv' || page.id === 'contact')
+  const mainPages = pages.filter(
+    (page) => page.id !== 'contact' && page.id !== 'cv' && page.id !== 'uses',
+  )
+  const footerPages = pages.filter(
+    (page) => page.id === 'uses' || page.id === 'cv' || page.id === 'contact',
+  )
   const projectItems = useMemo(() => getProjectNavItems(lang), [lang])
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(['projects']))
 

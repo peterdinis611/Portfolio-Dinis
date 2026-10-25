@@ -1,3 +1,6 @@
+'use client'
+
+import { useSyncExternalStore } from 'react'
 import type { Theme } from '@/i18n/translations'
 import { brandIconColor, getBrandIcon } from '@/lib/brand-icons'
 import { cn } from '@/lib/utils'
@@ -20,6 +23,21 @@ function readDocumentTheme(): Theme {
   return 'light'
 }
 
+function subscribeDocumentTheme(onStoreChange: () => void) {
+  if (typeof document === 'undefined') return () => {}
+  const observer = new MutationObserver(onStoreChange)
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class', 'data-theme'],
+  })
+  return () => observer.disconnect()
+}
+
+/** Server + hydration always 'light'; then sync to real DOM theme (boot script / toggles). */
+function useDocumentTheme(): Theme {
+  return useSyncExternalStore(subscribeDocumentTheme, readDocumentTheme, () => 'light')
+}
+
 export function BrandIcon({
   slug,
   color,
@@ -29,7 +47,8 @@ export function BrandIcon({
   fallback,
   theme: themeProp,
 }: BrandIconProps) {
-  const theme = themeProp ?? readDocumentTheme()
+  const documentTheme = useDocumentTheme()
+  const theme = themeProp ?? documentTheme
   const icon = getBrandIcon(slug)
 
   if (!icon) {

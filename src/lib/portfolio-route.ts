@@ -33,7 +33,18 @@ export function isProjectListId(value: string): value is ProjectListId {
 }
 
 export function isNotionPageId(value: string): value is NotionPageId {
-  return ['about', 'tech', 'experience', 'projects', 'notes', 'cv', 'contact'].includes(value)
+  return [
+    'about',
+    'now',
+    'tech',
+    'experience',
+    'projects',
+    'notes',
+    'oss',
+    'uses',
+    'cv',
+    'contact',
+  ].includes(value)
 }
 
 /** Strip leading locale segment from a pathname. */

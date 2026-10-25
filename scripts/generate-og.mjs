@@ -63,10 +63,28 @@ const pages = [
     subtitle: 'Medior Full-Stack Developer',
   },
   {
+    path: 'og/now.svg',
+    eyebrow: 'Now',
+    title: 'Teraz',
+    subtitle: 'Focus · mentoring · availability',
+  },
+  {
     path: 'og/tech.svg',
     eyebrow: 'Stack',
     title: 'Technológie',
     subtitle: 'React · TypeScript · NestJS · Cloud',
+  },
+  {
+    path: 'og/oss.svg',
+    eyebrow: 'Community',
+    title: 'Open source',
+    subtitle: 'Repos · talks · mentoring',
+  },
+  {
+    path: 'og/uses.svg',
+    eyebrow: 'Toolkit',
+    title: 'Uses',
+    subtitle: 'Cursor · React · workflow',
   },
   {
     path: 'og/experience.svg',
