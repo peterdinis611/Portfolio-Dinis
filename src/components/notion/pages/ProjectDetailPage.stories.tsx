@@ -31,10 +31,6 @@ type Story = StoryObj<typeof meta>
 
 export const BoomScope: Story = {}
 
-export const DocuNest: Story = {
-  args: { projectId: 'docu-nest' },
-}
-
 export const ScribeNotes: Story = {
   args: { projectId: 'scribe-notes' },
 }

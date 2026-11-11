@@ -11,7 +11,7 @@ const meta = {
   argTypes: {
     projectId: {
       control: 'select',
-      options: ['docu-nest', 'scribe-notes', 'boom-scope', 'pulse-apiclient', 'spst-kniznica'],
+      options: ['scribe-notes', 'boom-scope', 'pulse-apiclient', 'spst-kniznica'],
     },
     size: {
       control: 'select',
@@ -33,7 +33,7 @@ export const AllProjects: Story = {
   render: () => (
     <div className="flex flex-wrap items-end gap-3">
       {(
-        ['docu-nest', 'scribe-notes', 'boom-scope', 'pulse-apiclient', 'spst-kniznica'] as const
+        ['scribe-notes', 'boom-scope', 'pulse-apiclient', 'spst-kniznica'] as const
       ).map((id) => (
         <div key={id} className="flex flex-col items-center gap-1.5">
           <ProjectIcon projectId={id} size="md" />

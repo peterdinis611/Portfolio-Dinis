@@ -139,14 +139,12 @@ export const aboutTemplateContent: Record<
 /** Slim per-project metadata for detail pages and project lists. */
 export const projectMeta: Record<Lang, Record<string, ProjectPageMeta>> = {
   sk: {
-    'docu-nest': { type: 'SIDE PROJECT', date: 'jún 2026' },
     'scribe-notes': { type: 'DESKTOP APP', date: 'jún 2026' },
     'boom-scope': { type: 'SIDE PROJECT', date: 'máj — jún 2026' },
     'pulse-apiclient': { type: 'DESKTOP APP', date: 'jún 2026' },
     'spst-kniznica': { type: 'SIDE PROJECT', date: 'máj — jún 2026' },
   },
   en: {
-    'docu-nest': { type: 'SIDE PROJECT', date: 'Jun 2026' },
     'scribe-notes': { type: 'DESKTOP APP', date: 'Jun 2026' },
     'boom-scope': { type: 'SIDE PROJECT', date: 'May — Jun 2026' },
     'pulse-apiclient': { type: 'DESKTOP APP', date: 'Jun 2026' },

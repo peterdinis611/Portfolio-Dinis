@@ -16,7 +16,6 @@ const meta = {
       control: 'select',
       options: [
         undefined,
-        'docu-nest',
         'scribe-notes',
         'boom-scope',
         'pulse-apiclient',

@@ -14,7 +14,7 @@ Interactive portfolio with a Notion-like layout: sidebar, document pages, locale
 
 | Technologies | Project detail |
 |:---:|:---:|
-| ![Tech](docs/screenshots/tech.png) | ![Docu-Nest](docs/screenshots/project-detail.png) |
+| ![Tech](docs/screenshots/tech.png) | ![Project detail](docs/screenshots/project-detail.png) |
 
 ## Stack
 

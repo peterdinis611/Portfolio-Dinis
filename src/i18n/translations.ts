@@ -146,11 +146,6 @@ export const translations = {
     ],
     projects: [
       {
-        id: 'docu-nest',
-        description:
-          'AI-powered notebook platforma — knižnica dokumentov, analytika a workspace s Clerk auth a Drizzle ORM.',
-      },
-      {
         id: 'scribe-notes',
         description:
           'macOS desktopová aplikácia na písanie — TipTap editor, stromová štruktúra a lokálne SQLite úložisko.',
@@ -168,7 +163,7 @@ export const translations = {
       {
         id: 'spst-kniznica',
         description:
-          'Študentská digitálna knižnica — katalóg, výpožičky, admin panel a notifikácie.',
+          'Študentská digitálna knižnica — Next.js frontend, ASP.NET microservices a SQLite (zatiaľ). Katalóg, výpožičky, admin panel.',
       },
     ],
     ui: {
@@ -511,11 +506,6 @@ export const translations = {
     ],
     projects: [
       {
-        id: 'docu-nest',
-        description:
-          'AI-powered notebook platform — document library, analytics, and workspace with Clerk auth and Drizzle ORM.',
-      },
-      {
         id: 'scribe-notes',
         description:
           'macOS desktop writing app — TipTap editor, tree structure, and local SQLite storage.',
@@ -532,7 +522,8 @@ export const translations = {
       },
       {
         id: 'spst-kniznica',
-        description: 'Student digital library — catalog, loans, admin panel, and notifications.',
+        description:
+          'Student digital library — Next.js frontend, ASP.NET microservices, and SQLite (for now). Catalog, loans, admin panel.',
       },
     ],
     ui: {

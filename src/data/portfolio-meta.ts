@@ -23,7 +23,6 @@ export type ProjectMeta = {
 }
 
 export const projectMeta: Record<string, ProjectMeta> = {
-  'docu-nest': { icon: '📓', lucide: 'BookMarked', tone: 'blue' },
   'scribe-notes': { icon: '✍️', lucide: 'NotepadText', tone: 'yellow' },
   'boom-scope': { icon: '🎨', lucide: 'Sparkles', tone: 'purple' },
   'pulse-apiclient': { icon: '⚡', lucide: 'Zap', tone: 'orange' },

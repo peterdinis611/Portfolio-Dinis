@@ -42,7 +42,7 @@ export const SidebarCollapsed: Story = {
 
 export const ProjectRoute: Story = {
   args: {
-    route: { page: 'projects', projectId: 'docu-nest' },
+    route: { page: 'projects', projectId: 'scribe-notes' },
   },
 }
 

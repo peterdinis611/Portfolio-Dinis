@@ -63,7 +63,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     oss: {
       title: 'Open source | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'GitHub repozitáre, komunita a priestor na talks — Docu-Nest, Pulse, Boom Scope a ďalšie.',
+        'GitHub repozitáre, komunita a priestor na talks — Pulse, Boom Scope, SPST Knižnica a ďalšie.',
     },
     uses: {
       title: 'Uses | Peter Dinis — Medior Full-Stack Developer',
@@ -82,7 +82,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     projects: {
       title: 'Projekty | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Produkčné a open-source projekty: ÚDZS, EForms, Docu-Nest, Boom Scope, Pulse API Client, SPST Knižnica a ďalšie.',
+        'Produkčné a open-source projekty: ÚDZS, EForms, Boom Scope, Pulse API Client, SPST Knižnica a ďalšie.',
     },
     notes: {
       title: 'Blog | Peter Dinis — Medior Full-Stack Developer',
@@ -114,7 +114,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     oss: {
       title: 'Open source | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'GitHub repos, community, and room for talks — Docu-Nest, Pulse, Boom Scope, and more.',
+        'GitHub repos, community, and room for talks — Pulse, Boom Scope, SPST Knižnica, and more.',
     },
     uses: {
       title: 'Uses | Peter Dinis — Medior Full-Stack Developer',
@@ -133,7 +133,7 @@ const pageSeoCopy: Record<Lang, Record<NotionPageId, PageSeo>> = {
     projects: {
       title: 'Projects | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Production and open-source projects: ÚDZS, EForms, Docu-Nest, Boom Scope, Pulse API Client, SPST Knižnica, and more.',
+        'Production and open-source projects: ÚDZS, EForms, Boom Scope, Pulse API Client, SPST Knižnica, and more.',
     },
     notes: {
       title: 'Blog | Peter Dinis — Medior Full-Stack Developer',
@@ -184,14 +184,14 @@ const projectListSeoCopy: Record<Lang, Record<ProjectListId, PageSeo>> = {
     'my-projects': {
       title: 'Moje projekty | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Osobné a open-source projekty — Docu-Nest, Scribe Notes, Boom Scope, Pulse API Client a SPST Knižnica.',
+        'Osobné a open-source projekty — Scribe Notes, Boom Scope, Pulse API Client a SPST Knižnica.',
     },
   },
   en: {
     'my-projects': {
       title: 'My projects | Peter Dinis — Medior Full-Stack Developer',
       description:
-        'Personal and open-source projects — Docu-Nest, Scribe Notes, Boom Scope, Pulse API Client, and SPST Knižnica.',
+        'Personal and open-source projects — Scribe Notes, Boom Scope, Pulse API Client, and SPST Knižnica.',
     },
   },
 }

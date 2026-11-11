@@ -49,13 +49,6 @@ export const profile = {
 
 export const projects: Project[] = [
   {
-    id: 'docu-nest',
-    name: 'Docu-Nest',
-    tech: 'Next.js · TypeScript · Drizzle · SQLite · Clerk · XState',
-    category: 'personal',
-    githubUrl: 'https://github.com/peterdinis611/Docu-Nest',
-  },
-  {
     id: 'scribe-notes',
     name: 'Scribe Notes',
     tech: 'Tauri · React · TypeScript · TipTap · SQLite · Tailwind',
@@ -80,10 +73,9 @@ export const projects: Project[] = [
   {
     id: 'spst-kniznica',
     name: 'SPST Knižnica',
-    tech: 'TanStack Start · React · PostgreSQL · Drizzle · Auth.js · Tailwind',
+    tech: 'Next.js · C# · ASP.NET · Microservices · SQLite',
     category: 'personal',
     githubUrl: 'https://github.com/peterdinis611/Spst-Kniznica',
-    liveUrl: 'https://spst-kniznica.vercel.app',
   },
 ]
 

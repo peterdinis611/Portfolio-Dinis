@@ -1,6 +1,6 @@
 'use client'
 
-import { type CSSProperties, useRef } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import {
   getProjectCover,
   type PageCoverImage,
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 
 export type { PageCoverVariant }
 
-/** Shine once per cover URL per session — remounts must not look like a reload. */
+/** Client-only: shine once per cover URL per session (never touch during SSR/hydrate). */
 const shoneCovers = new Set<string>()
 
 function CoverPicture({
@@ -78,13 +78,17 @@ export function PageCover({
     Boolean(projectId) || Boolean(cover) || variant === 'about' || variant === 'projects'
   const hasDark = Boolean(resolved.srcDark)
   const shineKey = `${resolved.src}|${resolved.srcDark ?? ''}`
-  const playShineRef = useRef<boolean | null>(null)
-  if (playShineRef.current === null) {
-    const first = !shoneCovers.has(shineKey)
-    if (first) shoneCovers.add(shineKey)
-    playShineRef.current = first
-  }
-  const playShine = playShineRef.current
+  // SSR + hydrate: always static. Decide shine after mount so server module Set can't diverge.
+  const [playShine, setPlayShine] = useState(false)
+
+  useEffect(() => {
+    if (shoneCovers.has(shineKey)) {
+      setPlayShine(false)
+      return
+    }
+    shoneCovers.add(shineKey)
+    setPlayShine(true)
+  }, [shineKey])
 
   return (
     <div

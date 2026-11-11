@@ -115,10 +115,10 @@ export const Database: Story = {
           cells: ['Boom Scope', 'SIDE PROJECT', 'Next.js · Convex · TipTap'],
         },
         {
-          id: 'docu-nest',
-          href: '/projects/docu-nest',
-          icon: <ProjectIcon projectId="docu-nest" size="sm" />,
-          cells: ['Docu-Nest', 'SIDE PROJECT', 'Next.js · Drizzle · Clerk'],
+          id: 'scribe-notes',
+          href: '/projects/scribe-notes',
+          icon: <ProjectIcon projectId="scribe-notes" size="sm" />,
+          cells: ['Scribe Notes', 'DESKTOP APP', 'Tauri · TipTap · SQLite'],
         },
         {
           id: 'pulse-apiclient',

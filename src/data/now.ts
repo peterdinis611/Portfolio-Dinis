@@ -12,8 +12,8 @@ export const nowSnapshot = {
       en: 'R&D on Fluent UI / design systems at IBA.CZ',
     },
     {
-      sk: 'Side projekty — Pulse API Client, Docu-Nest, Boom Scope',
-      en: 'Side projects — Pulse API Client, Docu-Nest, Boom Scope',
+      sk: 'Side projekty — Pulse API Client, Boom Scope, SPST Knižnica',
+      en: 'Side projects — Pulse API Client, Boom Scope, SPST Knižnica',
     },
     {
       sk: 'Písanie notes o React performance, a11y a mentoringu',

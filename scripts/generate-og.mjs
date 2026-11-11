@@ -96,7 +96,7 @@ const pages = [
     path: 'og/projects.svg',
     eyebrow: 'Work',
     title: 'Projekty',
-    subtitle: 'Docu-Nest · Boom Scope · Pulse',
+    subtitle: 'Scribe Notes · Boom Scope · Pulse',
   },
   {
     path: 'og/notes.svg',
